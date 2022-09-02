@@ -28,12 +28,12 @@ Security functionality for interoperability/interaction with core services.
   s.source           = { :git => 'https://github.com/squareup/cash-security-sdk.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
-  s.ios.deployment_target = '10.0'
+  s.ios.deployment_target = '13.0'
 
   s.source_files = 'CashSecuritySdk/Classes/**/*'
-  
-  s.swift_version = '4.0'
-  
+
+  s.swift_versions = '4.0'
+
   # s.resource_bundles = {
   #   'CashSecuritySdk' => ['CashSecuritySdk/Assets/*.png']
   # }
@@ -41,4 +41,10 @@ Security functionality for interoperability/interaction with core services.
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
   # s.dependency 'AFNetworking', '~> 2.3'
+
+  s.test_spec 'UnitTests' do |test_spec|
+    test_spec.source_files = 'CashSecuritySdk/Tests/**/*'
+    test_spec.dependency 'Nimble', '~> 8.0.9'
+    test_spec.dependency 'Quick', '~> 2.2.0'
+  end
 end

@@ -1063,6 +1063,38 @@
 			};
 			name = Debug;
 		};
+		2F5901BB6FA7C66F6E9F246AED031978 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4536BDD1A208A5AD181568F0DC42A301 /* CashSecuritySdk.release.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/CashSecuritySdk/CashSecuritySdk-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/CashSecuritySdk/CashSecuritySdk-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MODULEMAP_FILE = "Target Support Files/CashSecuritySdk/CashSecuritySdk.modulemap";
+				PRODUCT_MODULE_NAME = CashSecuritySdk;
+				PRODUCT_NAME = CashSecuritySdk;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
 		3535F168916128353728A72680C13620 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = ECFC79C49367C2A4A1E658BAEFD7FBE3 /* Pods-CashSecuritySdk_Example.debug.xcconfig */;
@@ -1125,37 +1157,6 @@
 				VERSION_INFO_PREFIX = "";
 			};
 			name = Release;
-		};
-		6502FABD7DC9166790802E94F733894C /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = FF27ED28E561418B5C4A25477B0B6831 /* CashSecuritySdk.debug.xcconfig */;
-			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_PREFIX_HEADER = "Target Support Files/CashSecuritySdk/CashSecuritySdk-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/CashSecuritySdk/CashSecuritySdk-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MODULEMAP_FILE = "Target Support Files/CashSecuritySdk/CashSecuritySdk.modulemap";
-				PRODUCT_MODULE_NAME = CashSecuritySdk;
-				PRODUCT_NAME = CashSecuritySdk;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 4.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
 		};
 		66F8341918A2377AE09F35A33DACEA25 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -1282,9 +1283,9 @@
 			};
 			name = Release;
 		};
-		8060F0AA3DA6C54267ACE71E5E7FAC9C /* Release */ = {
+		9666D8DE3AA6B06A1EBE1FD7A3AF6E82 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4536BDD1A208A5AD181568F0DC42A301 /* CashSecuritySdk.release.xcconfig */;
+			baseConfigurationReference = FF27ED28E561418B5C4A25477B0B6831 /* CashSecuritySdk.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
@@ -1298,7 +1299,7 @@
 				GCC_PREFIX_HEADER = "Target Support Files/CashSecuritySdk/CashSecuritySdk-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/CashSecuritySdk/CashSecuritySdk-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_FILE = "Target Support Files/CashSecuritySdk/CashSecuritySdk.modulemap";
 				PRODUCT_MODULE_NAME = CashSecuritySdk;
@@ -1308,11 +1309,10 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
-			name = Release;
+			name = Debug;
 		};
 		9C88B6F6F0C09BC3A2875FB0AA26F396 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -1510,8 +1510,8 @@
 		564D8F135531CB421FF4692028F81661 /* Build configuration list for PBXNativeTarget "CashSecuritySdk" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				6502FABD7DC9166790802E94F733894C /* Debug */,
-				8060F0AA3DA6C54267ACE71E5E7FAC9C /* Release */,
+				9666D8DE3AA6B06A1EBE1FD7A3AF6E82 /* Debug */,
+				2F5901BB6FA7C66F6E9F246AED031978 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
