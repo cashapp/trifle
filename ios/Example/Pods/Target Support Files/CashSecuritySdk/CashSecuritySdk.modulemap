@@ -1,6 +1,0 @@
-framework module CashSecuritySdk {
-  umbrella header "CashSecuritySdk-umbrella.h"
-
-  export *
-  module * { export * }
-}
