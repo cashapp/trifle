@@ -40,11 +40,16 @@ Security functionality for interoperability/interaction with core services.
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
+  s.dependency 'Tink', '1.5.0'
+  s.script_phase = { name: 'Fix Tink for Apple Silicon', script: '"$PODS_TARGET_SRCROOT"/Scripts/FixTinkForAppleSilicon', execution_position: :before_compile }
+  s.static_framework = true
+  s.preserve_paths = 'Scripts/**/*'
+
+  s.pod_target_xcconfig = {
+    'FRAMEWORK_SEARCH_PATHS[sdk=iphonesimulator*][arch=arm64]' => '"$DERIVED_FILE_DIR/apple_silicon" $FRAMEWORK_SEARCH_PATHS',
+  }
 
   s.test_spec 'UnitTests' do |test_spec|
     test_spec.source_files = 'CashSecuritySdk/Tests/**/*'
-    test_spec.dependency 'Nimble', '~> 8.0.9'
-    test_spec.dependency 'Quick', '~> 2.2.0'
   end
 end

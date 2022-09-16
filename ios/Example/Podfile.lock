@@ -1,16 +1,27 @@
 PODS:
-  - CashSecuritySdk (0.1.0)
+  - CashSecuritySdk (0.1.0):
+    - Tink (= 1.5.0)
+  - rapidjson (1.1.0)
+  - Tink (1.5.0):
+    - rapidjson (~> 1.1.0)
 
 DEPENDENCIES:
   - CashSecuritySdk (from `../`)
+
+SPEC REPOS:
+  trunk:
+    - rapidjson
+    - Tink
 
 EXTERNAL SOURCES:
   CashSecuritySdk:
     :path: "../"
 
 SPEC CHECKSUMS:
-  CashSecuritySdk: 45a73f1224620bf45863f16037890efd5bdb3ff6
+  CashSecuritySdk: 45bf37ab4dce5d1e07292c866e690d7cc8600793
+  rapidjson: 926ddeea70d7a0987b6d746cd9fa51f165467cd3
+  Tink: 0cc396beb2288f005fb4db9e027c0ee975c7728a
 
-PODFILE CHECKSUM: 5204e1b0b806e6068a82ce7305119fc9f6a43f9d
+PODFILE CHECKSUM: 1ecf7d2a02a299b041546b63100cef68e95f64e1
 
 COCOAPODS: 1.11.3

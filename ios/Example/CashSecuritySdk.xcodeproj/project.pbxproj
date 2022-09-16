@@ -45,6 +45,7 @@
 		88923E7C163AEB18CF5E2624 /* Pods-CashSecuritySdk_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CashSecuritySdk_Example.debug.xcconfig"; path = "Target Support Files/Pods-CashSecuritySdk_Example/Pods-CashSecuritySdk_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		9DAEFB015AC8616E1022D9DF /* Pods-CashSecuritySdk_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CashSecuritySdk_Tests.debug.xcconfig"; path = "Target Support Files/Pods-CashSecuritySdk_Tests/Pods-CashSecuritySdk_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		B3C8548A7560DC459BC9C9FE /* Pods_CashSecuritySdk_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CashSecuritySdk_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C47E12BF28D3F5D000108C94 /* Project.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Project.xcconfig; sourceTree = "<group>"; };
 		D10EEC24DA7D67721BDB8A54 /* Pods_CashSecuritySdk_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CashSecuritySdk_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D7107585B17135B120BF57AD /* Pods-CashSecuritySdk_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CashSecuritySdk_Tests.release.xcconfig"; path = "Target Support Files/Pods-CashSecuritySdk_Tests/Pods-CashSecuritySdk_Tests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -81,6 +82,7 @@
 		607FACC71AFB9204008FA782 = {
 			isa = PBXGroup;
 			children = (
+				C47E12BE28D3F5BE00108C94 /* Configuration */,
 				607FACF51AFB993E008FA782 /* Podspec Metadata */,
 				607FACD21AFB9204008FA782 /* Example for CashSecuritySdk */,
 				607FACE81AFB9204008FA782 /* Tests */,
@@ -159,6 +161,14 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		C47E12BE28D3F5BE00108C94 /* Configuration */ = {
+			isa = PBXGroup;
+			children = (
+				C47E12BF28D3F5D000108C94 /* Project.xcconfig */,
+			);
+			path = Configuration;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -167,10 +177,10 @@
 			buildConfigurationList = 607FACEF1AFB9204008FA782 /* Build configuration list for PBXNativeTarget "CashSecuritySdk_Example" */;
 			buildPhases = (
 				E8EF65EFA3195235C8019FA2 /* [CP] Check Pods Manifest.lock */,
+				C47E12C028D3F8C700108C94 /* ShellScript */,
 				607FACCC1AFB9204008FA782 /* Sources */,
 				607FACCD1AFB9204008FA782 /* Frameworks */,
 				607FACCE1AFB9204008FA782 /* Resources */,
-				47A108547CDB6B5DF36AD45D /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -284,23 +294,22 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		47A108547CDB6B5DF36AD45D /* [CP] Embed Pods Frameworks */ = {
+		C47E12C028D3F8C700108C94 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CashSecuritySdk_Example/Pods-CashSecuritySdk_Example-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/CashSecuritySdk/CashSecuritySdk.framework",
+			inputFileListPaths = (
 			);
-			name = "[CP] Embed Pods Frameworks";
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CashSecuritySdk.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CashSecuritySdk_Example/Pods-CashSecuritySdk_Example-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
+			shellScript = "../Scripts/FixTinkForAppleSilicon\n";
 		};
 		E8EF65EFA3195235C8019FA2 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -376,6 +385,7 @@
 /* Begin XCBuildConfiguration section */
 		607FACED1AFB9204008FA782 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C47E12BF28D3F5D000108C94 /* Project.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -429,6 +439,7 @@
 		};
 		607FACEE1AFB9204008FA782 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C47E12BF28D3F5D000108C94 /* Project.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
