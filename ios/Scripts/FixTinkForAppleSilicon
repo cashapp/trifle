@@ -43,7 +43,7 @@ if [ ! -d "$OUTPUT_DIR" ]; then
   if [ -d "$PODS_TARGET_SRCROOT" ]; then
     SCRIPTS_DIR="$PODS_TARGET_SRCROOT/Scripts"
   else
-    # This works for Example, but likely not for other project organisations
+    # TODO: This works for Example, but likely not for other project organisations
     SCRIPTS_DIR="$SRCROOT/../Scripts"
   fi
 
