@@ -1,16 +1,24 @@
 PODS:
-  - CashSecuritySdk (0.1.0)
+  - CashSecuritySdk (0.1.0):
+    - semver (~> 1.1)
+  - semver (1.1.0)
 
 DEPENDENCIES:
   - CashSecuritySdk (from `../`)
+  - semver (~> 1.1)
+
+SPEC REPOS:
+  trunk:
+    - semver
 
 EXTERNAL SOURCES:
   CashSecuritySdk:
     :path: "../"
 
 SPEC CHECKSUMS:
-  CashSecuritySdk: 45a73f1224620bf45863f16037890efd5bdb3ff6
+  CashSecuritySdk: 91ec9e2136c1286573ab57be985397610186f263
+  semver: 11ae3bc4a6036efbc86b5863ef5fa32c065c8bbd
 
-PODFILE CHECKSUM: 5204e1b0b806e6068a82ce7305119fc9f6a43f9d
+PODFILE CHECKSUM: 0c77bd5d2d62102f5c394a39ce8870a969ed02e8
 
 COCOAPODS: 1.11.3

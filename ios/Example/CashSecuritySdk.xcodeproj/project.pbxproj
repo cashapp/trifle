@@ -13,8 +13,8 @@
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
-		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
 		ACB0006DC5CF79D82C70294C /* Pods_CashSecuritySdk_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3C8548A7560DC459BC9C9FE /* Pods_CashSecuritySdk_Tests.framework */; };
+		F93E384D28DA228D00F05C50 /* VersionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F93E384C28DA228D00F05C50 /* VersionTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,7 +39,6 @@
 		607FACDF1AFB9204008FA782 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		607FACE51AFB9204008FA782 /* CashSecuritySdk_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CashSecuritySdk_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		607FACEB1AFB9204008FA782 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
 		77D1FBF91251D21B6100EB13 /* Pods-CashSecuritySdk_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CashSecuritySdk_Example.release.xcconfig"; path = "Target Support Files/Pods-CashSecuritySdk_Example/Pods-CashSecuritySdk_Example.release.xcconfig"; sourceTree = "<group>"; };
 		867F494829B684153BE2C355 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		88923E7C163AEB18CF5E2624 /* Pods-CashSecuritySdk_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CashSecuritySdk_Example.debug.xcconfig"; path = "Target Support Files/Pods-CashSecuritySdk_Example/Pods-CashSecuritySdk_Example.debug.xcconfig"; sourceTree = "<group>"; };
@@ -47,6 +46,7 @@
 		B3C8548A7560DC459BC9C9FE /* Pods_CashSecuritySdk_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CashSecuritySdk_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D10EEC24DA7D67721BDB8A54 /* Pods_CashSecuritySdk_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CashSecuritySdk_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D7107585B17135B120BF57AD /* Pods-CashSecuritySdk_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CashSecuritySdk_Tests.release.xcconfig"; path = "Target Support Files/Pods-CashSecuritySdk_Tests/Pods-CashSecuritySdk_Tests.release.xcconfig"; sourceTree = "<group>"; };
+		F93E384C28DA228D00F05C50 /* VersionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,7 +124,7 @@
 		607FACE81AFB9204008FA782 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				607FACEB1AFB9204008FA782 /* Tests.swift */,
+				F93E384C28DA228D00F05C50 /* VersionTests.swift */,
 				607FACE91AFB9204008FA782 /* Supporting Files */,
 			);
 			path = Tests;
@@ -292,10 +292,12 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-CashSecuritySdk_Example/Pods-CashSecuritySdk_Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/CashSecuritySdk/CashSecuritySdk.framework",
+				"${BUILT_PRODUCTS_DIR}/semver/semver.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CashSecuritySdk.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/semver.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -340,7 +342,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				607FACEC1AFB9204008FA782 /* Tests.swift in Sources */,
+				F93E384D28DA228D00F05C50 /* VersionTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
