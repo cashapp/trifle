@@ -40,7 +40,7 @@ Security functionality for interoperability/interaction with core services.
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
+  s.dependency 'semver', '~> 1.1'
 
   s.test_spec 'UnitTests' do |test_spec|
     test_spec.source_files = 'CashSecuritySdk/Tests/**/*'
