@@ -1,0 +1,13 @@
+use_frameworks!
+
+platform :ios, '13.0'
+
+target 'CashSecuritySdk_Example' do
+  pod 'semver', '~> 1.1'
+  pod 'CashSecuritySdk', :path => '../'
+
+  target 'CashSecuritySdk_Tests' do
+    inherit! :search_paths
+
+  end
+end
