@@ -12,6 +12,18 @@ Example directory first.
 
 ## Requirements
 
+For some users, the ruby version has been a sticking point, but we recommend:
+
+```
+rvm use 2.7.6
+```
+
+Cocoapods will require `CFPropertyList` to be installed as well.
+
+```
+gem install CFPropertyList
+```
+
 ## Installation
 
 CashSecuritySdk is available through [CocoaPods](https://cocoapods.org). To
