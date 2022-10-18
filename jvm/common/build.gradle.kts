@@ -16,6 +16,9 @@ dependencies {
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     implementation("com.google.guava:guava:31.0.1-jre")
 
+    // https://mvnrepository.com/artifact/com.squareup.wire/wire-runtime
+    implementation("com.squareup.wire:wire-runtime:4.4.3")
+
     // Use the Kotlin test library.
     testImplementation("org.jetbrains.kotlin:kotlin-test")
 
@@ -26,16 +29,14 @@ dependencies {
     api("org.apache.commons:commons-math3:3.6.1")
 }
 
-java {
-    withSourcesJar()
-}
-
 plugins {
     // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
     id("org.jetbrains.kotlin.jvm") version "1.6.21"
 
     // Apply the java-library plugin for API and implementation separation.
     `java-library`
+
+    id("com.squareup.wire") version "4.4.3"
 }
 
 repositories {
@@ -51,3 +52,19 @@ tasks.jar {
 }
 
 version = "0.1.0"
+
+apply(plugin = "kotlin")
+
+val protosSrc = "src/main/proto/"
+
+wire {
+  protoLibrary = true
+  sourcePath {
+    srcDir(protosSrc)
+  }
+  protoPath {
+  }
+  kotlin {
+    javaInterop = true
+  }
+}
