@@ -1,5 +1,7 @@
 package app.cash.security_sdk
 
+import app.cash.s2dk.common.Version
+
 class LibraryVersion : Version {
   private val recordedVersion: String = "${BuildConfig.VERSION_CODE}.${BuildConfig.VERSION_NAME}"
 

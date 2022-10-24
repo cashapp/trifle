@@ -10,7 +10,7 @@
       android:supportsRtl="true"
       android:theme="@style/Theme.CashSecuritySdkExample">
   <activity
-      android:name=".MainActivity"
+      android:name="app.cash.security_sdk.MainActivity"
       android:exported="true">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>

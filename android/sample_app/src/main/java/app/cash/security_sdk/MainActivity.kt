@@ -1,9 +1,9 @@
-package app.cash.security_sdk.sample_app
+package app.cash.security_sdk
 
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import app.cash.security_sdk.LibraryVersion
+import app.cash.security_sdk.sample_app.R
 
 class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
