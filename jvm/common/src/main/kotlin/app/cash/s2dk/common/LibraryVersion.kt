@@ -1,9 +1,9 @@
-package app.cash.security_sdk
-
-import app.cash.s2dk.common.Version
+package app.cash.s2dk.common
 
 class LibraryVersion : Version {
-  private val recordedVersion: String = "${BuildConfig.VERSION_CODE}.${BuildConfig.VERSION_NAME}"
+
+  // TODO(dcashman): Get this value from the gradle build setup.
+  private val recordedVersion: String = "0.1.0"
 
   override fun complete(): String = recordedVersion
 

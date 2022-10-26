@@ -1,4 +1,4 @@
-package app.cash.security_sdk
+package app.cash.s2dk.common
 
 interface Version {
   fun complete(): String
