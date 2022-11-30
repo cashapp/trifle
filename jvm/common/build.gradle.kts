@@ -58,7 +58,6 @@ apply(plugin = "kotlin")
 val protosSrc = "src/main/proto/"
 
 repositories {
-  mavenCentral()
 }
 
 dependencies {
