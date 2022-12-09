@@ -36,9 +36,10 @@ internal class TinkContentVerifier(
       true
     } catch (e: GeneralSecurityException) {
       // Signature did not verify.
-      false;
+      false
     } finally {
       outputStream.reset()
     }
   }
 }
+
