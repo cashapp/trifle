@@ -70,12 +70,20 @@ internal class CertificateUtilTest {
     val certHolder = X509CertificateHolder(signingCert.certificate.toByteArray())
 
     // Self-signed cert should verify when presented with itself.
-    assertTrue(certHolder.isSignatureValid(S2DKContentVerifierProvider(signingCert)))
+    assertTrue(certHolder.isSignatureValid(S2DKContentVerifierProvider(certHolder.subjectPublicKeyInfo)))
 
     // Different key should not verify
     val otherCert = CertificateUtil.createRootSigningCertificate(
       "entity", Period.ofDays(1), KeysetHandle.generateNew(KeyTemplates.get("ED25519"))
     )
-    assertFalse(certHolder.isSignatureValid(S2DKContentVerifierProvider(otherCert)))
+    assertFalse(
+      certHolder.isSignatureValid(
+        S2DKContentVerifierProvider(
+          X509CertificateHolder(
+            otherCert.certificate.toByteArray()
+          ).subjectPublicKeyInfo
+        )
+      )
+    )
   }
 }
