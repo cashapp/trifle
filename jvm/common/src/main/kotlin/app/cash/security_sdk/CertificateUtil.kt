@@ -8,8 +8,8 @@ import com.squareup.protos.cash.s2dk.api.alpha.MobileCertificateRequest
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
 import org.bouncycastle.asn1.x500.X500Name
+import org.bouncycastle.cert.X509CertificateHolder
 import org.bouncycastle.cert.X509v3CertificateBuilder
-
 import org.bouncycastle.pkcs.PKCS10CertificationRequest
 import org.bouncycastle.pkcs.PKCS10CertificationRequestBuilder
 import java.math.BigInteger
@@ -22,6 +22,9 @@ import java.util.Date
  */
 object CertificateUtil {
   const val MOBILE_CERTIFICATE_REQUEST_VERSION: UInt = 0u
+
+  // Validity time for device-certificate, currentl scoped to 180 days, based entirely on intuition.
+  const val MOBILE_CERTIFICATE_VALIDITY_PERIOD_DAYS: Int = 180
 
   /**
    * Converts the given serialized MobileCertRequest into a CertificateRequest. This enables clients
@@ -48,15 +51,31 @@ object CertificateUtil {
   }
 
   /**
-   * Signs CertificateRequest using the private key generated from the given keyset source.
+   * Signs CertificateRequest using the provided Tink KeysetHandle and issuing certificate.
    *
-   * @param signingKeySecret secret value used to seed the signing private key
+   * @param tinkSigningKeyset secret value used to seed the signing private key
+   * @param issuerCertificate S2DK certificate associated with the signer of this cert.
    * @param certificateRequest certificate request used to generate a new certificate
    */
   fun signCertificate(
-    signingKeySecret: BigInteger,
+    tinkSigningKeyset: KeysetHandle,
+    issuerCertificate: SigningCert,
     certificateRequest: CertificateRequest
-  ): SigningCert = SigningCert(ByteString.EMPTY)
+  ): SigningCert {
+    val creationTime = Instant.now()
+    val pkcs10Request = certificateRequest.csr
+    val issuerCertHolder = X509CertificateHolder(issuerCertificate.certificate.toByteArray())
+    val signedCert =
+      X509v3CertificateBuilder(
+        issuerCertHolder.subject,
+        BigInteger.valueOf(creationTime.toEpochMilli()),
+        Date.from(creationTime),
+        Date.from(creationTime.plus(Period.ofDays(MOBILE_CERTIFICATE_VALIDITY_PERIOD_DAYS))),
+        pkcs10Request.subject,
+        pkcs10Request.subjectPublicKeyInfo
+      ).build(TinkContentSigner(tinkSigningKeyset.getPrimitive(PublicKeySign::class.java)))
+    return SigningCert(signedCert.encoded.toByteString(0, signedCert.encoded.size))
+  }
 
   /**
    * Creates a self-signed certificate with the provided key and name.
