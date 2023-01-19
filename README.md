@@ -1,2 +1,2 @@
 # cash-security-sdk
-Security functionality for interoperability/interaction with core services.
+Security functionality for interoperability/interaction with core services and clients.
