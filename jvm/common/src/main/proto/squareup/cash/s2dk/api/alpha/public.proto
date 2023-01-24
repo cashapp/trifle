@@ -5,6 +5,8 @@ option java_package = "com.squareup.protos.cash.s2dk.api.alpha";
 
 message MobileCertificateRequest {
   optional bytes public_key = 1;
+
+  optional string algorithm = 2;
 }
 
 message MobileCertificateResponse {
