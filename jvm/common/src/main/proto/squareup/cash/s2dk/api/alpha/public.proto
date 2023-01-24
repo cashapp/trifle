@@ -1,0 +1,12 @@
+syntax = "proto2";
+package squareup.cash.s2dk.api.alpha;
+
+option java_package = "com.squareup.protos.cash.deviceintegritly.api.alpha";
+
+message MobileCertificateRequest {
+  optional bytes public_key = 1;
+}
+
+message MobileCertificateResponse {
+  repeated bytes certificates = 1;
+}
