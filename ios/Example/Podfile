@@ -1,12 +1,12 @@
 use_frameworks!
 
-platform :ios, '13.0'
+platform :ios, '14.0'
 
-target 'CashSecuritySdk_Example' do
+target 'SecuritySdk_Example' do
   pod 'semver', '~> 1.1'
-  pod 'CashSecuritySdk', :path => '../'
+  pod 'SecuritySdk', :path => '../'
 
-  target 'CashSecuritySdk_Tests' do
+  target 'SecuritySdk_Tests' do
     inherit! :search_paths
 
   end

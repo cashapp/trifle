@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import CashSecuritySdk
+import SecuritySdk
 
 class ViewController: UIViewController {
 

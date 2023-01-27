@@ -3,17 +3,17 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		501FAA39F97B4813B03854EA /* Pods_CashSecuritySdk_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D10EEC24DA7D67721BDB8A54 /* Pods_CashSecuritySdk_Example.framework */; };
+		501FAA39F97B4813B03854EA /* Pods_SecuritySdk_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D10EEC24DA7D67721BDB8A54 /* Pods_SecuritySdk_Example.framework */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
 		607FACD81AFB9204008FA782 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD71AFB9204008FA782 /* ViewController.swift */; };
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
-		ACB0006DC5CF79D82C70294C /* Pods_CashSecuritySdk_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3C8548A7560DC459BC9C9FE /* Pods_CashSecuritySdk_Tests.framework */; };
+		ACB0006DC5CF79D82C70294C /* Pods_SecuritySdk_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3C8548A7560DC459BC9C9FE /* Pods_SecuritySdk_Tests.framework */; };
 		F93E384D28DA228D00F05C50 /* VersionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F93E384C28DA228D00F05C50 /* VersionTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -23,29 +23,29 @@
 			containerPortal = 607FACC81AFB9204008FA782 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 607FACCF1AFB9204008FA782;
-			remoteInfo = CashSecuritySdk;
+			remoteInfo = SecuritySdk;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		2FE5DC45194A5144462D8753 /* CashSecuritySdk.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = CashSecuritySdk.podspec; path = ../CashSecuritySdk.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		2FE5DC45194A5144462D8753 /* SecuritySdk.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = SecuritySdk.podspec; path = ../SecuritySdk.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		311CA8E4C45E226E1D9A2466 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
-		607FACD01AFB9204008FA782 /* CashSecuritySdk_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CashSecuritySdk_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		607FACD01AFB9204008FA782 /* SecuritySdk_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SecuritySdk_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACD51AFB9204008FA782 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		607FACD71AFB9204008FA782 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		607FACDA1AFB9204008FA782 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		607FACDC1AFB9204008FA782 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		607FACDF1AFB9204008FA782 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		607FACE51AFB9204008FA782 /* CashSecuritySdk_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CashSecuritySdk_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		607FACE51AFB9204008FA782 /* SecuritySdk_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SecuritySdk_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		77D1FBF91251D21B6100EB13 /* Pods-CashSecuritySdk_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CashSecuritySdk_Example.release.xcconfig"; path = "Target Support Files/Pods-CashSecuritySdk_Example/Pods-CashSecuritySdk_Example.release.xcconfig"; sourceTree = "<group>"; };
+		77D1FBF91251D21B6100EB13 /* Pods-SecuritySdk_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SecuritySdk_Example.release.xcconfig"; path = "Target Support Files/Pods-SecuritySdk_Example/Pods-SecuritySdk_Example.release.xcconfig"; sourceTree = "<group>"; };
 		867F494829B684153BE2C355 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
-		88923E7C163AEB18CF5E2624 /* Pods-CashSecuritySdk_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CashSecuritySdk_Example.debug.xcconfig"; path = "Target Support Files/Pods-CashSecuritySdk_Example/Pods-CashSecuritySdk_Example.debug.xcconfig"; sourceTree = "<group>"; };
-		9DAEFB015AC8616E1022D9DF /* Pods-CashSecuritySdk_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CashSecuritySdk_Tests.debug.xcconfig"; path = "Target Support Files/Pods-CashSecuritySdk_Tests/Pods-CashSecuritySdk_Tests.debug.xcconfig"; sourceTree = "<group>"; };
-		B3C8548A7560DC459BC9C9FE /* Pods_CashSecuritySdk_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CashSecuritySdk_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D10EEC24DA7D67721BDB8A54 /* Pods_CashSecuritySdk_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CashSecuritySdk_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D7107585B17135B120BF57AD /* Pods-CashSecuritySdk_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CashSecuritySdk_Tests.release.xcconfig"; path = "Target Support Files/Pods-CashSecuritySdk_Tests/Pods-CashSecuritySdk_Tests.release.xcconfig"; sourceTree = "<group>"; };
+		88923E7C163AEB18CF5E2624 /* Pods-SecuritySdk_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SecuritySdk_Example.debug.xcconfig"; path = "Target Support Files/Pods-SecuritySdk_Example/Pods-SecuritySdk_Example.debug.xcconfig"; sourceTree = "<group>"; };
+		9DAEFB015AC8616E1022D9DF /* Pods-SecuritySdk_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SecuritySdk_Tests.debug.xcconfig"; path = "Target Support Files/Pods-SecuritySdk_Tests/Pods-SecuritySdk_Tests.debug.xcconfig"; sourceTree = "<group>"; };
+		B3C8548A7560DC459BC9C9FE /* Pods_SecuritySdk_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SecuritySdk_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D10EEC24DA7D67721BDB8A54 /* Pods_SecuritySdk_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SecuritySdk_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D7107585B17135B120BF57AD /* Pods-SecuritySdk_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SecuritySdk_Tests.release.xcconfig"; path = "Target Support Files/Pods-SecuritySdk_Tests/Pods-SecuritySdk_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		F93E384C28DA228D00F05C50 /* VersionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -54,7 +54,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				501FAA39F97B4813B03854EA /* Pods_CashSecuritySdk_Example.framework in Frameworks */,
+				501FAA39F97B4813B03854EA /* Pods_SecuritySdk_Example.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -62,7 +62,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ACB0006DC5CF79D82C70294C /* Pods_CashSecuritySdk_Tests.framework in Frameworks */,
+				ACB0006DC5CF79D82C70294C /* Pods_SecuritySdk_Tests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,8 +72,8 @@
 		0453A2C210CA86DCE9267F7A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				D10EEC24DA7D67721BDB8A54 /* Pods_CashSecuritySdk_Example.framework */,
-				B3C8548A7560DC459BC9C9FE /* Pods_CashSecuritySdk_Tests.framework */,
+				D10EEC24DA7D67721BDB8A54 /* Pods_SecuritySdk_Example.framework */,
+				B3C8548A7560DC459BC9C9FE /* Pods_SecuritySdk_Tests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -82,7 +82,7 @@
 			isa = PBXGroup;
 			children = (
 				607FACF51AFB993E008FA782 /* Podspec Metadata */,
-				607FACD21AFB9204008FA782 /* Example for CashSecuritySdk */,
+				607FACD21AFB9204008FA782 /* Example for SecuritySdk */,
 				607FACE81AFB9204008FA782 /* Tests */,
 				607FACD11AFB9204008FA782 /* Products */,
 				A0C5972D3400F9E96230A3AB /* Pods */,
@@ -93,13 +93,13 @@
 		607FACD11AFB9204008FA782 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				607FACD01AFB9204008FA782 /* CashSecuritySdk_Example.app */,
-				607FACE51AFB9204008FA782 /* CashSecuritySdk_Tests.xctest */,
+				607FACD01AFB9204008FA782 /* SecuritySdk_Example.app */,
+				607FACE51AFB9204008FA782 /* SecuritySdk_Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		607FACD21AFB9204008FA782 /* Example for CashSecuritySdk */ = {
+		607FACD21AFB9204008FA782 /* Example for SecuritySdk */ = {
 			isa = PBXGroup;
 			children = (
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
@@ -109,8 +109,8 @@
 				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
 				607FACD31AFB9204008FA782 /* Supporting Files */,
 			);
-			name = "Example for CashSecuritySdk";
-			path = CashSecuritySdk;
+			name = "Example for SecuritySdk";
+			path = SecuritySdk;
 			sourceTree = "<group>";
 		};
 		607FACD31AFB9204008FA782 /* Supporting Files */ = {
@@ -141,7 +141,7 @@
 		607FACF51AFB993E008FA782 /* Podspec Metadata */ = {
 			isa = PBXGroup;
 			children = (
-				2FE5DC45194A5144462D8753 /* CashSecuritySdk.podspec */,
+				2FE5DC45194A5144462D8753 /* SecuritySdk.podspec */,
 				311CA8E4C45E226E1D9A2466 /* README.md */,
 				867F494829B684153BE2C355 /* LICENSE */,
 			);
@@ -151,10 +151,10 @@
 		A0C5972D3400F9E96230A3AB /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				88923E7C163AEB18CF5E2624 /* Pods-CashSecuritySdk_Example.debug.xcconfig */,
-				77D1FBF91251D21B6100EB13 /* Pods-CashSecuritySdk_Example.release.xcconfig */,
-				9DAEFB015AC8616E1022D9DF /* Pods-CashSecuritySdk_Tests.debug.xcconfig */,
-				D7107585B17135B120BF57AD /* Pods-CashSecuritySdk_Tests.release.xcconfig */,
+				88923E7C163AEB18CF5E2624 /* Pods-SecuritySdk_Example.debug.xcconfig */,
+				77D1FBF91251D21B6100EB13 /* Pods-SecuritySdk_Example.release.xcconfig */,
+				9DAEFB015AC8616E1022D9DF /* Pods-SecuritySdk_Tests.debug.xcconfig */,
+				D7107585B17135B120BF57AD /* Pods-SecuritySdk_Tests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -162,9 +162,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		607FACCF1AFB9204008FA782 /* CashSecuritySdk_Example */ = {
+		607FACCF1AFB9204008FA782 /* SecuritySdk_Example */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 607FACEF1AFB9204008FA782 /* Build configuration list for PBXNativeTarget "CashSecuritySdk_Example" */;
+			buildConfigurationList = 607FACEF1AFB9204008FA782 /* Build configuration list for PBXNativeTarget "SecuritySdk_Example" */;
 			buildPhases = (
 				E8EF65EFA3195235C8019FA2 /* [CP] Check Pods Manifest.lock */,
 				607FACCC1AFB9204008FA782 /* Sources */,
@@ -176,14 +176,14 @@
 			);
 			dependencies = (
 			);
-			name = CashSecuritySdk_Example;
-			productName = CashSecuritySdk;
-			productReference = 607FACD01AFB9204008FA782 /* CashSecuritySdk_Example.app */;
+			name = SecuritySdk_Example;
+			productName = SecuritySdk;
+			productReference = 607FACD01AFB9204008FA782 /* SecuritySdk_Example.app */;
 			productType = "com.apple.product-type.application";
 		};
-		607FACE41AFB9204008FA782 /* CashSecuritySdk_Tests */ = {
+		607FACE41AFB9204008FA782 /* SecuritySdk_Tests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 607FACF21AFB9204008FA782 /* Build configuration list for PBXNativeTarget "CashSecuritySdk_Tests" */;
+			buildConfigurationList = 607FACF21AFB9204008FA782 /* Build configuration list for PBXNativeTarget "SecuritySdk_Tests" */;
 			buildPhases = (
 				1C9B7EE14ABC82253BA3597F /* [CP] Check Pods Manifest.lock */,
 				607FACE11AFB9204008FA782 /* Sources */,
@@ -195,9 +195,9 @@
 			dependencies = (
 				607FACE71AFB9204008FA782 /* PBXTargetDependency */,
 			);
-			name = CashSecuritySdk_Tests;
+			name = SecuritySdk_Tests;
 			productName = Tests;
-			productReference = 607FACE51AFB9204008FA782 /* CashSecuritySdk_Tests.xctest */;
+			productReference = 607FACE51AFB9204008FA782 /* SecuritySdk_Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -221,7 +221,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 607FACCB1AFB9204008FA782 /* Build configuration list for PBXProject "CashSecuritySdk" */;
+			buildConfigurationList = 607FACCB1AFB9204008FA782 /* Build configuration list for PBXProject "SecuritySdk" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -235,8 +235,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				607FACCF1AFB9204008FA782 /* CashSecuritySdk_Example */,
-				607FACE41AFB9204008FA782 /* CashSecuritySdk_Tests */,
+				607FACCF1AFB9204008FA782 /* SecuritySdk_Example */,
+				607FACE41AFB9204008FA782 /* SecuritySdk_Tests */,
 			);
 		};
 /* End PBXProject section */
@@ -277,7 +277,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-CashSecuritySdk_Tests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-SecuritySdk_Tests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -290,18 +290,18 @@
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CashSecuritySdk_Example/Pods-CashSecuritySdk_Example-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/CashSecuritySdk/CashSecuritySdk.framework",
+				"${PODS_ROOT}/Target Support Files/Pods-SecuritySdk_Example/Pods-SecuritySdk_Example-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/SecuritySdk/SecuritySdk.framework",
 				"${BUILT_PRODUCTS_DIR}/semver/semver.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CashSecuritySdk.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SecuritySdk.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/semver.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CashSecuritySdk_Example/Pods-CashSecuritySdk_Example-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SecuritySdk_Example/Pods-SecuritySdk_Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		E8EF65EFA3195235C8019FA2 /* [CP] Check Pods Manifest.lock */ = {
@@ -319,7 +319,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-CashSecuritySdk_Example-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-SecuritySdk_Example-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -351,7 +351,8 @@
 /* Begin PBXTargetDependency section */
 		607FACE71AFB9204008FA782 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 607FACCF1AFB9204008FA782 /* CashSecuritySdk_Example */;
+			platformFilter = ios;
+			target = 607FACCF1AFB9204008FA782 /* SecuritySdk_Example */;
 			targetProxy = 607FACE61AFB9204008FA782 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -421,7 +422,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -467,24 +468,29 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
 		};
 		607FACF01AFB9204008FA782 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 88923E7C163AEB18CF5E2624 /* Pods-CashSecuritySdk_Example.debug.xcconfig */;
+			baseConfigurationReference = 88923E7C163AEB18CF5E2624 /* Pods-SecuritySdk_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				INFOPLIST_FILE = CashSecuritySdk/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = SecuritySdk/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MODULE_NAME = ExampleApp;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = "app.cash.trifle.security_sdk.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.0;
@@ -493,14 +499,18 @@
 		};
 		607FACF11AFB9204008FA782 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 77D1FBF91251D21B6100EB13 /* Pods-CashSecuritySdk_Example.release.xcconfig */;
+			baseConfigurationReference = 77D1FBF91251D21B6100EB13 /* Pods-SecuritySdk_Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				INFOPLIST_FILE = CashSecuritySdk/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = SecuritySdk/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MODULE_NAME = ExampleApp;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = "app.cash.trifle.security_sdk.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.0;
@@ -509,7 +519,7 @@
 		};
 		607FACF31AFB9204008FA782 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9DAEFB015AC8616E1022D9DF /* Pods-CashSecuritySdk_Tests.debug.xcconfig */;
+			baseConfigurationReference = 9DAEFB015AC8616E1022D9DF /* Pods-SecuritySdk_Tests.debug.xcconfig */;
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
@@ -520,37 +530,53 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = Tests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.$(PRODUCT_NAME:rfc1034identifier)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "app.cash.trifle.security_sdk.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CashSecuritySdk_Example.app/CashSecuritySdk_Example";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SecuritySdk_Example.app/SecuritySdk_Example";
 			};
 			name = Debug;
 		};
 		607FACF41AFB9204008FA782 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D7107585B17135B120BF57AD /* Pods-CashSecuritySdk_Tests.release.xcconfig */;
+			baseConfigurationReference = D7107585B17135B120BF57AD /* Pods-SecuritySdk_Tests.release.xcconfig */;
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = Tests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.$(PRODUCT_NAME:rfc1034identifier)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "app.cash.trifle.security_sdk.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CashSecuritySdk_Example.app/CashSecuritySdk_Example";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SecuritySdk_Example.app/SecuritySdk_Example";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		607FACCB1AFB9204008FA782 /* Build configuration list for PBXProject "CashSecuritySdk" */ = {
+		607FACCB1AFB9204008FA782 /* Build configuration list for PBXProject "SecuritySdk" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				607FACED1AFB9204008FA782 /* Debug */,
@@ -559,7 +585,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		607FACEF1AFB9204008FA782 /* Build configuration list for PBXNativeTarget "CashSecuritySdk_Example" */ = {
+		607FACEF1AFB9204008FA782 /* Build configuration list for PBXNativeTarget "SecuritySdk_Example" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				607FACF01AFB9204008FA782 /* Debug */,
@@ -568,7 +594,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		607FACF21AFB9204008FA782 /* Build configuration list for PBXNativeTarget "CashSecuritySdk_Tests" */ = {
+		607FACF21AFB9204008FA782 /* Build configuration list for PBXNativeTarget "SecuritySdk_Tests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				607FACF31AFB9204008FA782 /* Debug */,
