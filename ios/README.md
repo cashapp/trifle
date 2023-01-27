@@ -26,7 +26,7 @@ gem install CFPropertyList
 
 ## Installation
 
-CashSecuritySdk is available through [CocoaPods](https://cocoapods.org). To
+Trifle SecuritySdk is available through [CocoaPods](https://cocoapods.org). To
 install it, simply add the following line to your Podfile:
 
 ```ruby
@@ -35,11 +35,9 @@ pod 'CashSecuritySdk'
 
 ## Authors
 
-Cash Security Engineering, cash-security-triage@squareup.com
-
-Cameron Hotchkies, chotchkies@squareup.com
+Cash App
 
 ## License
 
-CashSecuritySdk is available under the Apache 2.0 license. See the LICENSE file
+Trifle SecuritySdk is available under the Apache 2.0 license. See the LICENSE file
 for more info.

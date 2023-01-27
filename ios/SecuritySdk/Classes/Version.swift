@@ -1,8 +1,8 @@
 //
 //  Version.swift
-//  CashSecuritySdk
+//  Trifle S2dk
 //
-//  Trivial implementation of *something*.
+//  Trivial implementation of versioning.
 //
 
 import Foundation
@@ -21,7 +21,7 @@ public class LibraryVersion : Version {
     
     public init() {
         
-        let sdkBundle = Bundle(identifier: "app.cash.security_sdk")
+        let sdkBundle = Bundle(identifier: "app.cash.trifle.security_sdk")
         
         let bundleVersion = sdkBundle.flatMap({
             $0.object(forInfoDictionaryKey: "CFBundleShortVersionString")

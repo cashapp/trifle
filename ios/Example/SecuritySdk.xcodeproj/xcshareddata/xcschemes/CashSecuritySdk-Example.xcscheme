@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "607FACCF1AFB9204008FA782"
-               BuildableName = "CashSecuritySdk_Example.app"
-               BlueprintName = "CashSecuritySdk_Example"
-               ReferencedContainer = "container:CashSecuritySdk.xcodeproj">
+               BuildableName = "SecuritySdk_Example.app"
+               BlueprintName = "SecuritySdk_Example"
+               ReferencedContainer = "container:SecuritySdk.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -29,9 +29,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "607FACE41AFB9204008FA782"
-               BuildableName = "CashSecuritySdk_Tests.xctest"
-               BlueprintName = "CashSecuritySdk_Tests"
-               ReferencedContainer = "container:CashSecuritySdk.xcodeproj">
+               BuildableName = "SecuritySdk_Tests.xctest"
+               BlueprintName = "SecuritySdk_Tests"
+               ReferencedContainer = "container:SecuritySdk.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -45,9 +45,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "607FACCF1AFB9204008FA782"
-            BuildableName = "CashSecuritySdk_Example.app"
-            BlueprintName = "CashSecuritySdk_Example"
-            ReferencedContainer = "container:CashSecuritySdk.xcodeproj">
+            BuildableName = "SecuritySdk_Example.app"
+            BlueprintName = "SecuritySdk_Example"
+            ReferencedContainer = "container:SecuritySdk.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <Testables>
@@ -56,9 +56,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "607FACE41AFB9204008FA782"
-               BuildableName = "CashSecuritySdk_Tests.xctest"
-               BlueprintName = "CashSecuritySdk_Tests"
-               ReferencedContainer = "container:CashSecuritySdk.xcodeproj">
+               BuildableName = "SecuritySdk_Tests.xctest"
+               BlueprintName = "SecuritySdk_Tests"
+               ReferencedContainer = "container:SecuritySdk.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -78,9 +78,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "607FACCF1AFB9204008FA782"
-            BuildableName = "CashSecuritySdk_Example.app"
-            BlueprintName = "CashSecuritySdk_Example"
-            ReferencedContainer = "container:CashSecuritySdk.xcodeproj">
+            BuildableName = "SecuritySdk_Example.app"
+            BlueprintName = "SecuritySdk_Example"
+            ReferencedContainer = "container:SecuritySdk.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -95,9 +95,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "607FACCF1AFB9204008FA782"
-            BuildableName = "CashSecuritySdk_Example.app"
-            BlueprintName = "CashSecuritySdk_Example"
-            ReferencedContainer = "container:CashSecuritySdk.xcodeproj">
+            BuildableName = "SecuritySdk_Example.app"
+            BlueprintName = "SecuritySdk_Example"
+            ReferencedContainer = "container:SecuritySdk.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
