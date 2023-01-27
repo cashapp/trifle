@@ -50,7 +50,7 @@ internal class CertificateUtilTest {
 
     // Extract cert and then entity value.
     val certHolder = X509CertificateHolder(cert.certificate.toByteArray())
-    assertEquals("CN=entity", certHolder.issuer.toString())
+    assertEquals("CN=entity", certHolder.subject.toString())
   }
 
   @Test
@@ -61,7 +61,7 @@ internal class CertificateUtilTest {
 
     // Extract cert and then entity value.
     val certHolder = X509CertificateHolder(cert.certificate.toByteArray())
-    assertEquals("CN=entity", certHolder.subject.toString())
+    assertEquals("CN=entity", certHolder.issuer.toString())
   }
 
   @Test
@@ -143,5 +143,69 @@ internal class CertificateUtilTest {
         )
       )
     )
+  }
+
+  @Test
+  fun `test signCertificate validity period`() {
+    val certHolder = X509CertificateHolder(createTestMobileSignedCert().certificate.toByteArray())
+    val duration =
+      Duration.ofMillis(
+        certHolder.notAfter.toInstant().minusMillis(certHolder.notBefore.toInstant().toEpochMilli())
+          .toEpochMilli()
+      )
+    assertEquals(180, duration.toDays())
+  }
+
+  @Test
+  fun `test signCertificate certificate entity`() {
+    // Extract cert and then entity value.
+    val certHolder = X509CertificateHolder(createTestMobileSignedCert().certificate.toByteArray())
+    assertEquals("CN=entity", certHolder.subject.toString())
+  }
+
+  @Test
+  fun `test signCertificate certificate issuer`() {
+    // Extract cert and then entity value.
+    val certHolder = X509CertificateHolder(createTestMobileSignedCert().certificate.toByteArray())
+    assertEquals("CN=issuingEntity", certHolder.issuer.toString())
+  }
+
+  @Test
+  fun `test signCertificate signing`() {
+    // Create local copy of issuingCert for use in verifying signature.
+    val issuingCert = CertificateUtil.createRootSigningCertificate(
+      "issuingEntity", Period.ofDays(1), ed25519PrivateKeysetHandle
+    )
+
+    // Extract the x.509 certificate from our object.
+    val certHolder = X509CertificateHolder(createTestMobileSignedCert().certificate.toByteArray())
+    val issuingCertHolder = X509CertificateHolder(issuingCert.certificate.toByteArray())
+
+    // Cert should verify when presented with issuing cert
+    assertTrue(certHolder.isSignatureValid(S2DKContentVerifierProvider(issuingCertHolder.subjectPublicKeyInfo)))
+
+    // Different key should not verify (in this case it is not self signed)
+    assertFalse(
+      certHolder.isSignatureValid(
+        S2DKContentVerifierProvider(
+          certHolder.subjectPublicKeyInfo
+        )
+      )
+    )
+  }
+
+  private fun createTestMobileSignedCert(): SigningCert {
+    val issuingCert = CertificateUtil.createRootSigningCertificate(
+      "issuingEntity", Period.ofDays(1), ed25519PrivateKeysetHandle
+    )
+
+    val certRequest = CertificateUtil.mobileCertRequestToCertRequest(
+      CertificateUtil.createMobileCertRequest(
+        "entity",
+        p256PrivateKeysetHandle
+      ).encodeByteString()
+    )
+
+    return CertificateUtil.signCertificate(ed25519PrivateKeysetHandle, issuingCert, certRequest)
   }
 }
