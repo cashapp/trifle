@@ -9,6 +9,9 @@ import okio.ByteString
 import okio.ByteString.Companion.toByteString
 import org.bouncycastle.asn1.x500.X500Name
 import org.bouncycastle.cert.X509v3CertificateBuilder
+
+import org.bouncycastle.pkcs.PKCS10CertificationRequest
+import org.bouncycastle.pkcs.PKCS10CertificationRequestBuilder
 import java.math.BigInteger
 import java.time.Instant
 import java.time.Period
@@ -18,19 +21,31 @@ import java.util.Date
  * Server S2DK utility class for certificate enrollment.
  */
 object CertificateUtil {
+  const val MOBILE_CERTIFICATE_REQUEST_VERSION: UInt = 0u
+
   /**
-   * Produces the CertificateRequest from decoding the byte blob and ingesting the subject info.
+   * Converts the given serialized MobileCertRequest into a CertificateRequest. This enables clients
+   * to issue certificate requests from devices using the Mobile S2DK and have those requests be
+   * augmented by additional properties provided by the certifiacte authority doing verification.
+   *
+   * Note: Originally the intention was to have the certificate authority populate the subject info,
+   * but currently this is not used, with X.509 attributes to be used instead. This effectively
+   * makes this function a simple deserialization function.
    *
    * @param payload byte string that decodes to a MobileCertificateRequest
-   * @param subjectInfo contains additional required information for the certificate
    */
-  fun getCertificateRequest(
-    payload: ByteString,
-    subjectInfo: Map<String, String>
-  ): CertificateRequest = CertificateRequest(
-    MobileCertificateRequest.ADAPTER.decode(payload).encodeByteString(),
-    subjectInfo
-  )
+  fun mobileCertRequestToCertRequest(
+    payload: ByteString
+  ): CertificateRequest {
+    // The byte string is simply a serialized proto containing a PKCS10 Certificate request and a
+    // version.  Make sure the version is supported and then process the PKCS10 Certificate request.
+    val s2dkMobileCertRequest = MobileCertificateRequest.ADAPTER.decode(payload)
+    check(s2dkMobileCertRequest.version!!.toUInt() == MOBILE_CERTIFICATE_REQUEST_VERSION)
+
+    return CertificateRequest(
+      PKCS10CertificationRequest(s2dkMobileCertRequest.pkcs10_request!!.toByteArray())
+    )
+  }
 
   /**
    * Signs CertificateRequest using the private key generated from the given keyset source.
@@ -71,6 +86,29 @@ object CertificateUtil {
     val signedCert =
       cert.build(TinkContentSigner(tinkSigningKeyset.getPrimitive(PublicKeySign::class.java)))
 
-    return SigningCert(signedCert.encoded.toByteString(0, signedCert.encoded.size))
+    return SigningCert(signedCert.encoded.toByteString())
+  }
+
+  /**
+   * Create a mobile signing certificate request from a Tink signing keyset.
+   *
+   * @param entityName the name with which we'll associate the public key.
+   * @param tinkSigningKeyset the Tink key used to sign the certificate.
+   */
+  fun createMobileCertRequest(
+    entityName: String,
+    tinkSigningKeyset: KeysetHandle,
+  ): MobileCertificateRequest {
+    val subjectName = X500Name("CN=$entityName")
+    val subjectPublicKeyInfo = tinkSigningKeyset.toSubjectPublicKeyInfo()
+    val pkcS10CertificationRequest =
+      PKCS10CertificationRequestBuilder(
+        subjectName,
+        subjectPublicKeyInfo
+      ).build(TinkContentSigner(tinkSigningKeyset.getPrimitive(PublicKeySign::class.java)))
+    return MobileCertificateRequest(
+      MOBILE_CERTIFICATE_REQUEST_VERSION.toInt(),
+      pkcS10CertificationRequest.encoded.toByteString()
+    )
   }
 }
