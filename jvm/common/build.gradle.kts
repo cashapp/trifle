@@ -22,8 +22,13 @@ dependencies {
     // Use the Kotlin test library.
     testImplementation("org.jetbrains.kotlin:kotlin-test")
 
-    // Use the Kotlin JUnit integration.
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
+    // Add junit5 dependency as described in:
+    // https://docs.gradle.org/current/userguide/java_testing.html#using_junit5
+    testImplementation("org.junit.jupiter:junit-jupiter:5.7.1")
+
+    // Add legacy junit dependencies to ensure existing junit4 tests still compile.
+    testCompileOnly("junit:junit:4.13")
+    testRuntimeOnly("org.junit.vintage:junit-vintage-engine")
 
     // This dependency is exported to consumers, that is to say found on their compile classpath.
     api("org.apache.commons:commons-math3:3.6.1")
@@ -49,6 +54,10 @@ tasks.jar {
         attributes(mapOf("Implementation-Title" to project.name,
                          "Implementation-Version" to project.version))
     }
+}
+
+tasks.test {
+  useJUnitPlatform()
 }
 
 version = "0.1.0"
