@@ -14,6 +14,7 @@
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		ACB0006DC5CF79D82C70294C /* Pods_SecuritySdk_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3C8548A7560DC459BC9C9FE /* Pods_SecuritySdk_Tests.framework */; };
+		E17B12F229882D6100063394 /* SecureEnclaveDigitalSignatureKeyManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17B12F129882D6100063394 /* SecureEnclaveDigitalSignatureKeyManagerTests.swift */; };
 		F93E384D28DA228D00F05C50 /* VersionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F93E384C28DA228D00F05C50 /* VersionTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -46,6 +47,7 @@
 		B3C8548A7560DC459BC9C9FE /* Pods_SecuritySdk_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SecuritySdk_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D10EEC24DA7D67721BDB8A54 /* Pods_SecuritySdk_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SecuritySdk_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D7107585B17135B120BF57AD /* Pods-SecuritySdk_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SecuritySdk_Tests.release.xcconfig"; path = "Target Support Files/Pods-SecuritySdk_Tests/Pods-SecuritySdk_Tests.release.xcconfig"; sourceTree = "<group>"; };
+		E17B12F129882D6100063394 /* SecureEnclaveDigitalSignatureKeyManagerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecureEnclaveDigitalSignatureKeyManagerTests.swift; sourceTree = "<group>"; };
 		F93E384C28DA228D00F05C50 /* VersionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -124,6 +126,7 @@
 		607FACE81AFB9204008FA782 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				E17B12F129882D6100063394 /* SecureEnclaveDigitalSignatureKeyManagerTests.swift */,
 				F93E384C28DA228D00F05C50 /* VersionTests.swift */,
 				607FACE91AFB9204008FA782 /* Supporting Files */,
 			);
@@ -343,6 +346,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F93E384D28DA228D00F05C50 /* VersionTests.swift in Sources */,
+				E17B12F229882D6100063394 /* SecureEnclaveDigitalSignatureKeyManagerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
