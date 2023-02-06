@@ -1,6 +1,7 @@
 plugins {
-  id("com.android.library")
   id("kotlin-android")
+  id("com.android.library")
+  id("org.jetbrains.dokka")
   id("com.vanniktech.maven.publish.base")
 }
 
@@ -48,8 +49,6 @@ dependencies {
 
 configure<com.vanniktech.maven.publish.MavenPublishBaseExtension> {
   configure(
-    com.vanniktech.maven.publish.AndroidSingleVariantLibrary(
-      publishJavadocJar = false,
-    )
+    com.vanniktech.maven.publish.AndroidSingleVariantLibrary()
   )
 }
