@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm")
+    id("org.jetbrains.dokka")
     id("com.squareup.wire") version "4.4.3"
     id("com.vanniktech.maven.publish.base")
 }
@@ -85,7 +86,7 @@ wire {
 configure<com.vanniktech.maven.publish.MavenPublishBaseExtension> {
     configure(
         com.vanniktech.maven.publish.KotlinJvm(
-            javadocJar = com.vanniktech.maven.publish.JavadocJar.None()
+            javadocJar = com.vanniktech.maven.publish.JavadocJar.Dokka("dokkaHtml")
         )
     )
 }
