@@ -46,8 +46,6 @@ tasks.test {
     useJUnitPlatform()
 }
 
-version = "0.1.0"
-
 apply(plugin = "kotlin")
 
 val protosSrc = "src/main/proto/"
