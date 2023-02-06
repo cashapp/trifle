@@ -1,6 +1,7 @@
 plugins {
   id("com.android.library")
   id("kotlin-android")
+  id("com.vanniktech.maven.publish.base")
 }
 
 android {
@@ -10,11 +11,9 @@ android {
   defaultConfig {
     minSdkVersion(24)
     targetSdkVersion(33)
-    versionCode = 0
-    versionName = "1.0"
 
-    buildConfigField("String","VERSION_CODE","\"${defaultConfig.versionCode}\"")
-    buildConfigField("String","VERSION_NAME","\"${defaultConfig.versionName}\"")
+    buildConfigField("String", "VERSION_CODE", "\"${project.property("VERSION_CODE")}\"")
+    buildConfigField("String", "VERSION_NAME", "\"${project.property("VERSION_NAME")}\"")
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     consumerProguardFiles("consumer-rules.pro")
@@ -45,4 +44,12 @@ dependencies {
   androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
 
   implementation(project(":jvm"))
+}
+
+configure<com.vanniktech.maven.publish.MavenPublishBaseExtension> {
+  configure(
+    com.vanniktech.maven.publish.AndroidSingleVariantLibrary(
+      publishJavadocJar = false,
+    )
+  )
 }

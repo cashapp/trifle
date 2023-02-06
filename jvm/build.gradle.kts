@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm")
     id("com.squareup.wire") version "4.4.3"
+    id("com.vanniktech.maven.publish.base")
 }
 
 dependencies {
@@ -61,8 +62,16 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.7.0")
 }
 
+// Manually add .proto files to the .jar.
+sourceSets {
+    main {
+        resources {
+            srcDir("src/main/proto")
+        }
+    }
+}
+
 wire {
-    protoLibrary = true
     sourcePath {
         srcDir(protosSrc)
     }
@@ -71,4 +80,12 @@ wire {
     kotlin {
         javaInterop = true
     }
+}
+
+configure<com.vanniktech.maven.publish.MavenPublishBaseExtension> {
+    configure(
+        com.vanniktech.maven.publish.KotlinJvm(
+            javadocJar = com.vanniktech.maven.publish.JavadocJar.None()
+        )
+    )
 }

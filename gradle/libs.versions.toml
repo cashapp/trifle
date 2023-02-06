@@ -1,0 +1,5 @@
+[libraries]
+android-gradle-plugin = { module = "com.android.tools.build:gradle", version = "7.3.1" }
+mavenPublish-gradle-plugin = { module = "com.vanniktech:gradle-maven-publish-plugin", version = "0.23.2" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version = "1.7.10" }
+
