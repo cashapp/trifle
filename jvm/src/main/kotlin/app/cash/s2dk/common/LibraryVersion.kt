@@ -3,7 +3,7 @@ package app.cash.s2dk.common
 class LibraryVersion : Version {
 
   // TODO(dcashman): Get this value from the gradle build setup.
-  private val recordedVersion: String = "0.1.0"
+  private val recordedVersion: String = "0.1.1"
 
   override fun complete(): String = recordedVersion
 
