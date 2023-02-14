@@ -22,9 +22,15 @@ public struct DERObjectIdentifier: ASN1Type, DEREncodable {
                 "Requires at least two components"
             )
         }
-        guard (0...1).contains(rawValue[0]) else {
+        /**
+         - 0: ITU-T
+         - 1: ISO
+         - 2: joint-iso-itu-t
+            are the roo nodet identifiers of the OID tree
+         */
+        guard (0...2).contains(rawValue[0]) else {
             throw DEREncodableError.invalidInput(
-                "Out of Range - Component[0] must be within (0, 1)"
+                "Out of Range - Component[0] must be within (0, 2)"
             )
         }
         guard (0...39).contains(rawValue[1]) else {
