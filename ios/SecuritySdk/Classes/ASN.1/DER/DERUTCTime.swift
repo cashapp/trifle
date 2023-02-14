@@ -22,6 +22,9 @@ public struct DERUTCTime: ASN1Type, DEREncodable {
     }
     
     internal static func encodeValue(_ rawValue: Date) -> [Octet] {
-        return (String(rawValue.timeIntervalSince1970) + "Z").compactMap { $0.asciiValue }
+        let dateFormatter = DateFormatter()
+        dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
+        dateFormatter.dateFormat = "yyMMddHHmmss'Z'"
+        return dateFormatter.string(for: rawValue)!.compactMap { $0.asciiValue }
     }
 }

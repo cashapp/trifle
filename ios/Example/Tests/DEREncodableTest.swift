@@ -124,7 +124,8 @@ final class DEREncodableTest: XCTestCase {
     func testDERUTCTime() throws {
         // "2023-02-13T20:09:30Z"
         let value = try DERUTCTime(Date(timeIntervalSince1970: TimeInterval(1676318970)))
-        let expectedValue: [Octet] = [0x17, 0x0d, 0x31, 0x36, 0x37, 0x36, 0x33, 0x31, 0x38, 0x39, 0x37, 0x30, 0x2e, 0x30, 0x5a]
+        // "230213200930Z in the format of yyMMddHHmmssZ UTC"
+        let expectedValue: [Octet] = [0x17, 0x0d, 0x32, 0x33, 0x30, 0x32, 0x31, 0x33, 0x32, 0x30, 0x30, 0x39, 0x33, 0x30, 0x5a]
 
         XCTAssertEqual(value.octets, expectedValue)
     }
