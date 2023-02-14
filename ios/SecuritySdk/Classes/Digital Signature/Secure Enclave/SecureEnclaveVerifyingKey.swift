@@ -22,6 +22,17 @@ public struct SecureEnclaveVerifyingKey: VerifyingKey {
     }
 
     // MARK: - Public Class Methods (VerifyingKey)
+    
+    public func exportAsData() throws -> Data {
+        var error: Unmanaged<CFError>?
+        guard let data = SecKeyCopyExternalRepresentation(
+            publicKey,
+            &error
+        ) as? Data else {
+            throw CryptographicKeyError.unexportablePublicKey
+        }
+        return data
+    }
 
     public func verify(data: Data, with signature: Data) -> Bool {
         var error: Unmanaged<CFError>?

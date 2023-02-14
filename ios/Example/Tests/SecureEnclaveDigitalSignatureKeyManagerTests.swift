@@ -26,6 +26,10 @@ final class SecureEnclaveDigitalSignatureKeyManagerTests: XCTestCase {
         XCTAssertEqual(verified, true)
     }
     
+    func testExportVerifyingKeyDataSucceeds() throws {
+        XCTAssertNoThrow(try manager.verifyingKey().exportAsData())
+    }
+    
     func testSignatureVerificationFails_whenVerifyingOtherData() throws {
         let data = "hello world".data(using: .utf8)!
         let otherData = "bye world".data(using: .utf8)!
