@@ -5,7 +5,7 @@
 
 import Foundation
 
-public struct SecureEnclaveVerifyingKey: VerifyingKey {
+internal struct SecureEnclaveVerifyingKey: VerifyingKey {
 
     // MARK: - Internal Properties
 
@@ -21,20 +21,9 @@ public struct SecureEnclaveVerifyingKey: VerifyingKey {
         self.publicKey = secKey
     }
 
-    // MARK: - Public Class Methods (VerifyingKey)
-    
-    public func exportAsData() throws -> Data {
-        var error: Unmanaged<CFError>?
-        guard let data = SecKeyCopyExternalRepresentation(
-            publicKey,
-            &error
-        ) as? Data else {
-            throw CryptographicKeyError.unexportablePublicKey
-        }
-        return data
-    }
+    // MARK: - Internal Class Methods (VerifyingKey)
 
-    public func verify(data: Data, with signature: Data) -> Bool {
+    internal func verify(data: Data, with signature: Data) -> Bool {
         var error: Unmanaged<CFError>?
         guard SecKeyVerifySignature(
             self.publicKey,

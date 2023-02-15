@@ -5,7 +5,7 @@
 
 import Foundation
 
-public struct SecureEnclaveSigningKey: SigningKey {
+internal struct SecureEnclaveSigningKey: SigningKey {
     
     // MARK: - Internal Properties
     
@@ -21,9 +21,9 @@ public struct SecureEnclaveSigningKey: SigningKey {
         self.privateKey = secKey
     }
 
-    // MARK: - Public Class Methods (SigningKey)
+    // MARK: - Internal Class Methods (SigningKey)
 
-    public func sign(with data: Data) throws -> Data {
+    internal func sign(with data: Data) throws -> Data {
         var error: Unmanaged<CFError>?
         guard let signature = SecKeyCreateSignature(
             privateKey,

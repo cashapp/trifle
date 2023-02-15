@@ -33,17 +33,6 @@ protocol SigningKey: CryptographicKey {
 /// Verifying key of the digital signature keypair
 protocol VerifyingKey: CryptographicKey {
     var publicKey: SecKey { get }
-    
-    /**
-     Returns an external representation of the given key
-     depending on its key type (pkcs#1 for RSA keys for example).
-         
-     - throws: an error type `CryptographicKeyError` when the operation
-        fails if the key is not exportable, for example if it is bound to a smart card
-        or to the Secure Enclave
-     - returns: the encoded public key as bytes
-     */
-    func exportAsData() throws -> Data
 
     /**
      Verifies the signature using the public key with the provided data
