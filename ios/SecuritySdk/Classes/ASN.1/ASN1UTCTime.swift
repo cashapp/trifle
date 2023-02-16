@@ -1,12 +1,12 @@
 //
-//  DERUTCTime.swift
+//  ASN1UTCTime.swift
 //  SecuritySdk
 //
 
 import Foundation
 
-/// UTCTime DER (Distingushed Encoding Rules) encodable
-public struct DERUTCTime: ASN1Type, DEREncodable {
+/// ASN.1 UTCTime with DER (Distingushed Encoding Rules) encodable
+public struct ASN1UTCTime: ASN1Type, DEREncodable {
     public typealias T = Date
         
     // MARK: - Public Properties
@@ -20,7 +20,9 @@ public struct DERUTCTime: ASN1Type, DEREncodable {
         self.octets = try Self.encode(rawValue, .utcTime(type))
         self.tag = octets.first!
     }
-    
+
+    // MARK: - Internal static methods (DEREncodable)
+
     internal static func encodeValue(_ rawValue: Date) -> [Octet] {
         let dateFormatter = DateFormatter()
         dateFormatter.timeZone = TimeZone(abbreviation: "UTC")

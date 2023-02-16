@@ -1,12 +1,12 @@
 //
-//  DERInteger.swift
+//  ASN1Integer.swift
 //  SecuritySdk
 //
 
 import Foundation
 
-/// Integer DER (Distingushed Encoding Rules) encodable
-public struct DERInteger: ASN1Type, DEREncodable {
+/// ASN.1 Integer with DER (Distingushed Encoding Rules) encodable
+public struct ASN1Integer: ASN1Type, DEREncodable {
     public typealias T = Int64
 
     // MARK: - Public Properties
@@ -20,7 +20,9 @@ public struct DERInteger: ASN1Type, DEREncodable {
         self.octets = try Self.encode(rawValue, .integer(type))
         self.tag = octets.first!
     }
-    
+
+    // MARK: - Internal static methods (DEREncodable)
+
     internal static func encodeValue(_ rawValue: Int64) -> [Octet] {
         if (rawValue == 0) {
             return [0x00]

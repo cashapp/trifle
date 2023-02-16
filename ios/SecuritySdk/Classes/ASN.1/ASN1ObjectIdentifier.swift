@@ -1,12 +1,12 @@
 //
-//  DERObjectIdentifier.swift
+//  ASN1ObjectIdentifier.swift
 //  SecuritySdk
 //
 
 import Foundation
 
-/// ObjectIdentifier DER (Distingushed Encoding Rules) encodable
-public struct DERObjectIdentifier: ASN1Type, DEREncodable {
+/// ASN.1 ObjectIdentifier with DER (Distingushed Encoding Rules) encodable
+public struct ASN1ObjectIdentifier: ASN1Type, DEREncodable {
     public typealias T = [UInt]
 
     // MARK: - Public Properties
@@ -42,7 +42,9 @@ public struct DERObjectIdentifier: ASN1Type, DEREncodable {
         self.octets = try Self.encode(rawValue, .objectIdentifier(type))
         self.tag = octets.first!
     }
-    
+
+    // MARK: - Internal static methods (DEREncodable)
+
     internal static func encodeValue(_ rawValue: [UInt]) -> [Octet] {
         var result: [Octet] = [Octet(40 * rawValue[0] + rawValue[1])]
         

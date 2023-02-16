@@ -1,12 +1,12 @@
 //
-//  DERNull.swift
+//  ASN1Null.swift
 //  SecuritySdk
 //
 
 import Foundation
 
-/// Null DER (Distingushed Encoding Rules) encodable
-public struct DERNull: ASN1Type, DEREncodable {
+/// ASN.1 Null with DER (Distingushed Encoding Rules) encodable
+public struct ASN1Null: ASN1Type, DEREncodable {
     public typealias T = Any?
 
     // MARK: - Public Properties
@@ -20,7 +20,9 @@ public struct DERNull: ASN1Type, DEREncodable {
         self.octets = try Self.encode(nil, .null(type))
         self.tag = octets.first!
     }
-    
+
+    // MARK: - Internal static methods (DEREncodable)
+
     internal static func encodeValue(_ rawValue: Any? = nil) -> [Octet] {
         return []
     }

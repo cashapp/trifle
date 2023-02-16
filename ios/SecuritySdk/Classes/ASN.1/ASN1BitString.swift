@@ -5,8 +5,8 @@
 
 import Foundation
 
-/// BitString DER (Distingushed Encoding Rules) encodable
-public struct DERBitString: ASN1Type, DEREncodable {
+/// ASN.1 BitString with DER (Distingushed Encoding Rules) encodable
+public struct ASN1BitString: ASN1Type, DEREncodable {
     public typealias T = Data
 
     // MARK: - Public Properties
@@ -20,7 +20,9 @@ public struct DERBitString: ASN1Type, DEREncodable {
         self.octets = try Self.encode(rawValue, .bitString(type))
         self.tag = octets.first!
     }
-    
+
+    // MARK: - Internal static methods (DEREncodable)
+
     internal static func encodeValue(_ rawValue: Data) -> [Octet] {
         let value = [Octet](rawValue)
         
