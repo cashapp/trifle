@@ -17,28 +17,24 @@ final class SecureEnclaveDigitalSignatureKeyManagerTests: XCTestCase {
     func testSignAndVerifySucceeds() throws {
         let data = "hello world".data(using: .utf8)!
 
-        let signingKey = try manager.signingKey()
-        let signature = try signingKey.sign(with: data)
+        let signature = try manager.sign(with: data)
 
-        let verifyingKey = try manager.verifyingKey()
-        let verified = verifyingKey.verify(data: data, with: signature)
+        let verified = try manager.verify(data: data, with: signature)
 
         XCTAssertEqual(verified, true)
     }
     
     func testExportVerifyingKeyDataSucceeds() throws {
-        XCTAssertNoThrow(try manager.verifyingKey().exportAsData())
+        XCTAssertNoThrow(try manager.exportVerifyingKey())
     }
     
     func testSignatureVerificationFails_whenVerifyingOtherData() throws {
         let data = "hello world".data(using: .utf8)!
         let otherData = "bye world".data(using: .utf8)!
 
-        let signingKey = try manager.signingKey()
-        let signature = try signingKey.sign(with: data)
+        let signature = try manager.sign(with: data)
 
-        let verifyingKey = try manager.verifyingKey()
-        let verified = verifyingKey.verify(data: otherData, with: signature)
+        let verified = try manager.verify(data: otherData, with: signature)
 
         XCTAssertEqual(verified, false)
     }
@@ -46,11 +42,9 @@ final class SecureEnclaveDigitalSignatureKeyManagerTests: XCTestCase {
     func testSignatureVerificationFails_whenVerifyingWithDifferentKey() throws {
         let data = "hello world".data(using: .utf8)!
 
-        let signingKey = try manager.signingKey()
-        let signature = try signingKey.sign(with: data)
+        let signature = try manager.sign(with: data)
 
-        let otherVerifyingKey = try otherManager.verifyingKey()
-        let verified = otherVerifyingKey.verify(data: data, with: signature)
+        let verified = try otherManager.verify(data: data, with: signature)
 
         XCTAssertEqual(verified, false)
     }

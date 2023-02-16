@@ -5,7 +5,8 @@
 
 import Foundation
 
-public class SecureEnclaveDigitalSignatureKeyManager: DigitalSignatureKeyManager {
+public class SecureEnclaveDigitalSignatureKeyManager
+: DigitalSignatureKeyManager, DigitalSignatureSigner, DigitalSignatureVerifier {
     
     // MARK: - Internal Properties
     
@@ -21,10 +22,35 @@ public class SecureEnclaveDigitalSignatureKeyManager: DigitalSignatureKeyManager
     public init(tag: String) {
         self.tag = tag
     }
-
-    // MARK: - Public Methods (DigitalSignatureKeyManager)
     
-    public func signingKey() throws -> SecureEnclaveSigningKey {
+    // MARK: - Public Methods (DigitalSignatureSigner)
+
+    public func sign(with data: Data) throws -> Data {
+        return try signingKey().sign(with: data)
+    }
+    
+    // MARK: - Public Methods (DigitalSignatureVerifier)
+
+    public func verify(data: Data, with signature: Data) throws -> Bool {
+        return try verifyingKey().verify(data: data, with: signature)
+    }
+    
+    // MARK: - Public Methods (DigitalSignatureKeyManager)
+
+    public func exportVerifyingKey() throws -> Data {
+        var error: Unmanaged<CFError>?
+        guard let data = SecKeyCopyExternalRepresentation(
+            try verifyingKey().publicKey,
+            &error
+        ) as? Data else {
+            throw CryptographicKeyError.unexportablePublicKey
+        }
+        return data
+    }
+
+    // MARK: - Internal Methods (DigitalSignatureKeyManager)
+
+    internal func signingKey() throws -> SecureEnclaveSigningKey {
         guard try keyExists() else {
             return try SecureEnclaveSigningKey(secKey: generateKeypair())
         }
@@ -36,7 +62,7 @@ public class SecureEnclaveDigitalSignatureKeyManager: DigitalSignatureKeyManager
         return try SecureEnclaveSigningKey(secKey: keyRef as! SecKey)
     }
     
-    public func verifyingKey() throws -> SecureEnclaveVerifyingKey {
+    internal func verifyingKey() throws -> SecureEnclaveVerifyingKey {
         let signingKey = try signingKey()
 
         guard let publicKey = SecKeyCopyPublicKey(signingKey.privateKey) else {
@@ -46,7 +72,7 @@ public class SecureEnclaveDigitalSignatureKeyManager: DigitalSignatureKeyManager
         return try SecureEnclaveVerifyingKey(secKey: publicKey)
     }
     
-    // MARK: - Private Methods
+    // MARK: -
     
     private func generateKeypair() throws -> SecKey {
         let attributes = try SecureEnclaveKeychainQueries.attributes(with: tag)
