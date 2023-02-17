@@ -9,16 +9,17 @@ internal struct SecureEnclaveSigningKey: SigningKey {
     
     // MARK: - Internal Properties
     
-    internal static let algorithm: SecKeyAlgorithm = .ecdsaSignatureMessageX962SHA256
     internal let privateKey: SecKey
+    internal let algorithm: SecKeyAlgorithm
     
     // MARK: - Initialization
 
-    init(secKey: SecKey) throws {
-        guard SecKeyIsAlgorithmSupported(secKey, .sign, Self.algorithm) else {
+    init(_ secKey: SecKey, _ algorithm: SecKeyAlgorithm) throws {
+        guard SecKeyIsAlgorithmSupported(secKey, .sign, algorithm) else {
             throw CryptographicKeyError.unsupportedAlgorithm
         }
         self.privateKey = secKey
+        self.algorithm = algorithm
     }
 
     // MARK: - Internal Class Methods (SigningKey)
@@ -26,8 +27,8 @@ internal struct SecureEnclaveSigningKey: SigningKey {
     internal func sign(with data: Data) throws -> Data {
         var error: Unmanaged<CFError>?
         guard let signature = SecKeyCreateSignature(
-            privateKey,
-            Self.algorithm,
+            self.privateKey,
+            self.algorithm,
             data as CFData,
             &error
         ) as Data? else {

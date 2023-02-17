@@ -29,11 +29,15 @@ internal struct SecureEnclaveKeychainQueries: KeychainQueries {
     }
     
     // MARK: - Internal Methods
-    
-    internal static func attributes(with applicationTag: String) throws -> NSMutableDictionary {
+
+    internal static func attributes(
+        with applicationTag: String,
+        keyType: CFString,
+        keySize: Int
+    ) throws -> NSMutableDictionary {
         let attributes: NSMutableDictionary = [
-            kSecAttrKeyType: kSecAttrKeyTypeECSECPrimeRandom,
-            kSecAttrKeySizeInBits: 256,
+            kSecAttrKeyType: keyType,
+            kSecAttrKeySizeInBits: keySize,
             kSecPrivateKeyAttrs: [
                 kSecAttrIsPermanent: true,
                 kSecAttrApplicationTag: applicationTag.data(using: .utf8)!,

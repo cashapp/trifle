@@ -139,7 +139,6 @@ extension Tag {
     }
 }
 
-
 // MARK: -
 
 public enum DEREncodableError: LocalizedError {

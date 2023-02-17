@@ -19,13 +19,9 @@ final class SecureEnclaveDigitalSignatureKeyManagerTests: XCTestCase {
 
         let signature = try manager.sign(with: data)
 
-        let verified = try manager.verify(data: data, with: signature)
+        let verified = try manager.verify(data: data, with: signature.data)
 
         XCTAssertEqual(verified, true)
-    }
-    
-    func testExportVerifyingKeyDataSucceeds() throws {
-        XCTAssertNoThrow(try manager.exportVerifyingKey())
     }
     
     func testSignatureVerificationFails_whenVerifyingOtherData() throws {
@@ -34,7 +30,7 @@ final class SecureEnclaveDigitalSignatureKeyManagerTests: XCTestCase {
 
         let signature = try manager.sign(with: data)
 
-        let verified = try manager.verify(data: otherData, with: signature)
+        let verified = try manager.verify(data: otherData, with: signature.data)
 
         XCTAssertEqual(verified, false)
     }
@@ -44,7 +40,7 @@ final class SecureEnclaveDigitalSignatureKeyManagerTests: XCTestCase {
 
         let signature = try manager.sign(with: data)
 
-        let verified = try otherManager.verify(data: data, with: signature)
+        let verified = try otherManager.verify(data: data, with: signature.data)
 
         XCTAssertEqual(verified, false)
     }
