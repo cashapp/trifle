@@ -23,7 +23,7 @@ public struct ASN1Integer: ASN1Type, DEREncodable {
 
     // MARK: - Internal static methods (DEREncodable)
 
-    internal static func encodeValue(_ rawValue: Int64) -> [Octet] {
+    internal static func encodeValue(_ rawValue: Int64, _ tag: Tag) -> [Octet] {
         if (rawValue == 0) {
             return [0x00]
         }

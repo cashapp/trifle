@@ -32,7 +32,7 @@ public struct ASN1PrintableString: ASN1Type, DEREncodable {
 
     // MARK: - Internal static methods (DEREncodable)
 
-    internal static func encodeValue(_ rawValue: String) -> [Octet] {
+    internal static func encodeValue(_ rawValue: String, _ tag: Tag) -> [Octet] {
         return rawValue.compactMap { $0.asciiValue }
     }
 }

@@ -23,7 +23,7 @@ public struct ASN1UTF8String: ASN1Type, DEREncodable {
     
     // MARK: - Internal static methods (DEREncodable)
 
-    internal static func encodeValue(_ rawValue: String) -> [Octet] {
+    internal static func encodeValue(_ rawValue: String, _ tag: Tag) -> [Octet] {
         return Array(rawValue.utf8)
     }
 }

@@ -23,7 +23,7 @@ public struct ASN1UTCTime: ASN1Type, DEREncodable {
 
     // MARK: - Internal static methods (DEREncodable)
 
-    internal static func encodeValue(_ rawValue: Date) -> [Octet] {
+    internal static func encodeValue(_ rawValue: Date, _ tag: Tag) -> [Octet] {
         let dateFormatter = DateFormatter()
         dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
         dateFormatter.dateFormat = "yyMMddHHmmss'Z'"

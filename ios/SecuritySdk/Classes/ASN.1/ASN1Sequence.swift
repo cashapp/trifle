@@ -23,7 +23,7 @@ public struct ASN1Sequence: ASN1Type, DEREncodable {
 
     // MARK: - Internal static methods (DEREncodable)
 
-    internal static func encodeValue(_ rawValue: [any ASN1Type]) -> [Octet] {
+    internal static func encodeValue(_ rawValue: [any ASN1Type], _ tag: Tag) -> [Octet] {
         return rawValue.flatMap { $0.octets }
     }
 }

@@ -10,7 +10,7 @@ protocol DigitalSignatureKeyManager {
     associatedtype PrivateKey
     associatedtype PublicKey
 
-    static var keyType: KeyType { get }
+    static var keyInfo: KeyInfo { get }
     
     /**
      Fetches the signing key

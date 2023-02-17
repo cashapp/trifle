@@ -5,8 +5,8 @@
 
 import Foundation
 
-/// Inherits `DigitalSignatureSigner` to add the requirement
-///  of exporting the public key
+/// Inherits `DigitalSignatureSigner` to add an additional
+///  requirement of exporting the public key
 protocol ContentSigner: DigitalSignatureSigner {
     /**
      Exports a `SigningPublicKey`

@@ -23,7 +23,7 @@ public struct ASN1Boolean: ASN1Type, DEREncodable {
 
     // MARK: - Internal static methods (DEREncodable)
 
-    internal static func encodeValue(_ rawValue: Bool) -> [Octet] {
+    internal static func encodeValue(_ rawValue: Bool, _ tag: Tag) -> [Octet] {
         if (rawValue) {
             return [0xff]
         }

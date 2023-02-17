@@ -23,7 +23,7 @@ public struct ASN1OctetString: ASN1Type, DEREncodable {
     
     // MARK: - Internal static methods (DEREncodable)
 
-    internal static func encodeValue(_ rawValue: Data) -> [Octet] {
+    internal static func encodeValue(_ rawValue: Data, _ tag: Tag) -> [Octet] {
         return [Octet](rawValue)
     }
 }
