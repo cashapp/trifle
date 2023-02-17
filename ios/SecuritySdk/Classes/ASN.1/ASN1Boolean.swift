@@ -5,8 +5,8 @@
 
 import Foundation
 
-/// Boolean DER (Distingushed Encoding Rules) encodable
-public struct DERBoolean: ASN1Type, DEREncodable {
+/// ASN.1 Boolean with DER (Distingushed Encoding Rules) encodable
+public struct ASN1Boolean: ASN1Type, DEREncodable {
     public typealias T = Bool
 
     // MARK: - Public Properties
@@ -20,7 +20,9 @@ public struct DERBoolean: ASN1Type, DEREncodable {
         self.octets = try Self.encode(rawValue, .boolean(type))
         self.tag = octets.first!
     }
-    
+
+    // MARK: - Internal static methods (DEREncodable)
+
     internal static func encodeValue(_ rawValue: Bool) -> [Octet] {
         if (rawValue) {
             return [0xff]

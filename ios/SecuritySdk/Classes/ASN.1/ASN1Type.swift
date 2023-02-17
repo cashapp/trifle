@@ -7,7 +7,7 @@ import Foundation
 
 public typealias Octet = UInt8
 
-/// Base ASN.1 type that is conformed by a DER type
+/// Base ASN.1 type
 public protocol ASN1Type {
     /// tag octet
     var tag: Octet { get }

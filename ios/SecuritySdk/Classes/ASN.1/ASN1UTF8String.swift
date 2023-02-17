@@ -1,12 +1,12 @@
 //
-//  DERUTF8String.swift
+//  ASN1UTF8String.swift
 //  SecuritySdk
 //
 
 import Foundation
 
-/// UTF8String DER (Distingushed Encoding Rules) encodable
-public struct DERUTF8String: ASN1Type, DEREncodable {
+/// ASN.1 UTF8String with DER (Distingushed Encoding Rules) encodable
+public struct ASN1UTF8String: ASN1Type, DEREncodable {
     public typealias T = String
     
     // MARK: - Public Properties
@@ -21,6 +21,8 @@ public struct DERUTF8String: ASN1Type, DEREncodable {
         self.tag = octets.first!
     }
     
+    // MARK: - Internal static methods (DEREncodable)
+
     internal static func encodeValue(_ rawValue: String) -> [Octet] {
         return Array(rawValue.utf8)
     }
