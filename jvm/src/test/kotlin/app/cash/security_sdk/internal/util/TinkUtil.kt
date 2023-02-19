@@ -1,14 +1,15 @@
-package app.cash.security_sdk.internal
+package app.cash.security_sdk.internal.util
 
+import app.cash.security_sdk.internal.TrifleAlgorithmIdentifier
+import app.cash.security_sdk.internal.TrifleAlgorithmIdentifier.ECPublicKeyAlgorithmIdentifier
+import app.cash.security_sdk.internal.TrifleAlgorithmIdentifier.Ed25519AlgorithmIdentifier
 import com.google.crypto.tink.BinaryKeysetWriter
 import com.google.crypto.tink.CleartextKeysetHandle
 import com.google.crypto.tink.KeysetHandle
-import org.bouncycastle.asn1.ASN1ObjectIdentifier
-import org.bouncycastle.asn1.x509.AlgorithmIdentifier
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo
 import java.io.ByteArrayOutputStream
 
-fun KeysetHandle.toSubjectPublicKeyInfo(): SubjectPublicKeyInfo {
+fun KeysetHandle.toSubjectPublicKeyInfo(curve: TrifleAlgorithmIdentifier): SubjectPublicKeyInfo {
   val outputStream = ByteArrayOutputStream()
   CleartextKeysetHandle.write(
     // Ensure we only write the public component of our key!
@@ -16,8 +17,7 @@ fun KeysetHandle.toSubjectPublicKeyInfo(): SubjectPublicKeyInfo {
     BinaryKeysetWriter.withOutputStream(outputStream)
   )
   return SubjectPublicKeyInfo(
-    // TODO(dcashman): Define a custom OID based on tink primitives.
-    AlgorithmIdentifier(ASN1ObjectIdentifier(TinkContentSigner.ED25519_OID)),
+    ECPublicKeyAlgorithmIdentifier(curve),
     outputStream.toByteArray()
   )
 }

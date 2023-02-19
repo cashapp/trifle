@@ -1,9 +1,6 @@
 package app.cash.security_sdk
 
-import app.cash.security_sdk.internal.TinkContentSigner
-import app.cash.security_sdk.internal.toSubjectPublicKeyInfo
-import com.google.crypto.tink.KeysetHandle
-import com.google.crypto.tink.PublicKeySign
+import app.cash.security_sdk.internal.signers.TrifleContentSigner
 import com.squareup.protos.cash.s2dk.api.alpha.MobileCertificateRequest
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
@@ -18,13 +15,13 @@ import java.time.Period
 import java.util.Date
 
 /**
- * Server S2DK utility class for certificate enrollment.
+ * Server trifle utility class for certificate enrollment.
  */
 object CertificateUtil {
-  const val MOBILE_CERTIFICATE_REQUEST_VERSION: UInt = 0u
+  private const val MOBILE_CERTIFICATE_REQUEST_VERSION: UInt = 0u
 
   // Validity time for device-certificate, currentl scoped to 180 days, based entirely on intuition.
-  const val MOBILE_CERTIFICATE_VALIDITY_PERIOD_DAYS: Int = 180
+  private const val MOBILE_CERTIFICATE_VALIDITY_PERIOD_DAYS: Int = 180
 
   /**
    * Converts the given serialized MobileCertRequest into a CertificateRequest. This enables clients
@@ -51,30 +48,30 @@ object CertificateUtil {
   }
 
   /**
-   * Signs CertificateRequest using the provided Tink KeysetHandle and issuing certificate.
+   * Signs CertificateRequest using the provided trifle content signer and issuing certificate.
    *
-   * @param tinkSigningKeyset secret value used to seed the signing private key
-   * @param issuerCertificate S2DK certificate associated with the signer of this cert.
+   * @param issuerCertificate trifle certificate associated with the signer of this cert.
    * @param certificateRequest certificate request used to generate a new certificate
+   * @param contentSigner content signer used to generate the signature validating the certificate
    */
   fun signCertificate(
-    tinkSigningKeyset: KeysetHandle,
     issuerCertificate: SigningCert,
-    certificateRequest: CertificateRequest
+    certificateRequest: CertificateRequest,
+    contentSigner: TrifleContentSigner
   ): SigningCert {
     val creationTime = Instant.now()
     val pkcs10Request = certificateRequest.csr
     val issuerCertHolder = X509CertificateHolder(issuerCertificate.certificate.toByteArray())
-    val signedCert =
-      X509v3CertificateBuilder(
+    val signedCert = X509v3CertificateBuilder(
         issuerCertHolder.subject,
         BigInteger.valueOf(creationTime.toEpochMilli()),
         Date.from(creationTime),
         Date.from(creationTime.plus(Period.ofDays(MOBILE_CERTIFICATE_VALIDITY_PERIOD_DAYS))),
         pkcs10Request.subject,
         pkcs10Request.subjectPublicKeyInfo
-      ).build(TinkContentSigner(tinkSigningKeyset.getPrimitive(PublicKeySign::class.java)))
-    return SigningCert(signedCert.encoded.toByteString(0, signedCert.encoded.size))
+      ).build(contentSigner)
+
+    return SigningCert(signedCert.encoded.toByteString())
   }
 
   /**
@@ -83,27 +80,26 @@ object CertificateUtil {
    * @param entityName the name with which we'll associate the public key.
    * @param validityPeriod the length of time for which this certificate should be accepted after
    * issuance.
-   * @param tinkSigningKeyset the Tink key used to sign the certificate.
+   * @param contentSigner content signer used to generate the signature for creating
+   *  the self-signed root certificate
    */
   fun createRootSigningCertificate(
     entityName: String,
     validityPeriod: Period,
-    tinkSigningKeyset: KeysetHandle,
+    contentSigner: TrifleContentSigner
   ): SigningCert {
-    // s2dk Certificates are just wrappers around X.509 certificates. Create one with the
+    // Trifle Certificates are just wrappers around X.509 certificates. Create one with the
     // given name.
     val subjectName = X500Name("CN=$entityName")
     val creationTime = Instant.now()
-    val cert = X509v3CertificateBuilder(
+    val signedCert = X509v3CertificateBuilder(
       subjectName,
       BigInteger.ONE,
       Date.from(creationTime),
       Date.from(creationTime.plus(validityPeriod)),
       subjectName,
-      tinkSigningKeyset.toSubjectPublicKeyInfo()
-    )
-    val signedCert =
-      cert.build(TinkContentSigner(tinkSigningKeyset.getPrimitive(PublicKeySign::class.java)))
+      contentSigner.subjectPublicKeyInfo()
+    ).build(contentSigner)
 
     return SigningCert(signedCert.encoded.toByteString())
   }
@@ -112,19 +108,20 @@ object CertificateUtil {
    * Create a mobile signing certificate request from a Tink signing keyset.
    *
    * @param entityName the name with which we'll associate the public key.
-   * @param tinkSigningKeyset the Tink key used to sign the certificate.
+   * @param contentSigner content signer used to generate the signature validating the
+   *  Certificate Request
    */
   fun createMobileCertRequest(
     entityName: String,
-    tinkSigningKeyset: KeysetHandle,
+    contentSigner: TrifleContentSigner
   ): MobileCertificateRequest {
     val subjectName = X500Name("CN=$entityName")
-    val subjectPublicKeyInfo = tinkSigningKeyset.toSubjectPublicKeyInfo()
+    val subjectPublicKeyInfo = contentSigner.subjectPublicKeyInfo()
     val pkcS10CertificationRequest =
       PKCS10CertificationRequestBuilder(
         subjectName,
         subjectPublicKeyInfo
-      ).build(TinkContentSigner(tinkSigningKeyset.getPrimitive(PublicKeySign::class.java)))
+      ).build(contentSigner)
     return MobileCertificateRequest(
       MOBILE_CERTIFICATE_REQUEST_VERSION.toInt(),
       pkcS10CertificationRequest.encoded.toByteString()
