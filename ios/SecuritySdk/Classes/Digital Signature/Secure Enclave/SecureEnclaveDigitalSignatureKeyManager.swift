@@ -6,27 +6,36 @@
 import Foundation
 
 public class SecureEnclaveDigitalSignatureKeyManager
-: DigitalSignatureKeyManager, DigitalSignatureSigner, DigitalSignatureVerifier {
+: DigitalSignatureKeyManager, ContentSigner, DigitalSignatureVerifier {
     
     // MARK: - Internal Properties
-    
+
     internal typealias PrivateKey = SecureEnclaveSigningKey
     internal typealias PublicKey = SecureEnclaveVerifyingKey
-    
+
+    internal static let keyType = KeyType.ecKey(
+        EllipticCurve.p256(kSecAttrKeyTypeECSECPrimeRandom, 256),
+        SigningAlgorithm.ecdsaSha256(.ecdsaSignatureMessageX962SHA256)
+    )
+
     // MARK: - Private Properties
-    
+
     private let tag: String
-    
+
     // MARK: - Initialization
-    
+
     public init(tag: String) {
         self.tag = tag
     }
     
     // MARK: - Public Methods (DigitalSignatureSigner)
 
-    public func sign(with data: Data) throws -> Data {
-        return try signingKey().sign(with: data)
+    public func sign(with data: Data) throws -> DigitalSignature {
+        let signature = try signingKey().sign(with: data)
+        return DigitalSignature(
+            signingAlgorithm: Self.keyType.signingAlgorithm,
+            data: signature
+        )
     }
     
     // MARK: - Public Methods (DigitalSignatureVerifier)
@@ -35,31 +44,28 @@ public class SecureEnclaveDigitalSignatureKeyManager
         return try verifyingKey().verify(data: data, with: signature)
     }
     
-    // MARK: - Public Methods (DigitalSignatureKeyManager)
-
-    public func exportVerifyingKey() throws -> Data {
-        var error: Unmanaged<CFError>?
-        guard let data = SecKeyCopyExternalRepresentation(
-            try verifyingKey().publicKey,
-            &error
-        ) as? Data else {
-            throw CryptographicKeyError.unexportablePublicKey
-        }
-        return data
+    // MARK: - Internal Methods (ContentSigner)
+    
+    internal func exportPublicKey() throws -> SigningPublicKey {
+        return SigningPublicKey(
+            keyType: Self.keyType,
+            data: try verifyingKey().export()
+        )
     }
 
     // MARK: - Internal Methods (DigitalSignatureKeyManager)
 
     internal func signingKey() throws -> SecureEnclaveSigningKey {
+        let signingAlgorithm = Self.keyType.signingAlgorithm.attrs
         guard try keyExists() else {
-            return try SecureEnclaveSigningKey(secKey: generateKeypair())
+            return try SecureEnclaveSigningKey(generateKeypair(), signingAlgorithm)
         }
         
         var keyRef: CFTypeRef?
         let preparedQuery = SecureEnclaveKeychainQueries.getQuery(with: tag, returnRef: true)
         SecItemCopyMatching(preparedQuery, &keyRef)
         
-        return try SecureEnclaveSigningKey(secKey: keyRef as! SecKey)
+        return try SecureEnclaveSigningKey(keyRef as! SecKey, signingAlgorithm)
     }
     
     internal func verifyingKey() throws -> SecureEnclaveVerifyingKey {
@@ -69,13 +75,18 @@ public class SecureEnclaveDigitalSignatureKeyManager
             throw CryptographicKeyError.unavailablePublicKey
         }
 
-        return try SecureEnclaveVerifyingKey(secKey: publicKey)
+        return try SecureEnclaveVerifyingKey(publicKey, Self.keyType.signingAlgorithm.attrs)
     }
     
     // MARK: -
     
     private func generateKeypair() throws -> SecKey {
-        let attributes = try SecureEnclaveKeychainQueries.attributes(with: tag)
+        let (keyType, keySize) = Self.keyType.curve.attrs
+        let attributes = try SecureEnclaveKeychainQueries.attributes(
+            with: tag,
+            keyType: keyType,
+            keySize: keySize
+        )
         
         var error: Unmanaged<CFError>?
         guard let keypair = SecKeyCreateRandomKey(attributes, &error) else {

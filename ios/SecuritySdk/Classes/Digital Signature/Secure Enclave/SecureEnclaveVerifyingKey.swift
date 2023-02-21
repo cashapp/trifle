@@ -9,16 +9,17 @@ internal struct SecureEnclaveVerifyingKey: VerifyingKey {
 
     // MARK: - Internal Properties
 
-    internal static let algorithm: SecKeyAlgorithm = .ecdsaSignatureMessageX962SHA256
     internal let publicKey: SecKey
+    internal let algorithm: SecKeyAlgorithm
 
     // MARK: - Initialization
 
-    init(secKey: SecKey) throws {
-        guard SecKeyIsAlgorithmSupported(secKey, .verify, Self.algorithm) else {
+    init(_ secKey: SecKey, _ algorithm: SecKeyAlgorithm) throws {
+        guard SecKeyIsAlgorithmSupported(secKey, .verify, algorithm) else {
             throw CryptographicKeyError.unsupportedAlgorithm
         }
         self.publicKey = secKey
+        self.algorithm = algorithm
     }
 
     // MARK: - Internal Class Methods (VerifyingKey)
@@ -27,7 +28,7 @@ internal struct SecureEnclaveVerifyingKey: VerifyingKey {
         var error: Unmanaged<CFError>?
         guard SecKeyVerifySignature(
             self.publicKey,
-            Self.algorithm,
+            self.algorithm,
             data as CFData,
             signature as CFData,
             &error
@@ -36,5 +37,16 @@ internal struct SecureEnclaveVerifyingKey: VerifyingKey {
         }
 
         return true
+    }
+    
+    internal func export() throws -> Data {
+        var error: Unmanaged<CFError>?
+        guard let data = SecKeyCopyExternalRepresentation(
+            publicKey,
+            &error
+        ) as? Data else {
+            throw CryptographicKeyError.unexportablePublicKey
+        }
+        return data
     }
 }

@@ -13,7 +13,8 @@ public protocol DigitalSignatureSigner {
      - throws: an error type `CryptographicKeyError` if the
         signing operation cannot be completed due to the underlying
         signing key being unavailable.
-     - returns: the signature of the signing operation result
+     - returns: the digital signature which includes the signature data
+        and the algorithm used for signing
      */
-    func sign(with data: Data) throws -> Data
+    func sign(with data: Data) throws -> DigitalSignature
 }
