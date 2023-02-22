@@ -16,22 +16,23 @@ public struct ASN1BitString: ASN1Type, DEREncodable {
     
     // MARK: - Initialization
     
-    public init(_ rawValue: Data, _ type: Type = Type.none) throws {
-        self.octets = try Self.encode(rawValue, .bitString(type))
+    public init(_ rawValue: Data, _ type: Type = Type.none, ignorePadding: Bool = false) throws {
+        self.octets = try Self.encode(rawValue, .bitString(type, ignorePadding))
         self.tag = octets.first!
     }
 
     // MARK: - Internal static methods (DEREncodable)
 
-    internal static func encodeValue(_ rawValue: Data) -> [Octet] {
+    internal static func encodeValue(_ rawValue: Data, _ tag: Tag) -> [Octet] {
         let value = [Octet](rawValue)
         
         let leastSignificantOctet = value.last!
         let unusedBits: Octet
-        if (leastSignificantOctet.trailingZeroBitCount < Octet.bitWidth) {
-            unusedBits = Octet(leastSignificantOctet.trailingZeroBitCount)
-        } else {
+        if (tag.ignorePadding ||
+            leastSignificantOctet.trailingZeroBitCount == Octet.bitWidth) {
             unusedBits = Octet(0x00)
+        } else {
+            unusedBits = Octet(leastSignificantOctet.trailingZeroBitCount)
         }
         
         return [unusedBits] + value

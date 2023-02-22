@@ -13,7 +13,7 @@ public class SecureEnclaveDigitalSignatureKeyManager
     internal typealias PrivateKey = SecureEnclaveSigningKey
     internal typealias PublicKey = SecureEnclaveVerifyingKey
 
-    internal static let keyType = KeyType.ecKey(
+    internal static let keyInfo = KeyInfo.ecKey(
         EllipticCurve.p256(kSecAttrKeyTypeECSECPrimeRandom, 256),
         SigningAlgorithm.ecdsaSha256(.ecdsaSignatureMessageX962SHA256)
     )
@@ -27,17 +27,17 @@ public class SecureEnclaveDigitalSignatureKeyManager
     public init(tag: String) {
         self.tag = tag
     }
-    
+ 
     // MARK: - Public Methods (DigitalSignatureSigner)
 
     public func sign(with data: Data) throws -> DigitalSignature {
         let signature = try signingKey().sign(with: data)
         return DigitalSignature(
-            signingAlgorithm: Self.keyType.signingAlgorithm,
+            signingAlgorithm: Self.keyInfo.signingAlgorithm,
             data: signature
         )
     }
-    
+ 
     // MARK: - Public Methods (DigitalSignatureVerifier)
 
     public func verify(data: Data, with signature: Data) throws -> Bool {
@@ -45,10 +45,10 @@ public class SecureEnclaveDigitalSignatureKeyManager
     }
     
     // MARK: - Internal Methods (ContentSigner)
-    
+ 
     internal func exportPublicKey() throws -> SigningPublicKey {
         return SigningPublicKey(
-            keyType: Self.keyType,
+            keyInfo: Self.keyInfo,
             data: try verifyingKey().export()
         )
     }
@@ -56,7 +56,8 @@ public class SecureEnclaveDigitalSignatureKeyManager
     // MARK: - Internal Methods (DigitalSignatureKeyManager)
 
     internal func signingKey() throws -> SecureEnclaveSigningKey {
-        let signingAlgorithm = Self.keyType.signingAlgorithm.attrs
+        let signingAlgorithm = Self.keyInfo.signingAlgorithm.attrs
+
         guard try keyExists() else {
             return try SecureEnclaveSigningKey(generateKeypair(), signingAlgorithm)
         }
@@ -75,19 +76,19 @@ public class SecureEnclaveDigitalSignatureKeyManager
             throw CryptographicKeyError.unavailablePublicKey
         }
 
-        return try SecureEnclaveVerifyingKey(publicKey, Self.keyType.signingAlgorithm.attrs)
+        return try SecureEnclaveVerifyingKey(publicKey, Self.keyInfo.signingAlgorithm.attrs)
     }
     
     // MARK: -
     
     private func generateKeypair() throws -> SecKey {
-        let (keyType, keySize) = Self.keyType.curve.attrs
+        let (keyType, keySize) = Self.keyInfo.curve.attrs
         let attributes = try SecureEnclaveKeychainQueries.attributes(
             with: tag,
             keyType: keyType,
             keySize: keySize
         )
-        
+
         var error: Unmanaged<CFError>?
         guard let keypair = SecKeyCreateRandomKey(attributes, &error) else {
             throw AccessControlError.invalidAccess(error?.takeRetainedValue() as? Error)

@@ -45,7 +45,7 @@ public struct ASN1ObjectIdentifier: ASN1Type, DEREncodable {
 
     // MARK: - Internal static methods (DEREncodable)
 
-    internal static func encodeValue(_ rawValue: [UInt]) -> [Octet] {
+    internal static func encodeValue(_ rawValue: [UInt], _ tag: Tag) -> [Octet] {
         var result: [Octet] = [Octet(40 * rawValue[0] + rawValue[1])]
         
         if (rawValue.count == 2) {

@@ -13,9 +13,10 @@ protocol DEREncodable {
      Encodes the raw value to DER encoded value octets
      
      - parameter rawValue: the raw value to encode from
+     - parameter tag: the tag that identifies the DER type
      - returns: the asn.1 DER encoded value octets
      */
-    static func encodeValue(_ rawValue: T) -> [Octet]
+    static func encodeValue(_ rawValue: T, _ tag: Tag) -> [Octet]
 }
 
 // MARK: -
@@ -29,7 +30,7 @@ extension DEREncodable {
      - returns: the asn.1 DER encoded octets
      */
     static func encode(_ rawValue: T, _ tag: Tag) throws -> [Octet] {
-        let value = encodeValue(rawValue)
+        let value = encodeValue(rawValue, tag)
         let length = try encodeLength(value.count)
         let content = length + value
         
