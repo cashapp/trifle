@@ -33,7 +33,7 @@ internal class TinkContentVerifierProvider(
     // the algorithm passed-in matches our expected Tink algorithm ID.
     if (algorithmIdentifer != tinkAlgorithmIdentifier) {
       throw UnsupportedOperationException(
-        "Unknown/unsupported AlgorithmId provided to obtain S2DK ContentVerifier"
+        "Unknown/unsupported AlgorithmId provided to obtain Trifle ContentVerifier"
       )
     }
 

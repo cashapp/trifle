@@ -2,7 +2,6 @@ package app.cash.security_sdk.internal.util
 
 import app.cash.security_sdk.internal.TrifleAlgorithmIdentifier
 import app.cash.security_sdk.internal.TrifleAlgorithmIdentifier.ECPublicKeyAlgorithmIdentifier
-import app.cash.security_sdk.internal.TrifleAlgorithmIdentifier.Ed25519AlgorithmIdentifier
 import com.google.crypto.tink.BinaryKeysetWriter
 import com.google.crypto.tink.CleartextKeysetHandle
 import com.google.crypto.tink.KeysetHandle
