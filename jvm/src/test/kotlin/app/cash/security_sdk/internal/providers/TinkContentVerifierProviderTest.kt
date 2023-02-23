@@ -1,6 +1,5 @@
 package app.cash.security_sdk.internal.providers
 
-import app.cash.security_sdk.internal.TrifleAlgorithmIdentifier
 import app.cash.security_sdk.internal.TrifleAlgorithmIdentifier.Ed25519AlgorithmIdentifier
 import app.cash.security_sdk.internal.TrifleAlgorithmIdentifier.TinkAlgorithmIdentifier
 import app.cash.security_sdk.internal.util.toSubjectPublicKeyInfo

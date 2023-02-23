@@ -1,6 +1,5 @@
 package app.cash.security_sdk
 
-import app.cash.security_sdk.internal.TrifleAlgorithmIdentifier
 import app.cash.security_sdk.internal.TrifleAlgorithmIdentifier.Ed25519AlgorithmIdentifier
 import app.cash.security_sdk.internal.TrifleAlgorithmIdentifier.P256v1AlgorithmIdentifier
 import app.cash.security_sdk.internal.providers.TinkContentVerifierProvider
