@@ -9,22 +9,34 @@ import Foundation
 /// Object Identifer as the key and a collection of `ASN1Type`
 /// as its value, with DER (Distingushed Encoding Rules) encodable
 struct ASN1Attribute: ASN1Type {
-    // MARK: - Public Properties
+    // MARK: - Public Stored Properties
 
     public let tag: Octet
-    public let octets: [Octet]
+    public let length: [Octet]
+    public let value: [Octet]
+
+    // MARK: - Public Computed Properties
+    
+    public var octets: [Octet] {
+        get {
+            [tag] + length + value
+        }
+    }
     
     // MARK: - Initialization
     
     public init(
         _ oid: [UInt],
-        _ attributeSetValue: Array<ASN1Type>,
+        _ attributeSetValue: Array<any ASN1Type>,
         _ type: Type = Type.none
     ) throws {
-        self.octets = try ASN1Sequence([
+        let asn1 = try ASN1Sequence([
             try ASN1ObjectIdentifier(oid),
             try ASN1Set(attributeSetValue)
-        ]).octets
-        self.tag = octets.first!
+        ], type)
+        
+        self.tag = asn1.tag
+        self.length = asn1.length
+        self.value = asn1.value
     }
 }

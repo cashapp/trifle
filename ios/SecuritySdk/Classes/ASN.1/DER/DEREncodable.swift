@@ -5,6 +5,9 @@
 
 import Foundation
 
+/// Type alias the triple to represent the tag, length, and value octets
+typealias TagLengthValue = (Octet, [Octet], [Octet])
+
 /// Base DER (Distingushed Encoding Rules) encodable that is conformed by a DER struct
 protocol DEREncodable {
     associatedtype T
@@ -27,24 +30,24 @@ extension DEREncodable {
      
      - parameter rawValue: the raw value to encode from
      - parameter tag: the tag that identifies the DER type
-     - returns: the asn.1 DER encoded octets
+     - returns: the triple consisting of the tag, length, and value asn.1 DER encoded octets
      */
-    static func encode(_ rawValue: T, _ tag: Tag) throws -> [Octet] {
+    static func encode(_ rawValue: T, _ tag: Tag) throws -> TagLengthValue {
         let value = encodeValue(rawValue, tag)
         let length = try encodeLength(value.count)
-        let content = length + value
         
         switch tag.type {
         case .none:
-            return [tag.value | tag.encodingForm] + content
+            return (tag.value | tag.encodingForm, length, value)
         case .implicit(let specificTag):
-            return [0x80 | (0x0f & specificTag) | tag.encodingForm] + content
+            return (0x80 | (0x0f & specificTag) | tag.encodingForm, length, value)
         case .explicit(let specificTag):
-            let innerContent = [tag.value | tag.encodingForm] + content
-
-            return [0xa0 | (0x0f & specificTag)]
-            + (try encodeLength(innerContent.count))
-            + innerContent
+            let innerContent = [tag.value | tag.encodingForm] + length + value
+            return (
+                0xa0 | (0x0f & specificTag),
+                try encodeLength(innerContent.count),
+                innerContent
+            )
         }
     }
     

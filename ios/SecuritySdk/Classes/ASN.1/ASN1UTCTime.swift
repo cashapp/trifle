@@ -9,16 +9,24 @@ import Foundation
 public struct ASN1UTCTime: ASN1Type, DEREncodable {
     public typealias T = Date
         
-    // MARK: - Public Properties
+    // MARK: - Public Stored Properties
 
     public let tag: Octet
-    public let octets: [Octet]
+    public let length: [Octet]
+    public let value: [Octet]
+
+    // MARK: - Public Computed Properties
+    
+    public var octets: [Octet] {
+        get {
+            [tag] + length + value
+        }
+    }
 
     // MARK: - Initialization
     
     public init(_ rawValue: Date, _ type: Type = Type.none) throws {
-        self.octets = try Self.encode(rawValue, .utcTime(type))
-        self.tag = octets.first!
+        (self.tag, self.length, self.value) = try Self.encode(rawValue, .utcTime(type))
     }
 
     // MARK: - Internal static methods (DEREncodable)

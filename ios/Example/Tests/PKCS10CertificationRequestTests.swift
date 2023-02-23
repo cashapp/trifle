@@ -13,10 +13,10 @@ final class PKCS10CertificationRequestTests: XCTestCase {
         )
         
         let pkcs10CertReq = try PKCS10CertificationRequest.Builder()
-            .addName(.commonName("cash.app"))
             .addName(.countryName("US"))
-            .addName(.locality("San Francisco"))
+            .addName(.commonName("cash.app"))
             .addName(.stateOrProvinceName("California"))
+            .addName(.locality("San Francisco"))
             .addAttribute(
                 ASN1Attribute(
                     [1, 2, 840, 113549, 1, 9, 7],
@@ -25,6 +25,6 @@ final class PKCS10CertificationRequestTests: XCTestCase {
             )
             .sign(with: manager)
         
-        XCTAssertNoThrow(try pkcs10CertReq.pem())
+        print(try pkcs10CertReq.pem())
     }
 }

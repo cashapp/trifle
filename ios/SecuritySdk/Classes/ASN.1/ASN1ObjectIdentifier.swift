@@ -9,10 +9,19 @@ import Foundation
 public struct ASN1ObjectIdentifier: ASN1Type, DEREncodable {
     public typealias T = [UInt]
 
-    // MARK: - Public Properties
+    // MARK: - Public Stored Properties
 
     public let tag: Octet
-    public let octets: [Octet]
+    public let length: [Octet]
+    public let value: [Octet]
+
+    // MARK: - Public Computed Properties
+    
+    public var octets: [Octet] {
+        get {
+            [tag] + length + value
+        }
+    }
     
     // MARK: - Initialization
     
@@ -39,8 +48,7 @@ public struct ASN1ObjectIdentifier: ASN1Type, DEREncodable {
             )
         }
         
-        self.octets = try Self.encode(rawValue, .objectIdentifier(type))
-        self.tag = octets.first!
+        (self.tag, self.length, self.value) = try Self.encode(rawValue, .objectIdentifier(type))
     }
 
     // MARK: - Internal static methods (DEREncodable)

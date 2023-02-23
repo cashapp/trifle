@@ -8,11 +8,21 @@ import Foundation
 public typealias Octet = UInt8
 
 /// Base ASN.1 type
-public protocol ASN1Type {
+public protocol ASN1Type: Hashable {
     /// tag octet
     var tag: Octet { get }
-    /// tag-length-value octets
+    var length: [Octet] { get }
+    var value: [Octet] { get }
+    /// value-length-value octets
     var octets: [Octet] { get }
+}
+
+public extension ASN1Type {
+    /// Allows ASN.1 type to conform as a `Hashable` for
+    /// equatability by their value octets
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(value)
+    }
 }
 
 // MARK: - Type

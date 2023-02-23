@@ -9,16 +9,24 @@ import Foundation
 public struct ASN1BitString: ASN1Type, DEREncodable {
     public typealias T = Data
 
-    // MARK: - Public Properties
+    // MARK: - Public Stored Properties
 
     public let tag: Octet
-    public let octets: [Octet]
+    public let length: [Octet]
+    public let value: [Octet]
+
+    // MARK: - Public Computed Properties
+    
+    public var octets: [Octet] {
+        get {
+            [tag] + length + value
+        }
+    }
     
     // MARK: - Initialization
     
     public init(_ rawValue: Data, _ type: Type = Type.none, ignorePadding: Bool = false) throws {
-        self.octets = try Self.encode(rawValue, .bitString(type, ignorePadding))
-        self.tag = octets.first!
+        (self.tag, self.length, self.value) = try Self.encode(rawValue, .bitString(type, ignorePadding))
     }
 
     // MARK: - Internal static methods (DEREncodable)
