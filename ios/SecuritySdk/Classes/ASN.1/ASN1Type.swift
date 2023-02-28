@@ -13,6 +13,8 @@ public protocol ASN1Type {
     var tag: Octet { get }
     /// tag-length-value octets
     var octets: [Octet] { get }
+    /// sort priority based on the value octet
+    var priority: Int { get }
 }
 
 // MARK: - Type

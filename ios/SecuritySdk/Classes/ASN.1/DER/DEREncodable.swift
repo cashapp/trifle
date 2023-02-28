@@ -27,29 +27,59 @@ extension DEREncodable {
      
      - parameter rawValue: the raw value to encode from
      - parameter tag: the tag that identifies the DER type
-     - returns: the asn.1 DER encoded octets
+     - returns: the asn.1 DER encoded octets along with its sort priority
      */
-    static func encode(_ rawValue: T, _ tag: Tag) throws -> [Octet] {
+    static func encode(_ rawValue: T, _ tag: Tag) throws -> ([Octet], Int) {
         let value = encodeValue(rawValue, tag)
         let length = try encodeLength(value.count)
         let content = length + value
+        let priority: Int
+        switch tag {
+        case .set, .sequence:
+            priority = computePriority(rawValue)
+        default:
+            priority = computePriority(value)
+        }
         
         switch tag.type {
         case .none:
-            return [tag.value | tag.encodingForm] + content
+            return ([tag.value | tag.encodingForm] + content, priority)
         case .implicit(let specificTag):
-            return [0x80 | (0x0f & specificTag) | tag.encodingForm] + content
+            return ([0x80 | (0x0f & specificTag) | tag.encodingForm] + content, priority)
         case .explicit(let specificTag):
             let innerContent = [tag.value | tag.encodingForm] + content
 
-            return [0xa0 | (0x0f & specificTag)]
+            return ([0xa0 | (0x0f & specificTag)]
             + (try encodeLength(innerContent.count))
-            + innerContent
+            + innerContent, priority)
         }
     }
     
     // MARK: - Private Methods
-    
+
+    /**
+     Computes the priority of ASN.1 primitve types
+     
+     - parameter encodedValue: DER encoded value octets
+     - returns: the priority value which is the summation of the value octets
+     */
+    private static func computePriority(_ encodedValue: [Octet]) -> Int {
+        encodedValue.reduce(0, { acc, nextVal in acc + Int(nextVal) })
+    }
+
+    /**
+     Computes the priority of ASN.1 constructed types which expects that the raw value
+     is of type `[any ASN1Type]`
+     
+     - parameter rawValue: a collection of `ASN1Type`
+     - returns: the priority value which is the summation of the value octets
+     */
+    private static func computePriority(_ rawValue: T) -> Int {
+        return (rawValue as! [any ASN1Type]).reduce(
+            0, { acc, next in acc + next.priority}
+        )
+    }
+
     /**
      Encodes the length to DER encoded octets of either:
         (1) Short-form: 1 octet long
