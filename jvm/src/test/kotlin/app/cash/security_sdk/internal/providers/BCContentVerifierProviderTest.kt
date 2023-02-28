@@ -1,11 +1,17 @@
 package app.cash.security_sdk.internal.providers
 
+import app.cash.security_sdk.internal.TrifleAlgorithmIdentifier
 import app.cash.security_sdk.internal.TrifleAlgorithmIdentifier.ECDSASha256AlgorithmIdentifier
+import app.cash.security_sdk.internal.util.TestFixtures
+import app.cash.security_sdk.internal.util.toSubjectPublicKeyInfo
 import com.google.crypto.tink.signature.SignatureConfig
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo
+import org.bouncycastle.pkcs.PKCS10CertificationRequest
+import org.bouncycastle.pkcs.PKCSException
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import java.security.KeyPair
 import java.security.KeyPairGenerator
 import java.security.PrivateKey
@@ -43,6 +49,20 @@ internal class BCContentVerifierProviderTest {
     signature.update(data)
 
     Assertions.assertTrue(bcContentVerifier.verify(signature.sign()))
+  }
+
+  @Test
+  fun `test iOS PKCS10 Certificate Request signature validation`() {
+    val pkcs10CertificateRequest = PKCS10CertificationRequest(TestFixtures.PKCS10Request)
+
+    // Make sure that the pkcs10 request is signature is validated
+    Assertions.assertTrue(
+      pkcs10CertificateRequest.isSignatureValid(
+        BCContentVerifierProvider(
+          pkcs10CertificateRequest.subjectPublicKeyInfo
+        )
+      )
+    )
   }
 
   @Test
