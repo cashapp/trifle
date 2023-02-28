@@ -7,17 +7,18 @@ import Foundation
 
 /// ASN.1 Integer with DER (Distingushed Encoding Rules) encodable
 public struct ASN1Integer: ASN1Type, DEREncodable {
-    public typealias T = Int64
+    typealias T = Int64
 
     // MARK: - Public Properties
 
     public let tag: Octet
     public let octets: [Octet]
+    public let priority: Int
     
     // MARK: - Initialization
     
     public init(_ rawValue: Int64, _ type: Type = Type.none) throws {
-        self.octets = try Self.encode(rawValue, .integer(type))
+        (self.octets, self.priority) = try Self.encode(rawValue, .integer(type))
         self.tag = octets.first!
     }
 

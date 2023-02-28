@@ -13,11 +13,12 @@ public struct ASN1UTCTime: ASN1Type, DEREncodable {
 
     public let tag: Octet
     public let octets: [Octet]
+    public let priority: Int
 
     // MARK: - Initialization
     
     public init(_ rawValue: Date, _ type: Type = Type.none) throws {
-        self.octets = try Self.encode(rawValue, .utcTime(type))
+        (self.octets, self.priority) = try Self.encode(rawValue, .utcTime(type))
         self.tag = octets.first!
     }
 

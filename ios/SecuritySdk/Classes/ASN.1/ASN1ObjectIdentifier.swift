@@ -7,12 +7,13 @@ import Foundation
 
 /// ASN.1 ObjectIdentifier with DER (Distingushed Encoding Rules) encodable
 public struct ASN1ObjectIdentifier: ASN1Type, DEREncodable {
-    public typealias T = [UInt]
+    typealias T = [UInt]
 
     // MARK: - Public Properties
 
     public let tag: Octet
     public let octets: [Octet]
+    public let priority: Int
     
     // MARK: - Initialization
     
@@ -39,7 +40,7 @@ public struct ASN1ObjectIdentifier: ASN1Type, DEREncodable {
             )
         }
         
-        self.octets = try Self.encode(rawValue, .objectIdentifier(type))
+        (self.octets, self.priority) = try Self.encode(rawValue, .objectIdentifier(type))
         self.tag = octets.first!
     }
 

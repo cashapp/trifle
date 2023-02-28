@@ -7,12 +7,13 @@ import Foundation
 
 /// ASN.1 PrintableString with DER (Distingushed Encoding Rules) encodable
 public struct ASN1PrintableString: ASN1Type, DEREncodable {
-    public typealias T = String
+    typealias T = String
 
     // MARK: - Public Properties
 
     public let tag: Octet
     public let octets: [Octet]
+    public let priority: Int
 
     // MARK: - Initialization
     
@@ -26,7 +27,7 @@ public struct ASN1PrintableString: ASN1Type, DEREncodable {
             throw DEREncodableError.invalidInput("Illegal character(s) present")
         }
 
-        self.octets = try Self.encode(rawValue, .printableString(type))
+        (self.octets, self.priority) = try Self.encode(rawValue, .printableString(type))
         self.tag = octets.first!
     }
 
