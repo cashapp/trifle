@@ -1,10 +1,10 @@
 //
 //  SecureEnclaveDigitalSignatureKeyManagerTests.swift
-//  SecuritySdk_Tests
+//  Trifle_Tests
 //
 
+import Trifle
 import XCTest
-import SecuritySdk
 
 final class SecureEnclaveDigitalSignatureKeyManagerTests: XCTestCase {
     lazy var manager = SecureEnclaveDigitalSignatureKeyManager(
