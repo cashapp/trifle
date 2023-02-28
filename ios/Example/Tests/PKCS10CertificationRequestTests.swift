@@ -1,9 +1,9 @@
 //
 //  PKCS10CertificateRequestTest.swift
-//  SecuritySdk_Tests
+//  Trifle_Tests
 //
 
-@testable import SecuritySdk
+@testable import Trifle
 import XCTest
 
 final class PKCS10CertificationRequestTests: XCTestCase {

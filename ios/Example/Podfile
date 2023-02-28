@@ -2,11 +2,10 @@ use_frameworks!
 
 platform :ios, '14.0'
 
-target 'SecuritySdk_Example' do
-  pod 'semver', '~> 1.1'
-  pod 'SecuritySdk', :path => '../'
+target 'Trifle_Example' do
+  pod 'Trifle', :path => '../'
 
-  target 'SecuritySdk_Tests' do
+  target 'Trifle_Tests' do
     inherit! :search_paths
 
   end

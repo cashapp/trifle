@@ -1,24 +1,16 @@
 PODS:
-  - SecuritySdk (0.1.0):
-    - semver (~> 1.1)
-  - semver (1.1.0)
+  - Trifle (0.1.2)
 
 DEPENDENCIES:
-  - SecuritySdk (from `../`)
-  - semver (~> 1.1)
-
-SPEC REPOS:
-  trunk:
-    - semver
+  - Trifle (from `../`)
 
 EXTERNAL SOURCES:
-  SecuritySdk:
+  Trifle:
     :path: "../"
 
 SPEC CHECKSUMS:
-  SecuritySdk: 488d133213d7b7a4cfbac4b7832c06b2add88d37
-  semver: 11ae3bc4a6036efbc86b5863ef5fa32c065c8bbd
+  Trifle: db15dd7925a30d6099f1c2eae164084c9d3b197b
 
-PODFILE CHECKSUM: 65d78984a7a50d863fe561b47abe2655e9761b07
+PODFILE CHECKSUM: 861018ab7b63c74936f5ad01995c5c882191f9a1
 
 COCOAPODS: 1.11.3
