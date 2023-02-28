@@ -2,12 +2,16 @@ package app.cash.security_sdk
 
 import app.cash.security_sdk.internal.TrifleAlgorithmIdentifier.Ed25519AlgorithmIdentifier
 import app.cash.security_sdk.internal.TrifleAlgorithmIdentifier.P256v1AlgorithmIdentifier
+import app.cash.security_sdk.internal.providers.BCContentVerifierProvider
 import app.cash.security_sdk.internal.providers.TinkContentVerifierProvider
 import app.cash.security_sdk.internal.signers.TinkContentSigner
+import app.cash.security_sdk.internal.util.TestFixtures
 import app.cash.security_sdk.internal.util.toSubjectPublicKeyInfo
 import com.google.crypto.tink.KeyTemplates
 import com.google.crypto.tink.KeysetHandle
 import com.google.crypto.tink.signature.SignatureConfig
+import com.squareup.protos.cash.s2dk.api.alpha.MobileCertificateRequest
+import okio.ByteString.Companion.toByteString
 import org.bouncycastle.asn1.x500.X500Name
 import org.bouncycastle.cert.X509CertificateHolder
 import org.bouncycastle.pkcs.PKCS10CertificationRequest
@@ -83,9 +87,11 @@ internal class CertificateUtilTest {
     val certHolder = X509CertificateHolder(signingCert.certificate.toByteArray())
 
     // Self-signed cert should verify when presented with itself.
-    assertTrue(certHolder.isSignatureValid(
-      TinkContentVerifierProvider(certHolder.subjectPublicKeyInfo)
-    ))
+    assertTrue(
+      certHolder.isSignatureValid(
+        TinkContentVerifierProvider(certHolder.subjectPublicKeyInfo)
+      )
+    )
 
     // Different key should not verify
     val otherCert = CertificateUtil.createRootSigningCertificate(
@@ -213,17 +219,49 @@ internal class CertificateUtilTest {
     )
   }
 
-  private fun createTestMobileSignedCert(): SigningCert {
+  @Test
+  fun `test signCertificate signing from CSR with raw p256 public key`() {
+    // Create local copy of issuingCert for use in verifying signature.
     val issuingCert = CertificateUtil.createRootSigningCertificate(
       "issuingEntity", Period.ofDays(1), ed25519ContentSigner
     )
 
-    val certRequest = CertificateUtil.mobileCertRequestToCertRequest(
-      CertificateUtil.createMobileCertRequest(
-        "entity",
-        p256ContentSigner
-      ).encodeByteString()
+    // Extract the x.509 certificate from our object.
+    val certHolder = X509CertificateHolder(createTestMobileSignedCert {
+      CertificateUtil.mobileCertRequestToCertRequest(
+        MobileCertificateRequest(
+          0,
+          TestFixtures.PKCS10Request.toByteString()
+        ).encodeByteString()
+      )
+    }.certificate.toByteArray())
+    val issuingCertHolder = X509CertificateHolder(issuingCert.certificate.toByteArray())
+
+    // Cert should verify when presented with issuing cert
+    assertTrue(
+      certHolder.isSignatureValid(
+        TinkContentVerifierProvider(issuingCertHolder.subjectPublicKeyInfo)
+      )
     )
+  }
+
+  private fun createTestMobileSignedCert(
+    csrProvider: (() -> CertificateRequest)? = null
+  ): SigningCert {
+    val issuingCert = CertificateUtil.createRootSigningCertificate(
+      "issuingEntity", Period.ofDays(1), ed25519ContentSigner
+    )
+
+    val certRequest = if (csrProvider == null) {
+      CertificateUtil.mobileCertRequestToCertRequest(
+        CertificateUtil.createMobileCertRequest(
+          "entity",
+          p256ContentSigner
+        ).encodeByteString()
+      )
+    } else {
+      csrProvider()
+    }
 
     return CertificateUtil.signCertificate(issuingCert, certRequest, ed25519ContentSigner)
   }

@@ -105,7 +105,7 @@ object CertificateUtil {
   }
 
   /**
-   * Create a mobile signing certificate request from a Tink signing keyset.
+   * Create a mobile signing certificate request with a Trifle Content Signer.
    *
    * @param entityName the name with which we'll associate the public key.
    * @param contentSigner content signer used to generate the signature validating the
