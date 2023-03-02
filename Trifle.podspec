@@ -14,12 +14,7 @@ Security functionality for interoperability/interaction with core services.
 
   s.ios.deployment_target = '14.0'
 
-  s.source_files = 'ios/Trifle/Sources/**/*'
+  s.source_files = 'ios/Trifle/Sources/**/*.swift'
 
   s.swift_versions = '5.0.1'
-
-  s.test_spec 'UnitTests' do |test_spec|
-    test_spec.source_files = 'ios/Example/Tests/**/*'
-    test_spec.dependency 'Quick', '~> 2.2.0'
-  end
 end
