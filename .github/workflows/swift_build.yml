@@ -1,0 +1,23 @@
+name: Swift CI on PR
+# Swift integration tests should run on all pushes and pull requests to main branch
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  xcode-build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Install Pod Dependencies
+        run: cd ios/Example && pod install
+        shell: bash
+      
+      - name: Run tests
+        run:  xcodebuild test -workspace ios/Example/Trifle.xcworkspace -scheme Trifle-Example  -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 14' -configuration Debug
