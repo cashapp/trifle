@@ -8,8 +8,8 @@ import Trifle
 import XCTest
 
 final class CertificateDecodableTest: XCTestCase {
-    /// signed device certificate signed by JVM SDK
-    /// and CSR from iOS SDK
+    /// create CSR from iOS SDK,
+    /// create signed device certificate signed by JVM SDK
     func testDecodesDeviceSignedCertificate() throws {
         let derEncodedCert = Data(base64Encoded: """
 MIIBRDCB8qADAgECAgYBhpWf8vowBQYDK2VwMBgxFjAUBgNVBAMM\
