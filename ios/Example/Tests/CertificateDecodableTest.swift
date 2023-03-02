@@ -1,10 +1,10 @@
 //
 //  CertificateDecodableTest.swift
-//  SecuritySdk_Tests
+//  Trifle_Tests
 //
 
 import Foundation
-import SecuritySdk
+import Trifle 
 import XCTest
 
 final class CertificateDecodableTest: XCTestCase {
