@@ -1,0 +1,17 @@
+name: Swift CI on PR
+
+on:
+  pull_request:
+    branches: [ gelareh/swiftci ]
+
+#  xcodebuild test -workspace Trifle.xcworkspace -scheme Trifle_Example  -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 14' -configuration Debug
+jobs:
+  xcode-build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+        # pod install from the Example directory first.
+      - name: Run tests
+        run:  xcodebuild test -workspace Trifle.xcworkspace -scheme ios/Example/Trifle_Example  -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 14' -configuration Debug
