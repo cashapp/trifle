@@ -49,7 +49,7 @@ tasks.test {
 
 apply(plugin = "kotlin")
 
-val protosSrc = "src/main/proto/"
+val protosSrc = "../proto/"
 
 repositories {
 }
@@ -65,7 +65,7 @@ dependencies {
 sourceSets {
     main {
         resources {
-            srcDir("src/main/proto")
+            srcDir("../proto")
         }
     }
 }

@@ -8,7 +8,7 @@ android {
   buildToolsVersion("30.0.2")
 
   defaultConfig {
-    applicationId = "app.cash.security_sdk"
+    applicationId = "app.cash.trifle"
     minSdkVersion(24)
     targetSdkVersion(33)
     versionCode = 1
@@ -34,7 +34,7 @@ dependencies {
   implementation("androidx.appcompat:appcompat:1.6.0")
   implementation("com.google.android.material:material:1.8.0")
   implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-  implementation(project(":android:cash-security-s2dk"))
+  implementation(project(":android:trifle"))
   testImplementation("junit:junit:4.+")
   androidTestImplementation("androidx.test.ext:junit:1.1.5")
   androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")

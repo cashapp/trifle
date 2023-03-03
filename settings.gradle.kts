@@ -1,4 +1,4 @@
-rootProject.name = "cash-s2dk"
+rootProject.name = "trifle"
 
 plugins {
     id("com.gradle.enterprise") version ("3.9")
@@ -6,7 +6,7 @@ plugins {
 
 include("android")
 include("android:sample_app")
-include("android:cash-security-s2dk")
+include("android:trifle")
 include("jvm")
 
 gradleEnterprise {

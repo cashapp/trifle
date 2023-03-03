@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="app.cash.security_sdk.sample_app">
+    package="app.cash.trifle.sample_app">
 
   <application
       android:allowBackup="true"
@@ -10,7 +10,7 @@
       android:supportsRtl="true"
       android:theme="@style/Theme.CashSecuritySdkExample">
   <activity
-      android:name="app.cash.security_sdk.MainActivity"
+      android:name="app.cash.trifle.MainActivity"
       android:exported="true">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
