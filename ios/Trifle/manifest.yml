@@ -1,0 +1,5 @@
+Protos:
+  roots:
+    - app.cash.trifle.api.alpha.Certificate
+    - app.cash.trifle.api.alpha.MobileCertificateRequest
+    - app.cash.trifle.api.alpha.MobileCertificateResponse

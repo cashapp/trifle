@@ -32,6 +32,24 @@ install it, simply add the following line to your Podfile:
 pod 'Trifle'
 ```
 
+### Generating Wire for iOS
+
+Wire does not have an equivalent plugin for XCode to autogenerate
+from the source protobuf files at build time. 
+
+Instead, the following command must be manually executed:
+
+```bash
+# This compiles WireCompiler from source to output compiler.jar
+# under Example/Pods/WireCompiler/compiler.jar
+pod install
+
+java -jar trifle/ios/Example/Pods/WireCompiler/compiler.jar \
+    "--proto_path=trifle/proto/app/cash/trifle/api/alpha" \
+    "--swift_out=trifle/ios/Trifle/Sources/Generated" \
+    "--experimental-module-manifest=trifle/ios/Trifle/manifest.yml"
+```
+
 ## Authors
 
 Cash App
