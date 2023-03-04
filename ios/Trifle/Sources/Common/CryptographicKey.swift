@@ -55,7 +55,7 @@ protocol VerifyingKey: CryptographicKey {
 
 // MARK: -
 
-public enum CryptographicKeyError: LocalizedError {
+enum CryptographicKeyError: LocalizedError {
     case unavailablePublicKey
     case unexportablePublicKey
     case unsupportedAlgorithm
