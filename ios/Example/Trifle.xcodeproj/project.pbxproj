@@ -24,6 +24,7 @@
 		E1777ED829A0AE6900E5AC74 /* PKCS10CertificationRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1777ED729A0AE6900E5AC74 /* PKCS10CertificationRequestTests.swift */; };
 		E17B12F229882D6100063394 /* SecureEnclaveDigitalSignatureKeyManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17B12F129882D6100063394 /* SecureEnclaveDigitalSignatureKeyManagerTests.swift */; };
 		E19DFB8029B2C81A006E40CC /* TinkTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19DFB7F29B2C81A006E40CC /* TinkTest.swift */; };
+		E1EFABD329B714330092435B /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = E1EFABD229B714330092435B /* Config.xcconfig */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,7 +40,6 @@
 /* Begin PBXFileReference section */
 		14D99F6F8B2606DBCF35AE93 /* Pods-Trifle_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Trifle_Example.debug.xcconfig"; path = "Target Support Files/Pods-Trifle_Example/Pods-Trifle_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		1724DDE01C83A2B828629C01 /* Pods_Trifle_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Trifle_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		2FE5DC45194A5144462D8753 /* Trifle.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = Trifle.podspec; path = ../Trifle.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		311CA8E4C45E226E1D9A2466 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		5D1DF3E60C39D8E23C848035 /* Pods-Trifle_macOS_Dummy.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Trifle_macOS_Dummy.release.xcconfig"; path = "Target Support Files/Pods-Trifle_macOS_Dummy/Pods-Trifle_macOS_Dummy.release.xcconfig"; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* Trifle_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Trifle_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -59,6 +59,7 @@
 		C72A495F71F70549F960896D /* Pods_Trifle_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Trifle_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E103FF9A29AD90F5004011C2 /* CertificateDecodableTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CertificateDecodableTest.swift; sourceTree = "<group>"; };
 		E10D7FCB299410D0002E6B72 /* DEREncodableTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DEREncodableTest.swift; sourceTree = "<group>"; };
+		E12D7D7E29B71649003D1FB1 /* Trifle.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = Trifle.podspec; path = ../../Trifle.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		E158299A29B27DBC0037096B /* Trifle_macOS_Dummy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Trifle_macOS_Dummy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E158299C29B27DBC0037096B /* Trifle_macOS_DummyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trifle_macOS_DummyApp.swift; sourceTree = "<group>"; };
 		E158299E29B27DBC0037096B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -67,6 +68,7 @@
 		E1777ED729A0AE6900E5AC74 /* PKCS10CertificationRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKCS10CertificationRequestTests.swift; sourceTree = "<group>"; };
 		E17B12F129882D6100063394 /* SecureEnclaveDigitalSignatureKeyManagerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecureEnclaveDigitalSignatureKeyManagerTests.swift; sourceTree = "<group>"; };
 		E19DFB7F29B2C81A006E40CC /* TinkTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TinkTest.swift; sourceTree = "<group>"; };
+		E1EFABD229B714330092435B /* Config.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		E712027BFE0B4A17086CA56F /* Pods-Trifle_macOS_Dummy.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Trifle_macOS_Dummy.debug.xcconfig"; path = "Target Support Files/Pods-Trifle_macOS_Dummy/Pods-Trifle_macOS_Dummy.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -111,6 +113,7 @@
 		607FACC71AFB9204008FA782 = {
 			isa = PBXGroup;
 			children = (
+				E1EFABD229B714330092435B /* Config.xcconfig */,
 				607FACF51AFB993E008FA782 /* Podspec Metadata */,
 				607FACD21AFB9204008FA782 /* Example for Trifle */,
 				607FACE81AFB9204008FA782 /* Tests */,
@@ -177,7 +180,7 @@
 		607FACF51AFB993E008FA782 /* Podspec Metadata */ = {
 			isa = PBXGroup;
 			children = (
-				2FE5DC45194A5144462D8753 /* Trifle.podspec */,
+				E12D7D7E29B71649003D1FB1 /* Trifle.podspec */,
 				311CA8E4C45E226E1D9A2466 /* README.md */,
 				867F494829B684153BE2C355 /* LICENSE */,
 			);
@@ -224,6 +227,7 @@
 			buildConfigurationList = 607FACEF1AFB9204008FA782 /* Build configuration list for PBXNativeTarget "Trifle_Example" */;
 			buildPhases = (
 				D51338B2042CAE56BF79539A /* [CP] Check Pods Manifest.lock */,
+				E11875B829B71849007FFC9F /* Run Script */,
 				607FACCC1AFB9204008FA782 /* Sources */,
 				607FACCD1AFB9204008FA782 /* Frameworks */,
 				607FACCE1AFB9204008FA782 /* Resources */,
@@ -243,6 +247,7 @@
 			buildConfigurationList = 607FACF21AFB9204008FA782 /* Build configuration list for PBXNativeTarget "Trifle_Tests" */;
 			buildPhases = (
 				E4B4C7C9CA5453372B3F950C /* [CP] Check Pods Manifest.lock */,
+				E180558429B7D38600BD6AE0 /* ShellScript */,
 				607FACE11AFB9204008FA782 /* Sources */,
 				607FACE21AFB9204008FA782 /* Frameworks */,
 				607FACE31AFB9204008FA782 /* Resources */,
@@ -325,6 +330,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E1EFABD329B714330092435B /* Config.xcconfig in Resources */,
 				607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */,
 				607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */,
 				607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */,
@@ -379,12 +385,10 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Trifle_Example/Pods-Trifle_Example-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Trifle/Trifle.framework",
 				"${BUILT_PRODUCTS_DIR}/Wire/Wire.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Trifle.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Wire.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -413,6 +417,41 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
+		};
+		E11875B829B71849007FFC9F /* Run Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"$PODS_ROOT\"/../../Scripts/XcodeBuildPhases/FixTinkForAppleSilicon\n";
+		};
+		E180558429B7D38600BD6AE0 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"$PODS_ROOT\"/../../Scripts/XcodeBuildPhases/FixTinkForAppleSilicon\n";
 		};
 		E4B4C7C9CA5453372B3F950C /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -502,6 +541,7 @@
 /* Begin XCBuildConfiguration section */
 		607FACED1AFB9204008FA782 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E1EFABD229B714330092435B /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -555,6 +595,7 @@
 		};
 		607FACEE1AFB9204008FA782 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E1EFABD229B714330092435B /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
