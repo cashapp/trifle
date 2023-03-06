@@ -6,7 +6,7 @@
 import Foundation
 
 /// Prepared set of query dictionaries used for keychain operations
-public protocol KeychainQueries {
+protocol KeychainQueries {
     
     /**
      Constructs a query dictionary using the a given application tag
@@ -19,7 +19,7 @@ public protocol KeychainQueries {
 
 // MARK: -
 
-public struct KeychainAccessError: Error, LocalizedError {
+struct KeychainAccessError: Error, LocalizedError {
     public let status: OSStatus
     public let tag: String
 

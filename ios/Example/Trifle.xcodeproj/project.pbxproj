@@ -23,6 +23,7 @@
 		E15829A429B27DBC0037096B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E15829A329B27DBC0037096B /* Preview Assets.xcassets */; };
 		E1777ED829A0AE6900E5AC74 /* PKCS10CertificationRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1777ED729A0AE6900E5AC74 /* PKCS10CertificationRequestTests.swift */; };
 		E17B12F229882D6100063394 /* SecureEnclaveDigitalSignatureKeyManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17B12F129882D6100063394 /* SecureEnclaveDigitalSignatureKeyManagerTests.swift */; };
+		E19DFB8029B2C81A006E40CC /* TinkTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19DFB7F29B2C81A006E40CC /* TinkTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,6 +66,7 @@
 		E15829A329B27DBC0037096B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		E1777ED729A0AE6900E5AC74 /* PKCS10CertificationRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKCS10CertificationRequestTests.swift; sourceTree = "<group>"; };
 		E17B12F129882D6100063394 /* SecureEnclaveDigitalSignatureKeyManagerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecureEnclaveDigitalSignatureKeyManagerTests.swift; sourceTree = "<group>"; };
+		E19DFB7F29B2C81A006E40CC /* TinkTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TinkTest.swift; sourceTree = "<group>"; };
 		E712027BFE0B4A17086CA56F /* Pods-Trifle_macOS_Dummy.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Trifle_macOS_Dummy.debug.xcconfig"; path = "Target Support Files/Pods-Trifle_macOS_Dummy/Pods-Trifle_macOS_Dummy.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -158,6 +160,7 @@
 				E10D7FCB299410D0002E6B72 /* DEREncodableTest.swift */,
 				E1777ED729A0AE6900E5AC74 /* PKCS10CertificationRequestTests.swift */,
 				E17B12F129882D6100063394 /* SecureEnclaveDigitalSignatureKeyManagerTests.swift */,
+				E19DFB7F29B2C81A006E40CC /* TinkTest.swift */,
 				607FACE91AFB9204008FA782 /* Supporting Files */,
 			);
 			path = Tests;
@@ -453,6 +456,7 @@
 				E17B12F229882D6100063394 /* SecureEnclaveDigitalSignatureKeyManagerTests.swift in Sources */,
 				E1777ED829A0AE6900E5AC74 /* PKCS10CertificationRequestTests.swift in Sources */,
 				E103FF9B29AD90F5004011C2 /* CertificateDecodableTest.swift in Sources */,
+				E19DFB8029B2C81A006E40CC /* TinkTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

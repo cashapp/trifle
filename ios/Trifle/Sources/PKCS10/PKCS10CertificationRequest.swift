@@ -8,7 +8,7 @@ import Foundation
 /// PKCS#10 Certification Request
 final class PKCS10CertificationRequest {
     private let certificationRequest: ASN1Sequence
-    private let octets: [Octet]
+    let octets: [Octet]
 
     init(_ certificationRequest: ASN1Sequence) {
         self.certificationRequest = certificationRequest

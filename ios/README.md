@@ -1,5 +1,5 @@
 # Trifle
-[![CI Status](https://img.shields.io/travis/CashApp/Trifle.svg?style=flat)](https://github.com/cashapp/trifle/actions?query=branch%3Amain+event%3Apull_request)
+[![CI Status](https://img.shields.io/travis/CashApp/Trifle.svg?style=flat)](https://github.com/cashapp/trifle/actions?branch%3Amain+workflow%3A%22Swift+CI+on+PR%22)
 [![Version](https://img.shields.io/cocoapods/v/Trifle.svg?style=flat)](https://cocoapods.org/pods/Trifle)
 [![License](https://img.shields.io/cocoapods/l/Trifle.svg?style=flat)](https://cocoapods.org/pods/Trifle)
 [![Platform](https://img.shields.io/cocoapods/p/Trifle.svg?style=flat)](https://cocoapods.org/pods/Trifle)
