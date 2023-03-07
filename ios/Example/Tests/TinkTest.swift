@@ -9,9 +9,9 @@ import Foundation
 import XCTest
 
 final class TinkTests: XCTestCase {
-    lazy var trifle = Trifle(tag: "app.cash.trifle.keys.digital_signature")
 
     func testgenerateMobileCertificateRequest() throws {
+        let trifle = try Trifle(tag: "app.cash.trifle.keys.digital_signature")
         let mobileCertReq = try trifle.generateMobileCertificateRequest()
 
         XCTAssertEqual(mobileCertReq.version, 0)

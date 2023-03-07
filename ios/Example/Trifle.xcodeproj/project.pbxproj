@@ -13,6 +13,7 @@
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
+		7218700A29B7A2EF001CC552 /* TrifleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7218700929B7A2EF001CC552 /* TrifleTests.swift */; };
 		886D89F3108C3A9A6BF7C421 /* Pods_Trifle_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C72A495F71F70549F960896D /* Pods_Trifle_Tests.framework */; };
 		B7B81620DA38D31D71E55440 /* Pods_Trifle_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1724DDE01C83A2B828629C01 /* Pods_Trifle_Example.framework */; };
 		E103FF9B29AD90F5004011C2 /* CertificateDecodableTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E103FF9A29AD90F5004011C2 /* CertificateDecodableTest.swift */; };
@@ -52,6 +53,7 @@
 		607FACE51AFB9204008FA782 /* Trifle_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Trifle_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		707F6B7E3F3F026A9F64339F /* Pods-Trifle_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Trifle_Tests.debug.xcconfig"; path = "Target Support Files/Pods-Trifle_Tests/Pods-Trifle_Tests.debug.xcconfig"; sourceTree = "<group>"; };
+		7218700929B7A2EF001CC552 /* TrifleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrifleTests.swift; sourceTree = "<group>"; };
 		867F494829B684153BE2C355 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		AB079C97C83A9AF02FE89E90 /* Pods-Trifle_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Trifle_Tests.release.xcconfig"; path = "Target Support Files/Pods-Trifle_Tests/Pods-Trifle_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		B0075494B7FD4A77B59913B3 /* Pods-Trifle_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Trifle_Example.release.xcconfig"; path = "Target Support Files/Pods-Trifle_Example/Pods-Trifle_Example.release.xcconfig"; sourceTree = "<group>"; };
@@ -161,6 +163,7 @@
 				E1777ED729A0AE6900E5AC74 /* PKCS10CertificationRequestTests.swift */,
 				E17B12F129882D6100063394 /* SecureEnclaveDigitalSignatureKeyManagerTests.swift */,
 				E19DFB7F29B2C81A006E40CC /* TinkTest.swift */,
+				7218700929B7A2EF001CC552 /* TrifleTests.swift */,
 				607FACE91AFB9204008FA782 /* Supporting Files */,
 			);
 			path = Tests;
@@ -457,6 +460,7 @@
 				E1777ED829A0AE6900E5AC74 /* PKCS10CertificationRequestTests.swift in Sources */,
 				E103FF9B29AD90F5004011C2 /* CertificateDecodableTest.swift in Sources */,
 				E19DFB8029B2C81A006E40CC /* TinkTest.swift in Sources */,
+				7218700A29B7A2EF001CC552 /* TrifleTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -24,7 +24,11 @@ public class SecureEnclaveDigitalSignatureKeyManager
 
     // MARK: - Initialization
 
-    public init(tag: String) {
+    public init(tag: String) throws {
+        guard !tag.isEmpty else {
+            // tag should not be empty
+            throw TrifleError.invalidInput("Tag cannot be empty")
+        }
         self.tag = tag
     }
  
@@ -43,7 +47,20 @@ public class SecureEnclaveDigitalSignatureKeyManager
     public func verify(data: Data, with signature: Data) throws -> Bool {
         return try verifyingKey().verify(data: data, with: signature)
     }
+
+    // MARK: - Public Methods (generateSigningKey)
     
+    public func generateSigningKey() throws -> KeyHandle {
+        // generate a signing key and store in keychain
+        // if key tag already exists, then return that key
+        // if key tag is new, then generate new key
+        // we don't need the key right now, so throw it away
+        _ = try signingKey()
+        
+        // create a keyHandle
+        return KeyHandle(tag: self.tag)
+    }
+
     // MARK: - Internal Methods (ContentSigner)
  
     internal func exportPublicKey() throws -> SigningPublicKey {

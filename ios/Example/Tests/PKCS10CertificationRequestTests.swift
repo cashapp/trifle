@@ -8,7 +8,7 @@ import XCTest
 
 final class PKCS10CertificationRequestTests: XCTestCase {
     func testDERPkcs10() throws {
-        let manager = SecureEnclaveDigitalSignatureKeyManager(
+        let manager = try SecureEnclaveDigitalSignatureKeyManager(
             tag: "app.cash.trifle.keys.digital_signature.pkcs10"
         )
         
