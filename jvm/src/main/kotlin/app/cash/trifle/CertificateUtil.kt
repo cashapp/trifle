@@ -18,10 +18,12 @@ import java.util.Date
  * Server trifle utility class for certificate enrollment.
  */
 object CertificateUtil {
-  private const val MOBILE_CERTIFICATE_REQUEST_VERSION: UInt = 0u
-
-  // Validity time for device-certificate, currentl scoped to 180 days, based entirely on intuition.
+  // Validity time for device-certificate, currently scoped to 180 days, based entirely on
+  // intuition. This is not currently used, and should be configurable by the client when usage is
+  // desired.
   private const val MOBILE_CERTIFICATE_VALIDITY_PERIOD_DAYS: Int = 180
+
+  private const val MOBILE_CERTIFICATE_REQUEST_VERSION: UInt = 0u
 
   /**
    * Converts the given serialized MobileCertRequest into a CertificateRequest. This enables clients
@@ -55,13 +57,13 @@ object CertificateUtil {
    * @param contentSigner content signer used to generate the signature validating the certificate
    */
   fun signCertificate(
-    issuerCertificate: SigningCert,
+    issuerCertificate: Certificate,
     certificateRequest: CertificateRequest,
     contentSigner: TrifleContentSigner
-  ): SigningCert {
+  ): Certificate {
     val creationTime = Instant.now()
     val pkcs10Request = certificateRequest.csr
-    val issuerCertHolder = X509CertificateHolder(issuerCertificate.certificate.toByteArray())
+    val issuerCertHolder = X509CertificateHolder(issuerCertificate.certificate)
     val signedCert = X509v3CertificateBuilder(
       issuerCertHolder.subject,
       BigInteger.valueOf(creationTime.toEpochMilli()),
@@ -71,7 +73,7 @@ object CertificateUtil {
       pkcs10Request.subjectPublicKeyInfo
     ).build(contentSigner)
 
-    return SigningCert(signedCert.encoded.toByteString())
+    return Certificate(signedCert.encoded)
   }
 
   /**
@@ -87,7 +89,7 @@ object CertificateUtil {
     entityName: String,
     validityPeriod: Period,
     contentSigner: TrifleContentSigner
-  ): SigningCert {
+  ): Certificate {
     // Trifle Certificates are just wrappers around X.509 certificates. Create one with the
     // given name.
     val subjectName = X500Name("CN=$entityName")
@@ -101,7 +103,7 @@ object CertificateUtil {
       contentSigner.subjectPublicKeyInfo()
     ).build(contentSigner)
 
-    return SigningCert(signedCert.encoded.toByteString())
+    return Certificate(signedCert.encoded)
   }
 
   /**

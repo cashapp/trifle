@@ -1,5 +1,6 @@
 package app.cash.trifle
 
+import app.cash.trifle.Certificate
 import app.cash.trifle.internal.TrifleAlgorithmIdentifier.Ed25519AlgorithmIdentifier
 import app.cash.trifle.internal.TrifleAlgorithmIdentifier.P256v1AlgorithmIdentifier
 import app.cash.trifle.internal.providers.TinkContentVerifierProvider
@@ -44,7 +45,7 @@ internal class CertificateUtilTest {
       "entity", Period.ofDays(1), ed25519ContentSigner
     )
 
-    val certHolder = X509CertificateHolder(cert.certificate.toByteArray())
+    val certHolder = X509CertificateHolder(cert.certificate)
     val duration =
       Duration.ofMillis(
         certHolder.notAfter.toInstant().minusMillis(certHolder.notBefore.toInstant().toEpochMilli())
@@ -60,7 +61,7 @@ internal class CertificateUtilTest {
     )
 
     // Extract cert and then entity value.
-    val certHolder = X509CertificateHolder(cert.certificate.toByteArray())
+    val certHolder = X509CertificateHolder(cert.certificate)
     assertEquals("CN=entity", certHolder.subject.toString())
   }
 
@@ -71,7 +72,7 @@ internal class CertificateUtilTest {
     )
 
     // Extract cert and then entity value.
-    val certHolder = X509CertificateHolder(cert.certificate.toByteArray())
+    val certHolder = X509CertificateHolder(cert.certificate)
     assertEquals("CN=entity", certHolder.issuer.toString())
   }
 
@@ -83,7 +84,7 @@ internal class CertificateUtilTest {
     )
 
     // Extract the x.509 certificate from our object.
-    val certHolder = X509CertificateHolder(signingCert.certificate.toByteArray())
+    val certHolder = X509CertificateHolder(signingCert.certificate)
 
     // Self-signed cert should verify when presented with itself.
     assertTrue(
@@ -102,7 +103,7 @@ internal class CertificateUtilTest {
       certHolder.isSignatureValid(
         TinkContentVerifierProvider(
           X509CertificateHolder(
-            otherCert.certificate.toByteArray()
+            otherCert.certificate
           ).subjectPublicKeyInfo
         )
       )
@@ -165,7 +166,7 @@ internal class CertificateUtilTest {
   @Test
   fun `test signCertificate validity period`() {
     val certHolder =
-      X509CertificateHolder(createTestMobileSignedCert().certificate.toByteArray())
+      X509CertificateHolder(createTestMobileSignedCert().certificate)
     val duration =
       Duration.ofMillis(
         certHolder.notAfter.toInstant().minusMillis(certHolder.notBefore.toInstant().toEpochMilli())
@@ -178,7 +179,7 @@ internal class CertificateUtilTest {
   fun `test signCertificate certificate entity`() {
     // Extract cert and then entity value.
     val certHolder = X509CertificateHolder(
-      createTestMobileSignedCert().certificate.toByteArray()
+      createTestMobileSignedCert().certificate
     )
     assertEquals("CN=entity", certHolder.subject.toString())
   }
@@ -187,7 +188,7 @@ internal class CertificateUtilTest {
   fun `test signCertificate certificate issuer`() {
     // Extract cert and then entity value.
     val certHolder = X509CertificateHolder(
-      createTestMobileSignedCert().certificate.toByteArray()
+      createTestMobileSignedCert().certificate
     )
     assertEquals("CN=issuingEntity", certHolder.issuer.toString())
   }
@@ -200,8 +201,8 @@ internal class CertificateUtilTest {
     )
 
     // Extract the x.509 certificate from our object.
-    val certHolder = X509CertificateHolder(createTestMobileSignedCert().certificate.toByteArray())
-    val issuingCertHolder = X509CertificateHolder(issuingCert.certificate.toByteArray())
+    val certHolder = X509CertificateHolder(createTestMobileSignedCert().certificate)
+    val issuingCertHolder = X509CertificateHolder(issuingCert.certificate)
 
     // Cert should verify when presented with issuing cert
     assertTrue(
@@ -233,8 +234,8 @@ internal class CertificateUtilTest {
           TestFixtures.PKCS10Request.toByteString()
         ).encodeByteString()
       )
-    }.certificate.toByteArray())
-    val issuingCertHolder = X509CertificateHolder(issuingCert.certificate.toByteArray())
+    }.certificate)
+    val issuingCertHolder = X509CertificateHolder(issuingCert.certificate)
 
     // Cert should verify when presented with issuing cert
     assertTrue(
@@ -246,7 +247,7 @@ internal class CertificateUtilTest {
 
   private fun createTestMobileSignedCert(
     csrProvider: (() -> CertificateRequest)? = null
-  ): SigningCert {
+  ): Certificate {
     val issuingCert = CertificateUtil.createRootSigningCertificate(
       "issuingEntity", Period.ofDays(1), ed25519ContentSigner
     )
