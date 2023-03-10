@@ -1,13 +1,13 @@
 package app.cash.trifle.internal.signers
 
-import app.cash.trifle.internal.TrifleAlgorithmIdentifier.ECPublicKeyAlgorithmIdentifier
-import app.cash.trifle.internal.TrifleAlgorithmIdentifier.Ed25519AlgorithmIdentifier
-import app.cash.trifle.internal.TrifleAlgorithmIdentifier.TinkAlgorithmIdentifier
-import com.google.crypto.tink.BinaryKeysetWriter
-import com.google.crypto.tink.CleartextKeysetHandle
+import app.cash.trifle.internal.TrifleAlgorithmIdentifier.EdDSAAlgorithmIdentifier
+import com.google.crypto.tink.KeyTemplate
 import com.google.crypto.tink.KeysetHandle
 import com.google.crypto.tink.PublicKeySign
 import com.google.crypto.tink.PublicKeyVerify
+import com.google.crypto.tink.proto.Ed25519PublicKey
+import com.google.crypto.tink.tinkkey.KeyAccess
+import com.google.crypto.tink.tinkkey.ProtoKey
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo
 import java.io.ByteArrayOutputStream
@@ -22,29 +22,44 @@ internal class TinkContentSigner(
   private val privateKeysetHandle: KeysetHandle,
 ) : TrifleContentSigner() {
   private val outputStream: ByteArrayOutputStream = ByteArrayOutputStream()
-  private val tinkAlgorithmIdentifier = TinkAlgorithmIdentifier
   private val publicKeySign: PublicKeySign by lazy {
     privateKeysetHandle.getPrimitive(PublicKeySign::class.java)
   }
   private val publicKeysetHandle: KeysetHandle by lazy {
     privateKeysetHandle.publicKeysetHandle
   }
+  private val tinkKey: ProtoKey by lazy {
+    val protoKey = publicKeysetHandle
+      .primaryKey()
+      .getKey(KeyAccess.publicAccess()) as ProtoKey
+
+    // ensure tink key was provisioned with a raw output prefix type which allows
+    // interoperability with JCA
+    check(protoKey.outputPrefixType == KeyTemplate.OutputPrefixType.RAW)
+    protoKey
+  }
 
   override fun subjectPublicKeyInfo(): SubjectPublicKeyInfo {
-    val outputStream = ByteArrayOutputStream()
-    CleartextKeysetHandle.write(
-      // Ensure we only write the public component of our key!
-      publicKeysetHandle,
-      BinaryKeysetWriter.withOutputStream(outputStream)
-    )
-    return SubjectPublicKeyInfo(
-      ECPublicKeyAlgorithmIdentifier(Ed25519AlgorithmIdentifier),
-      outputStream.toByteArray()
-    )
+    val (keyAlgorithm, rawKeyValue) = when (val typeUrl = tinkKey.protoKey.typeUrl) {
+      "type.googleapis.com/google.crypto.tink.Ed25519PublicKey" ->
+        Pair(
+          EdDSAAlgorithmIdentifier,
+          Ed25519PublicKey.parseFrom(tinkKey.protoKey.value).keyValue.toByteArray()
+        )
+
+      else -> throw UnsupportedOperationException("key type $typeUrl is not supported")
+    }
+
+    return SubjectPublicKeyInfo(keyAlgorithm, rawKeyValue)
   }
 
   override fun getAlgorithmIdentifier(): AlgorithmIdentifier {
-    return tinkAlgorithmIdentifier
+    when (val typeUrl = tinkKey.protoKey.typeUrl) {
+      "type.googleapis.com/google.crypto.tink.Ed25519PublicKey" -> return EdDSAAlgorithmIdentifier
+      else -> throw UnsupportedOperationException(
+        "Default signature algorithm is not supported for key type: $typeUrl"
+      )
+    }
   }
 
   override fun getOutputStream(): OutputStream {

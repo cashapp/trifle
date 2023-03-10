@@ -1,0 +1,7 @@
+//
+//  Config.xcconfig
+//  Trifle_Example
+//
+
+// Development configurations added to XCode framework search path; necessary for Tink
+FRAMEWORK_SEARCH_PATHS[sdk=iphonesimulator*][arch=arm64] = "$DERIVED_FILE_DIR/apple_silicon" $(inherited)

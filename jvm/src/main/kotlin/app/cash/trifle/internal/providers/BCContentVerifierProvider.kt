@@ -1,6 +1,7 @@
 package app.cash.trifle.internal.providers
 
 import app.cash.trifle.internal.TrifleAlgorithmIdentifier.ECDSASha256AlgorithmIdentifier
+import app.cash.trifle.internal.TrifleAlgorithmIdentifier.EdDSAAlgorithmIdentifier
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo
 import org.bouncycastle.cert.X509CertificateHolder
@@ -21,19 +22,17 @@ internal class BCContentVerifierProvider(
   }
 
   override fun get(algorithmIdentifer: AlgorithmIdentifier): ContentVerifier {
-    if (algorithmIdentifer != ECDSASha256AlgorithmIdentifier) {
+    if (algorithmIdentifer != ECDSASha256AlgorithmIdentifier
+      && algorithmIdentifer != EdDSAAlgorithmIdentifier) {
       throw UnsupportedOperationException(
         "Unknown/unsupported AlgorithmId provided to obtain Trifle ContentVerifier"
       )
     }
+
     return delegateProvider.get(algorithmIdentifer)
   }
 
-  override fun getAssociatedCertificate(): X509CertificateHolder? {
-    return null
-  }
+  override fun getAssociatedCertificate(): X509CertificateHolder? = null
 
-  override fun hasAssociatedCertificate(): Boolean {
-    return false
-  }
+  override fun hasAssociatedCertificate(): Boolean = false
 }

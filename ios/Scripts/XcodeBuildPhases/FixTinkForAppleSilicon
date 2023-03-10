@@ -1,0 +1,55 @@
+#!/usr/bin/env sh
+
+echo "Tink script is running"
+
+# If Tink isn't a dependency of this target, don't try to do anything with it
+if [ ! -d "$PODS_ROOT"/Tink ]; then
+  echo "Tink is not a dependency of this target. Exiting script early"
+  exit 0
+fi
+
+OUTPUT_DIR="$DERIVED_FILE_DIR"/apple_silicon
+
+if [ ! -d "$DERIVED_FILE_DIR" ]; then
+  echo "Creating derived file dir: $DERIVED_FILE_DIR"
+
+  mkdir "$DERIVED_FILE_DIR"
+
+  if [ $? -gt 0 ]; then
+    echo "Making derived file dir failed: $DERIVED_FILE_DIR"
+  fi
+fi
+
+if [ ! -d "$OUTPUT_DIR" ]; then
+  echo "Creating output dir: $OUTPUT_DIR"
+
+  mkdir "$OUTPUT_DIR"
+
+  if [ $? -gt 0 ]; then
+    echo "Making output dir failed: $OUTPUT_DIR"
+  fi
+
+  echo "Copying Tink to output dir: $OUTPUT_DIR"
+
+  cp -r "$PODS_ROOT"/Tink/Frameworks/Tink.framework "$OUTPUT_DIR"
+
+  if [ $? -gt 0 ]; then
+    echo "Copying Tink failed. Pods root: $PODS_ROOT. Output dir: $OUTPUT_DIR. Derived file dir: $DERIVED_FILE_DIR"
+    rm -rf "$OUTPUT_DIR"
+  fi
+
+  echo "Running update in place script"
+
+  if [ -d "$PODS_TARGET_SRCROOT" ]; then
+    SCRIPTS_DIR="$PODS_TARGET_SRCROOT/Scripts"
+  else
+    SCRIPTS_DIR="$SRCROOT/../Scripts"
+  fi
+
+  "$SCRIPTS_DIR"/m1_utils/update_in_place.sh "$OUTPUT_DIR"/Tink.framework/Tink
+
+  if [ $? -gt 0 ]; then
+    echo "Update in place failed. Output dir: $OUTPUT_DIR"
+    rm -rf "$OUTPUT_DIR"
+  fi
+fi

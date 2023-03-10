@@ -1,7 +1,7 @@
 package app.cash.trifle.internal.providers
 
 import app.cash.trifle.internal.TrifleAlgorithmIdentifier.Ed25519AlgorithmIdentifier
-import app.cash.trifle.internal.TrifleAlgorithmIdentifier.TinkAlgorithmIdentifier
+import app.cash.trifle.internal.TrifleAlgorithmIdentifier.EdDSAAlgorithmIdentifier
 import app.cash.trifle.internal.util.toSubjectPublicKeyInfo
 import com.google.crypto.tink.KeyTemplates
 import com.google.crypto.tink.KeysetHandle
@@ -20,7 +20,7 @@ internal class TinkContentVerifierProviderTest {
   @BeforeEach
   fun setUp() {
     SignatureConfig.register()
-    val ed25519PrivateKeyHandle = KeysetHandle.generateNew(KeyTemplates.get("ED25519"))
+    val ed25519PrivateKeyHandle = KeysetHandle.generateNew(KeyTemplates.get("ED25519WithRawOutput"))
     ed25519PublicKeySign = ed25519PrivateKeyHandle.getPrimitive(PublicKeySign::class.java)
     contentVerifierProvider = TinkContentVerifierProvider(
       ed25519PrivateKeyHandle.toSubjectPublicKeyInfo(Ed25519AlgorithmIdentifier)
@@ -29,7 +29,7 @@ internal class TinkContentVerifierProviderTest {
 
   @Test
   fun `test get() returns content verifier with appropriate key`() {
-    val tinkContentVerifier = contentVerifierProvider.get(TinkAlgorithmIdentifier)
+    val tinkContentVerifier = contentVerifierProvider.get(EdDSAAlgorithmIdentifier)
     tinkContentVerifier.outputStream.write(data)
     assertTrue(tinkContentVerifier.verify(ed25519PublicKeySign.sign(data)))
   }
