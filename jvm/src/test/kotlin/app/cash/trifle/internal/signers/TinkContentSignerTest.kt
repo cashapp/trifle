@@ -1,6 +1,6 @@
 package app.cash.trifle.internal.signers
 
-import app.cash.trifle.internal.TrifleAlgorithmIdentifier.TinkAlgorithmIdentifier
+import app.cash.trifle.internal.TrifleAlgorithmIdentifier.EdDSAAlgorithmIdentifier
 import com.google.crypto.tink.KeyTemplates
 import com.google.crypto.tink.KeysetHandle
 import com.google.crypto.tink.PublicKeySign
@@ -21,14 +21,14 @@ internal class TinkContentSignerTest {
   @BeforeEach
   fun setUp() {
     SignatureConfig.register()
-    contentSigner = TinkContentSigner(KeysetHandle.generateNew(KeyTemplates.get("ED25519")))
+    contentSigner = TinkContentSigner(KeysetHandle.generateNew(KeyTemplates.get("ED25519WithRawOutput")))
     ed25519PublicKeySign = contentSigner.getPublicKeySign()
     ed25519PublicKeyVerify = contentSigner.getPublicKeyVerify()
   }
 
   @Test
   fun `test ed25519 signature algorithm returns correct OID`() {
-    assertEquals(TinkAlgorithmIdentifier, contentSigner.algorithmIdentifier)
+    assertEquals(EdDSAAlgorithmIdentifier, contentSigner.algorithmIdentifier)
   }
 
   @Test

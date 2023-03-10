@@ -23,6 +23,7 @@ internal class BCContentVerifierProviderTest {
   @BeforeEach
   fun setUp() {
     SignatureConfig.register()
+
     val ecSpec = ECGenParameterSpec("secp256r1")
     val generator = KeyPairGenerator.getInstance("EC")
     generator.initialize(ecSpec, SecureRandom())
