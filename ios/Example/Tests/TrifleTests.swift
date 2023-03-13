@@ -22,7 +22,7 @@ final class TrifleTests: XCTestCase {
 
     func testGetKeyHandle() throws {
         let trifle = try Trifle(tag: tag)
-        let keyHandle = try trifle.generateSigningKeyHandle()
+        let keyHandle = try trifle.getKeyHandle()
                 
         // serialize
         let encoder = JSONEncoder()
