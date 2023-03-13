@@ -1,9 +1,9 @@
 package app.cash.trifle
 
 import app.cash.trifle.internal.providers.BCContentVerifierProvider
-import app.cash.trifle.internal.signers.JCAContentSigner
 import app.cash.trifle.internal.signers.TinkContentSigner
 import app.cash.trifle.internal.util.TestFixtures
+import app.cash.trifle.internal.util.TestFixtures.RAW_ECDSA_P256_KEY_TEMPLATE
 import app.cash.trifle.protos.api.alpha.MobileCertificateRequest
 import com.google.crypto.tink.KeyTemplates
 import com.google.crypto.tink.KeysetHandle
@@ -20,16 +20,14 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import java.security.KeyPairGenerator
-import java.security.SecureRandom
-import java.security.spec.ECGenParameterSpec
 import java.time.Duration
 import java.time.Period
 
 internal class CertificateUtilTest {
   private lateinit var ed25519PrivateKeysetHandle: KeysetHandle
   private lateinit var ed25519ContentSigner: TinkContentSigner
-  private lateinit var p256ContentSigner: JCAContentSigner
+  private lateinit var p256PrivateKeysetHandle: KeysetHandle
+  private lateinit var p256ContentSigner: TinkContentSigner
 
   @BeforeEach
   fun setUp() {
@@ -38,10 +36,8 @@ internal class CertificateUtilTest {
     ed25519PrivateKeysetHandle = KeysetHandle.generateNew(KeyTemplates.get("ED25519WithRawOutput"))
     ed25519ContentSigner = TinkContentSigner(ed25519PrivateKeysetHandle)
 
-    val keyGen = KeyPairGenerator.getInstance("EC")
-    keyGen.initialize(ECGenParameterSpec("secp256r1"), SecureRandom())
-    val keyPair = keyGen.generateKeyPair()
-    p256ContentSigner = JCAContentSigner(keyPair)
+    p256PrivateKeysetHandle = KeysetHandle.generateNew(RAW_ECDSA_P256_KEY_TEMPLATE)
+    p256ContentSigner = TinkContentSigner(p256PrivateKeysetHandle)
   }
 
   @Test
