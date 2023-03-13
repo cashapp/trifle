@@ -7,12 +7,15 @@ import Trifle
 import XCTest
 
 final class SecureEnclaveDigitalSignatureKeyManagerTests: XCTestCase {
-    lazy var manager = SecureEnclaveDigitalSignatureKeyManager(
-        tag: "app.cash.trifle.s2dk.keys.digital_signature"
-    )
-    lazy var otherManager = SecureEnclaveDigitalSignatureKeyManager(
-        tag: "com.squareup.trifle.s2dk.keys.digital_signature"
-    )
+    var manager: SecureEnclaveDigitalSignatureKeyManager!
+    var otherManager: SecureEnclaveDigitalSignatureKeyManager!
+    
+    override func setUpWithError() throws {
+        manager = try SecureEnclaveDigitalSignatureKeyManager(
+            tag: "app.cash.trifle.s2dk.keys.digital_signature")
+        otherManager = try SecureEnclaveDigitalSignatureKeyManager(
+            tag: "com.squareup.trifle.s2dk.keys.digital_signature")
+    }
     
     func testSignAndVerifySucceeds() throws {
         let data = "hello world".data(using: .utf8)!

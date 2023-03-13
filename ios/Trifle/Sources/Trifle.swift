@@ -13,25 +13,24 @@ public class Trifle {
     
     private let contentSigner: ContentSigner
     
-    public init(tag: String) {
-        self.contentSigner =
-        SecureEnclaveDigitalSignatureKeyManager(tag: tag)
-    }
-    
     /**
-     Create a new mobile Trifle keypair for which can be used to create a
+      Initialize the SDK with the key tag that is passed in.
+     
+      Create a new mobile Trifle keypair for which can be used to create a
      certificate request and to sign messages. The library (Trifle) will
      automatically try to choose the best algorithm and key type available on
      this device.
-
-     - returns: An opaque Trifle representation, `KeyHandle`,
-        of the key-pair, which the client will need to store.
      */
-    public func generateSigningKeyHandle() -> KeyHandle {
-        // TODO: IMPLEMENT
-        KeyHandle()
+    public init(tag: String) throws {
+        self.contentSigner =
+        try SecureEnclaveDigitalSignatureKeyManager(tag: tag)
     }
-    
+        
+    public func getKeyHandle() throws -> KeyHandle {
+        // currently we support only (Secure Enclave, EC-P256)
+        return try contentSigner.getKeyHandle()
+    }
+        
     /**
      Generate a Trifle MobileCertificateRequest, signed by the provided
      keyHandle, that can be presented to the Certificate Authority (CA) for
@@ -57,8 +56,6 @@ public class Trifle {
      metadata, such as the accompanying certificate.
 
      - parameters: data - raw data to be signed.
-     - parameters: keyHandle - key to use for the signing. Must match the key used to
-        generate the Certificate.
      - parameters: certificate - certificate to be included in the SignedData message.
         Must match the key in keyHandle.
 
@@ -93,5 +90,16 @@ extension Certificate {
     ) -> Bool {
         // TODO: Implement
         return true
+    }
+}
+
+public enum TrifleError: LocalizedError {
+    case invalidInput(String)
+
+    public var errorDescription: String? {
+        switch self {
+        case let .invalidInput(error) :
+            return error
+        }
     }
 }

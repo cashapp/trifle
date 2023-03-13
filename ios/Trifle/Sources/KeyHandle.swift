@@ -5,6 +5,6 @@
 
 import Foundation
 
-public struct KeyHandle {
-    // TODO: IMPLEMENT
+public struct KeyHandle : Codable {
+    var tag: String
 }
