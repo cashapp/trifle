@@ -4,7 +4,11 @@ import app.cash.trifle.internal.signers.TrifleContentSigner
 import app.cash.trifle.protos.api.alpha.MobileCertificateRequest
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
+import org.bouncycastle.asn1.DEROctetString
 import org.bouncycastle.asn1.x500.X500Name
+import org.bouncycastle.asn1.x509.BasicConstraints
+import org.bouncycastle.asn1.x509.Extension
+import org.bouncycastle.asn1.x509.KeyUsage
 import org.bouncycastle.cert.X509CertificateHolder
 import org.bouncycastle.cert.X509v3CertificateBuilder
 import org.bouncycastle.pkcs.PKCS10CertificationRequest
@@ -101,6 +105,22 @@ object CertificateUtil {
       Date.from(creationTime.plus(validityPeriod)),
       subjectName,
       contentSigner.subjectPublicKeyInfo()
+    ).addExtension(
+      Extension.basicConstraints,
+      true,
+      BasicConstraints(true)
+    ).addExtension(
+      Extension.keyUsage,
+      true,
+      KeyUsage(KeyUsage.keyCertSign)
+    ).addExtension(
+      Extension.subjectKeyIdentifier,
+      true,
+      DEROctetString(contentSigner.subjectPublicKeyInfo()
+        .publicKeyData.bytes.toByteString()
+        .sha1()
+        .toByteArray()
+      )
     ).build(contentSigner)
 
     return Certificate(signedCert.encoded)
