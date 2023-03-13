@@ -26,7 +26,7 @@ public class Trifle {
         try SecureEnclaveDigitalSignatureKeyManager(tag: tag)
     }
         
-    public func generateSigningKeyHandle() throws -> KeyHandle {
+    public func getKeyHandle() throws -> KeyHandle {
         // currently we support only (Secure Enclave, EC-P256)
         return try contentSigner.generateSigningKey()
     }
@@ -63,6 +63,7 @@ public class Trifle {
     */
     public func createSignedData(
         data: Data,
+        keyHandle: KeyHandle,
         certificate: Certificate
     ) -> SignedData {
         // TODO: IMPLEMENT

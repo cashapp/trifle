@@ -12,22 +12,22 @@ final class TrifleTests: XCTestCase {
 
    
     func testInit() throws {
-        _ = try Trifle(tag: tag)
+        let trifle = try Trifle(tag: tag)
+        XCTAssertNotNil(trifle)
     }
 
     func testInitEmptyTag() throws {
         XCTAssertThrowsError(try Trifle(tag: ""), "Tag cannot be empty")
     }
 
-    func testGenerateSigningKey() throws {
+    func testGetKeyHandle() throws {
         let trifle = try Trifle(tag: tag)
         let keyHandle = try trifle.generateSigningKeyHandle()
                 
         // serialize
         let encoder = JSONEncoder()
         let jsonData = try encoder.encode(keyHandle)
-        print(String(data: jsonData, encoding: .utf8)!)
-        XCTAssert(String(data: jsonData, encoding: .utf8)! == ("{\"tag\":\"" + tag + "\"}" ) )
+        XCTAssertEqual(String(data: jsonData, encoding: .utf8)!, "{\"tag\":\"" + tag + "\"}")
 
         // de-serialized
         let decoder = JSONDecoder()
