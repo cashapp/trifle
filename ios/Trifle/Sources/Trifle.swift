@@ -28,7 +28,7 @@ public class Trifle {
         
     public func getKeyHandle() throws -> KeyHandle {
         // currently we support only (Secure Enclave, EC-P256)
-        return try contentSigner.generateSigningKey()
+        return try contentSigner.getKeyHandle()
     }
         
     /**

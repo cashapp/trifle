@@ -18,11 +18,11 @@ protocol ContentSigner: DigitalSignatureSigner {
     func exportPublicKey() throws -> SigningPublicKey
 
     /**
-     Generates a signing key pair and stores it to the keychain.
+     Generates a signing key pair and stores it to the keychain. Returns the associated key handle.
      
      - throws: an error type `CryptographicKeyError` when the
         operation fails if the key is not exportable
      - returns: key handle
      */
-    func generateSigningKey() throws -> KeyHandle
+    func getKeyHandle() throws -> KeyHandle
 }

@@ -48,10 +48,10 @@ public class SecureEnclaveDigitalSignatureKeyManager
         return try verifyingKey().verify(data: data, with: signature)
     }
 
-    // MARK: - Public Methods (generateSigningKey)
+    // MARK: - Public Methods (getKeyHandle)
     
-    public func generateSigningKey() throws -> KeyHandle {
-        // generate a signing key and store in keychain
+    public func getKeyHandle() throws -> KeyHandle {
+        // generates a signing key and store in keychain
         // if key tag already exists, then return that key
         // if key tag is new, then generate new key
         // we don't need the key right now, so throw it away
