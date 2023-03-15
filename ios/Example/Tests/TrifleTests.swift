@@ -60,7 +60,7 @@ MIIBZTCCAQqgAwIBAgIBATAKBggqhkjOPQQDAjAYMRYwFAYDVQQDDA1pc3N1aW5nRW50aXR5MB4XDTIz
         let rootCertificate = Certificate(version: 0, certificate: rootCertEncoded)
         let isVerified = deviceCertificate.verify(
             certificateRequest: mobileCertReq,
-            certificateChain: [],
+            intermediateChain: [],
             rootCertificate: rootCertificate
         )
         
@@ -94,7 +94,7 @@ Rz2iDA1898Yx5ELtlQcl7QUGXUmadwzW7rpxQB5wIk46tPTEJCFmUIYwrCB\
         let otherRootCertificate = Certificate(version: 0, certificate: otherRootCertEncoded)
         let isVerified = deviceCertificate.verify(
             certificateRequest: mobileCertReq,
-            certificateChain: [],
+            intermediateChain: [],
             rootCertificate: otherRootCertificate
         )
         

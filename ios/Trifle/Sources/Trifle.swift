@@ -103,10 +103,13 @@ extension Certificate {
      */
     public func verify(
         certificateRequest: MobileCertificateRequest,
-        certificateChain: Array<Certificate>,
+        intermediateChain: Array<Certificate>,
         rootCertificate: Certificate
     ) -> Bool {
-        return X509TrustManager.evaluate([self] + certificateChain + [rootCertificate])
+        
+        // TBD: cross validate that csr public
+        
+        return X509TrustManager.evaluate([self] + intermediateChain + [rootCertificate])
     }
 }
 
