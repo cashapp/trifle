@@ -67,7 +67,7 @@ public class Trifle {
         certificate: [Certificate]
     ) throws -> SignedData {
         // data to be signed should not be empty
-        guard !data.isEmpty else {
+        guard !data.isEmpty || !certificate.isEmpty else {
             throw TrifleError.invalidInput
         }
         
