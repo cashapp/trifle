@@ -49,11 +49,25 @@ final class TrifleTests: XCTestCase {
         let mobileCertReq = try trifle.generateMobileCertificateRequest()
 
         let deviceCertEncoded = Data(base64Encoded: """
-MIIBGTCBwaADAgECAgYBht0eNMMwCgYIKoZIzj0EAwIwGDEWMBQGA1UEAwwNaXNzdWluZ0VudGl0eTAeFw0yMzAzMTMyMjM2MjlaFw0yMzA5MDkyMjM2MjlaMBExDzANBgNVBAMMBmVudGl0eTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABICead8cmQi2cyHHTx316w9Q64L11U86PV3RK1IDsm/xiDoa5sbShjFPm0nhd+AFoTPtsXL6SJ/bt+sndXQL5gcwCgYIKoZIzj0EAwIDRwAwRAIgBQLsaQZpa93v33J/kSIxcl2UtBPCyYYDKahIGLy7xM4CIGeiGFjglmmaiqFf30esHdL4yR0/rbkVm4h6z9O+Rjfp
+MIIBGTCBwaADAgECAgYBht0eNMMwCgYIKoZIzj0EAwIwGDEWMBQGA1\
+UEAwwNaXNzdWluZ0VudGl0eTAeFw0yMzAzMTMyMjM2MjlaFw0yMzA5\
+MDkyMjM2MjlaMBExDzANBgNVBAMMBmVudGl0eTBZMBMGByqGSM49Ag\
+EGCCqGSM49AwEHA0IABICead8cmQi2cyHHTx316w9Q64L11U86PV3R\
+K1IDsm/xiDoa5sbShjFPm0nhd+AFoTPtsXL6SJ/bt+sndXQL5gcwCg\
+YIKoZIzj0EAwIDRwAwRAIgBQLsaQZpa93v33J/kSIxcl2UtBPCyYYD\
+KahIGLy7xM4CIGeiGFjglmmaiqFf30esHdL4yR0/rbkVm4h6z9O+Rjfp
 """)!
         
         let rootCertEncoded = Data(base64Encoded: """
-MIIBZTCCAQqgAwIBAgIBATAKBggqhkjOPQQDAjAYMRYwFAYDVQQDDA1pc3N1aW5nRW50aXR5MB4XDTIzMDMxMzIyMzUzMloXDTIzMDkwOTIyMzUzMlowGDEWMBQGA1UEAwwNaXNzdWluZ0VudGl0eTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABICead8cmQi2cyHHTx316w9Q64L11U86PV3RK1IDsm/xiDoa5sbShjFPm0nhd+AFoTPtsXL6SJ/bt+sndXQL5gejRTBDMA8GA1UdEwEB/wQFMAMBAf8wDgYDVR0PAQH/BAQDAgIEMCAGA1UdDgEB/wQWBBQ/80Y00UVTlI6kiAZZ46kcrJ9a2jAKBggqhkjOPQQDAgNJADBGAiEAvffuwvImKNaolqnEr4ENB6LXEFdV0YVK3Ic3Mi+hqJ8CIQC7CiLwyvH1cChUReanIGeYiQp27LJ99M/qWLq6hmtSmQ==
+MIIBZTCCAQqgAwIBAgIBATAKBggqhkjOPQQDAjAYMRYwFAYDVQQDDA1\
+pc3N1aW5nRW50aXR5MB4XDTIzMDMxMzIyMzUzMloXDTIzMDkwOTIyMz\
+UzMlowGDEWMBQGA1UEAwwNaXNzdWluZ0VudGl0eTBZMBMGByqGSM49A\
+gEGCCqGSM49AwEHA0IABICead8cmQi2cyHHTx316w9Q64L11U86PV3R\
+K1IDsm/xiDoa5sbShjFPm0nhd+AFoTPtsXL6SJ/bt+sndXQL5gejRTB\
+DMA8GA1UdEwEB/wQFMAMBAf8wDgYDVR0PAQH/BAQDAgIEMCAGA1UdDg\
+EB/wQWBBQ/80Y00UVTlI6kiAZZ46kcrJ9a2jAKBggqhkjOPQQDAgNJA\
+DBGAiEAvffuwvImKNaolqnEr4ENB6LXEFdV0YVK3Ic3Mi+hqJ8CIQC7\
+CiLwyvH1cChUReanIGeYiQp27LJ99M/qWLq6hmtSmQ==
 """)!
         
         let deviceCertificate = Certificate(version: 0, certificate: deviceCertEncoded)
@@ -99,5 +113,25 @@ Rz2iDA1898Yx5ELtlQcl7QUGXUmadwzW7rpxQB5wIk46tPTEJCFmUIYwrCB\
         )
         
         XCTAssertFalse(isVerified)
+    }
+    
+    func testSignInvalidInput() throws {
+        let data = "hello world".data(using: .utf8)!
+        let deviceCertEncoded = Data(base64Encoded: """
+MIIBFDCBvKADAgECAgYBhtoH23kwCgYIKoZIzj0EAwIwEzERMA8GA1\
+UEAwwIY2FzaC5hcHAwHhcNMjMwMzEzMDgxMzEzWhcNMjMwOTA5MDgx\
+MzEzWjARMQ8wDQYDVQQDDAZlbnRpdHkwWTATBgcqhkjOPQIBBggqhk\
+jOPQMBBwNCAASGmNOZtRsOHr2XJVjL1jxRpeumY/jAF3rBDXhhbP49\
+5VYvMYkHfWjeNBzJ1YIqXLQf4BHdQQzDjSvT+abzpdjEMAoGCCqGSM\
+49BAMCA0cAMEQCIBXBwAm0Qn7S4vKRIHYLXDxhUQTqMuReoWBPfiOX\
+fREnAiByNBjSwVxp980/Nl17UvkBUNhTvp55CNuwMmlnporNNA==
+""")!
+        
+        let trifle = try Trifle(tag: tag)
+        let kh = try trifle.getKeyHandle()
+        let deviceCertificate = Certificate(version: 0, certificate: deviceCertEncoded)
+
+        XCTAssertThrowsError(try trifle.createSignedData(data: data, keyHandle: kh, certificate: []),"Invalid input")
+        XCTAssertThrowsError(try trifle.createSignedData(data: Data.init(), keyHandle: kh, certificate: [deviceCertificate]), "Invalid input")
     }
 }

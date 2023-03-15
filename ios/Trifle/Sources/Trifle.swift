@@ -67,7 +67,7 @@ public class Trifle {
         certificate: [Certificate]
     ) throws -> SignedData {
         // data to be signed should not be empty
-        guard !data.isEmpty || !certificate.isEmpty else {
+        guard !data.isEmpty && !certificate.isEmpty else {
             throw TrifleError.invalidInput
         }
         
@@ -114,8 +114,8 @@ extension Certificate {
 }
 
 public enum TrifleError: LocalizedError {
-    case invalidInput
     case unavailableKey
+    case invalidInput
     case unhandled(Error)
     
     public var errorDescription: String? {
@@ -123,7 +123,7 @@ public enum TrifleError: LocalizedError {
         case .unavailableKey:
             return "No such key is available"
         case .invalidInput:
-            return ""
+            return "Invalid input"
         case let .unhandled(error):
             return error.localizedDescription
 
