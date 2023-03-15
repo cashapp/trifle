@@ -13,12 +13,12 @@ protocol DigitalSignatureKeyManager {
     static var keyInfo: KeyInfo { get }
     
     /**
-     Fetches the signing key
+     Fetches the signing key. If key does not exist, generate a new key.
      
      - throws: an error type `CryptographicKeyError`
      - returns: the private key for signing
      */
-    func signingKey() throws -> PrivateKey
+    func createOrLoadSigningKey() throws -> PrivateKey
 
     /**
      Fetches the verifying key

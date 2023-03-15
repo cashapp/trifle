@@ -27,7 +27,7 @@ public class SecureEnclaveDigitalSignatureKeyManager
     public init(tag: String) throws {
         guard !tag.isEmpty else {
             // tag should not be empty
-            throw TrifleError.invalidInput("Tag cannot be empty")
+            throw TrifleError.invalidInput
         }
         self.tag = tag
     }
@@ -35,7 +35,8 @@ public class SecureEnclaveDigitalSignatureKeyManager
     // MARK: - Public Methods (DigitalSignatureSigner)
 
     public func sign(with data: Data) throws -> DigitalSignature {
-        let signature = try signingKey().sign(with: data)
+        // key must exist already
+        let signature = try loadKey().sign(with: data)
         return DigitalSignature(
             signingAlgorithm: Self.keyInfo.signingAlgorithm,
             data: signature
@@ -55,7 +56,7 @@ public class SecureEnclaveDigitalSignatureKeyManager
         // if key tag already exists, then return that key
         // if key tag is new, then generate new key
         // we don't need the key right now, so throw it away
-        _ = try signingKey()
+        _ = try createOrLoadSigningKey()
         
         // create a keyHandle
         return KeyHandle(tag: self.tag)
@@ -72,22 +73,21 @@ public class SecureEnclaveDigitalSignatureKeyManager
 
     // MARK: - Internal Methods (DigitalSignatureKeyManager)
 
-    internal func signingKey() throws -> SecureEnclaveSigningKey {
+    internal func createOrLoadSigningKey() throws -> SecureEnclaveSigningKey {
         let signingAlgorithm = Self.keyInfo.signingAlgorithm.attrs
 
-        guard try keyExists() else {
+        if try keyExists() {
+            return try loadSigningKey()
+        } else {
             return try SecureEnclaveSigningKey(generateKeypair(), signingAlgorithm)
         }
-        
-        var keyRef: CFTypeRef?
-        let preparedQuery = SecureEnclaveKeychainQueries.getQuery(with: tag, returnRef: true)
-        SecItemCopyMatching(preparedQuery, &keyRef)
-        
-        return try SecureEnclaveSigningKey(keyRef as! SecKey, signingAlgorithm)
     }
     
+    // MARK: - Internal Methods (DigitalSignatureKeyManager)
+
     internal func verifyingKey() throws -> SecureEnclaveVerifyingKey {
-        let signingKey = try signingKey()
+        // load key if it exists, else throw
+        let signingKey = try loadKey()
 
         guard let publicKey = SecKeyCopyPublicKey(signingKey.privateKey) else {
             throw CryptographicKeyError.unavailablePublicKey
@@ -95,9 +95,31 @@ public class SecureEnclaveDigitalSignatureKeyManager
 
         return try SecureEnclaveVerifyingKey(publicKey, Self.keyInfo.signingAlgorithm.attrs)
     }
-    
-    // MARK: -
-    
+
+    // MARK: - Private Methods
+
+    private func loadKey() throws -> SecureEnclaveSigningKey {
+        // if key exists, return it
+        // otherwise throw
+        if try keyExists() {
+            return try loadSigningKey()
+        } else {
+            throw CryptographicKeyError.unavailableKey
+        }
+    }
+
+    private func loadSigningKey() throws -> SecureEnclaveSigningKey {
+        // assume key exists. (caller must have checked with keyExists())
+        // return key
+        let signingAlgorithm = Self.keyInfo.signingAlgorithm.attrs
+
+        var keyRef: CFTypeRef?
+        let preparedQuery = SecureEnclaveKeychainQueries.getQuery(with: tag, returnRef: true)
+        SecItemCopyMatching(preparedQuery, &keyRef)
+        
+        return try SecureEnclaveSigningKey(keyRef as! SecKey, signingAlgorithm)
+    }
+
     private func generateKeypair() throws -> SecKey {
         let (keyType, keySize) = Self.keyInfo.curve.attrs
         let attributes = try SecureEnclaveKeychainQueries.attributes(

@@ -51,24 +51,42 @@ public class Trifle {
     }
     
     /**
-     // TODO(dcashman): define message format //
      Sign the provided data with the provided key, including appropriate Trifle
      metadata, such as the accompanying certificate.
 
      - parameters: data - raw data to be signed.
-     - parameters: certificate - certificate to be included in the SignedData message.
-        Must match the key in keyHandle.
+     - parameters: key handle - key to sign data.
+     - parameters: certificates - list of certificates to be included in the SignedData message.
+        Lead certificate must match the key in keyHandle.
 
      - returns:`SignedData` - signed data message in the Trifle format.
     */
     public func createSignedData(
         data: Data,
         keyHandle: KeyHandle,
-        certificate: Certificate
-    ) -> SignedData {
-        // TODO: IMPLEMENT
-        SignedData()
+        certificate: [Certificate]
+    ) throws -> SignedData {
+        // data to be signed should not be empty
+        guard !data.isEmpty else {
+            throw TrifleError.invalidInput
+        }
+        
+        // check if keyhandle matches an existing key
+        if ( try contentSigner.getKeyHandle() != keyHandle ) {
+            throw TrifleError.unavailableKey
+        }
+        
+        // TBD (gelareh): check if key matches certificate
+        
+        // sign data
+        let signature = try contentSigner.sign(with: data)
+        
+        return SignedData(raw_data: data, signature: signature.data, certificates: certificate)
     }
+    
+    // MARK: - Private Methods
+    
+
 }
 
 extension Certificate {
@@ -94,12 +112,19 @@ extension Certificate {
 }
 
 public enum TrifleError: LocalizedError {
-    case invalidInput(String)
-
+    case invalidInput
+    case unavailableKey
+    case unhandled(Error)
+    
     public var errorDescription: String? {
         switch self {
-        case let .invalidInput(error) :
-            return error
+        case .unavailableKey:
+            return "No such key is available"
+        case .invalidInput:
+            return ""
+        case let .unhandled(error):
+            return error.localizedDescription
+
         }
     }
 }

@@ -59,6 +59,7 @@ enum CryptographicKeyError: LocalizedError {
     case unavailablePublicKey
     case unexportablePublicKey
     case unsupportedAlgorithm
+    case unavailableKey
     case unhandled(Error)
     
     public var errorDescription: String? {
@@ -69,6 +70,8 @@ enum CryptographicKeyError: LocalizedError {
             return "Public key cannot be exported."
         case .unsupportedAlgorithm:
             return "Invalid algorithm used."
+        case .unavailableKey:
+            return "Private key is unavailable."
         case let .unhandled(error):
             return error.localizedDescription
         }
