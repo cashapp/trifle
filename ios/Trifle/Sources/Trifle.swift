@@ -104,10 +104,9 @@ extension Certificate {
     public func verify(
         certificateRequest: MobileCertificateRequest,
         certificateChain: Array<Certificate>,
-        rootCertificate: Certificate? = nil
+        rootCertificate: Certificate
     ) -> Bool {
-        // TODO: Implement
-        return true
+        return X509TrustManager.evaluate([self] + certificateChain + [rootCertificate])
     }
 }
 
