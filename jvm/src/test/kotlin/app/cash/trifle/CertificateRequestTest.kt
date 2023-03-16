@@ -1,7 +1,6 @@
 package app.cash.trifle
 
 import app.cash.trifle.internal.TrifleAlgorithmIdentifier
-import app.cash.trifle.internal.signers.TinkContentSigner
 import app.cash.trifle.internal.signers.TrifleContentSigner
 import app.cash.trifle.internal.util.TestFixtures
 import com.google.crypto.tink.signature.SignatureConfig
@@ -30,7 +29,6 @@ internal class CertificateRequestTest {
 
   @BeforeEach
   fun setUp() {
-    SignatureConfig.register()
     Security.addProvider(BouncyCastleProvider())
   }
 
@@ -49,7 +47,7 @@ internal class CertificateRequestTest {
     val keyPair: KeyPair = generator.generateKeyPair()
     val keyPair2: KeyPair = generator.generateKeyPair()
     val outputStream = ByteArrayOutputStream()
-    val noopTrifleContentSigner = object: TrifleContentSigner() {
+    val mismatchedTrifleContentSigner = object: TrifleContentSigner {
       override fun subjectPublicKeyInfo(): SubjectPublicKeyInfo =
         SubjectPublicKeyInfo.getInstance(keyPair.public.encoded)
 
@@ -72,8 +70,8 @@ internal class CertificateRequestTest {
 
     val pkcs10Request = PKCS10CertificationRequestBuilder(
       X500Name("CN=testName"),
-      noopTrifleContentSigner.subjectPublicKeyInfo()
-    ).build(noopTrifleContentSigner)
+      mismatchedTrifleContentSigner.subjectPublicKeyInfo()
+    ).build(mismatchedTrifleContentSigner)
     val certificateRequest = CertificateRequest.PKCS10Request(pkcs10Request.encoded.toByteString())
 
     assertFalse(certificateRequest.verify())
@@ -84,7 +82,7 @@ internal class CertificateRequestTest {
     // Choose an unsupported signing algorithm type.
     val keyPair = KeyPairGenerator.getInstance("DSA").generateKeyPair();
     val outputStream = ByteArrayOutputStream()
-    val unsupportedTrifleContentSigner = object: TrifleContentSigner() {
+    val unsupportedTrifleContentSigner = object: TrifleContentSigner {
       override fun subjectPublicKeyInfo(): SubjectPublicKeyInfo =
         SubjectPublicKeyInfo.getInstance(keyPair.public.encoded)
 
@@ -110,11 +108,11 @@ internal class CertificateRequestTest {
       unsupportedTrifleContentSigner.subjectPublicKeyInfo()
     ).build(unsupportedTrifleContentSigner)
     val certificateRequest = CertificateRequest.PKCS10Request(pkcs10Request.encoded.toByteString())
-    val exception = assertThrows<PKCSException> {
-      certificateRequest.verify()
-    }
-    assertEquals(
-      "unable to process signature: Unknown/unsupported AlgorithmId provided to obtain Trifle ContentVerifier",
-      exception.message)
+    val exception =
+      assertThrows<PKCSException>(
+        "unable to process signature: Unknown/unsupported AlgorithmId provided to obtain Trifle ContentVerifier")
+      {
+        certificateRequest.verify()
+      }
   }
 }
