@@ -8,26 +8,26 @@ import XCTest
 
 final class TrifleTests: XCTestCase {
 
-    let tag = "app.cash.trifle.s2dk.keys.digital_signature"
+    let reverseDomain = "app.cash.trifle.keys"
 
    
     func testInit() throws {
-        let trifle = try Trifle(tag: tag)
+        let trifle = try Trifle(reverseDomain: reverseDomain)
         XCTAssertNotNil(trifle)
     }
 
     func testInitEmptyTag() throws {
-        XCTAssertThrowsError(try Trifle(tag: ""), "Tag cannot be empty")
+        XCTAssertThrowsError(try Trifle(reverseDomain: ""), "Tag cannot be empty")
     }
 
     func testGetKeyHandle() throws {
-        let trifle = try Trifle(tag: tag)
-        let keyHandle = try trifle.getKeyHandle()
+        let trifle = try Trifle(reverseDomain: reverseDomain)
+        let keyHandle = try trifle.generateKeyHandle()
                 
         // serialize
         let encoder = JSONEncoder()
         let jsonData = try encoder.encode(keyHandle)
-        XCTAssertEqual(String(data: jsonData, encoding: .utf8)!, "{\"tag\":\"" + tag + "\"}")
+        XCTAssertEqual(String(data: jsonData, encoding: .utf8)!, "{\"tag\":\"" + keyHandle.tag + "\"}")
 
         // de-serialized
         let decoder = JSONDecoder()
@@ -37,16 +37,19 @@ final class TrifleTests: XCTestCase {
 
     
     func testGenerateMobileCertificateRequest() throws {
-        let trifle = try Trifle(tag: tag)
-        let mobileCertReq = try trifle.generateMobileCertificateRequest()
+        let trifle = try Trifle(reverseDomain: reverseDomain)
+        let keyHandle = try trifle.generateKeyHandle()
+        let mobileCertReq = try trifle.generateMobileCertificateRequest(keyHandle: keyHandle)
         
         XCTAssertEqual(mobileCertReq.version, 0)
         XCTAssertNotNil(mobileCertReq.pkcs10_request)
     }
     
     func testVerifyCertificate_succeeds() throws {
-        let trifle = try Trifle(tag: tag)
-        let mobileCertReq = try trifle.generateMobileCertificateRequest()
+        let trifle = try Trifle(reverseDomain: reverseDomain)
+        let keyHandle = try trifle.generateKeyHandle()
+        
+        let mobileCertReq = try trifle.generateMobileCertificateRequest(keyHandle: keyHandle)
 
         let deviceCertEncoded = Data(base64Encoded: """
 MIIBGTCBwaADAgECAgYBht0eNMMwCgYIKoZIzj0EAwIwGDEWMBQGA1UEAwwNaXNzdWluZ0VudGl0eTAeFw0yMzAzMTMyMjM2MjlaFw0yMzA5MDkyMjM2MjlaMBExDzANBgNVBAMMBmVudGl0eTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABICead8cmQi2cyHHTx316w9Q64L11U86PV3RK1IDsm/xiDoa5sbShjFPm0nhd+AFoTPtsXL6SJ/bt+sndXQL5gcwCgYIKoZIzj0EAwIDRwAwRAIgBQLsaQZpa93v33J/kSIxcl2UtBPCyYYDKahIGLy7xM4CIGeiGFjglmmaiqFf30esHdL4yR0/rbkVm4h6z9O+Rjfp
@@ -68,8 +71,10 @@ MIIBZTCCAQqgAwIBAgIBATAKBggqhkjOPQQDAjAYMRYwFAYDVQQDDA1pc3N1aW5nRW50aXR5MB4XDTIz
     }
     
     func testVerifyCertificate_fails() throws {
-        let trifle = try Trifle(tag: tag)
-        let mobileCertReq = try trifle.generateMobileCertificateRequest()
+        let trifle = try Trifle(reverseDomain: reverseDomain)
+        let keyHandle = try trifle.generateKeyHandle()
+        
+        let mobileCertReq = try trifle.generateMobileCertificateRequest(keyHandle: keyHandle)
 
         let deviceCertEncoded = Data(base64Encoded: """
 MIIBFDCBvKADAgECAgYBhtoH23kwCgYIKoZIzj0EAwIwEzERMA8GA1\

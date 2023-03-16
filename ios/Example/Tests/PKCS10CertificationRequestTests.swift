@@ -9,8 +9,9 @@ import XCTest
 final class PKCS10CertificationRequestTests: XCTestCase {
     func testDERPkcs10() throws {
         let manager = try SecureEnclaveDigitalSignatureKeyManager(
-            tag: "app.cash.trifle.keys.digital_signature.pkcs10"
+            reverseDomain: "app.cash.trifle.keys"
         )
+        let tag = try manager.generateTag()
         
         let pkcs10CertReq = try PKCS10CertificationRequest.Builder()
             .addName(.commonName("cash.app"))
@@ -23,7 +24,7 @@ final class PKCS10CertificationRequestTests: XCTestCase {
                     [try ASN1IA5String("helloworld")]
                 )
             )
-            .sign(with: manager)
+            .sign(for: tag, with: manager)
         
         XCTAssertNoThrow(try pkcs10CertReq.pem())
     }

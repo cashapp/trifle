@@ -15,5 +15,5 @@ public protocol DigitalSignatureVerifier {
         verifying key being unavailable.
      - returns: true if the signature is verified, false otherwise
      */
-    func verify(data: Data, with signature: Data) throws -> Bool
+    func verify(for tag: String, data: Data, with signature: Data) throws -> Bool
 }

@@ -18,7 +18,7 @@ protocol DigitalSignatureKeyManager {
      - throws: an error type `CryptographicKeyError`
      - returns: the private key for signing
      */
-    func signingKey() throws -> PrivateKey
+    func signingKey(_ tag: String) throws -> PrivateKey
 
     /**
      Fetches the verifying key
@@ -26,5 +26,5 @@ protocol DigitalSignatureKeyManager {
      - throws: an error type `CryptographicKeyError`
      - returns: the public key for verifying
      */
-    func verifyingKey() throws -> PublicKey
+    func verifyingKey(_ tag: String) throws -> PublicKey
 }

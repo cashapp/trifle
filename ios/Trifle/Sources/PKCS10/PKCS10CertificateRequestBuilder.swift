@@ -35,14 +35,15 @@ extension PKCS10CertificationRequest {
             return self
         }
         
-        func sign(with signer: ContentSigner) throws
+        func sign(for tag: String, with signer: ContentSigner) throws
         -> PKCS10CertificationRequest {
             let certificateRequestInfo =
             try buildCertificateRequestInfo(
-                with: try signer.exportPublicKey()
+                with: try signer.exportPublicKey(tag)
             )
             
             let signature = try signer.sign(
+                for: tag,
                 with: Data(certificateRequestInfo.octets)
             )
 

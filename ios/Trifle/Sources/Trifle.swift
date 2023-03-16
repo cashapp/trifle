@@ -21,28 +21,39 @@ public class Trifle {
      automatically try to choose the best algorithm and key type available on
      this device.
      */
-    public init(tag: String) throws {
+    public init(reverseDomain: String) throws {
         self.contentSigner =
-        try SecureEnclaveDigitalSignatureKeyManager(tag: tag)
+        try SecureEnclaveDigitalSignatureKeyManager(reverseDomain: reverseDomain)
     }
-        
-    public func getKeyHandle() throws -> KeyHandle {
+    
+    /**
+      Create a new mobile Trifle keypair for which can be used to create a
+      certificate request and to sign messages. The library (Trifle) will
+      automatically try to choose the best algorithm and key type available on
+      this device.
+     
+      - returns: KeyHandle An opaque Trifle representation of the key-pair,
+         which the client will need to store.
+    */
+    public func generateKeyHandle() throws -> KeyHandle {
         // currently we support only (Secure Enclave, EC-P256)
-        return try contentSigner.getKeyHandle()
+        return KeyHandle(tag: try contentSigner.generateTag())
     }
         
     /**
      Generate a Trifle MobileCertificateRequest, signed by the provided
      keyHandle, that can be presented to the Certificate Authority (CA) for
      verification.
-     
+
+     - parameters: keyHandle - key handle used for the signing.
+
      - returns: An opaque Trifle representation
         `MobileCertificateRequest` of the certificate request.
      */
-    public func generateMobileCertificateRequest() throws
+    public func generateMobileCertificateRequest(keyHandle: KeyHandle) throws
     -> MobileCertificateRequest {
         let csr = try PKCS10CertificationRequest.Builder()
-            .sign(with: contentSigner)
+            .sign(for: keyHandle.tag, with: contentSigner)
             
         return MobileCertificateRequest(
             version: Self.mobileCertificateRequestVersion,
@@ -56,6 +67,7 @@ public class Trifle {
      metadata, such as the accompanying certificate.
 
      - parameters: data - raw data to be signed.
+     - parameters: keyHandle - key handle used for the signing.
      - parameters: certificate - certificate to be included in the SignedData message.
         Must match the key in keyHandle.
 
@@ -82,6 +94,8 @@ extension Certificate {
         the root certificate.
      - parameters: rootCertificate - certificate to use as root of chain.
         Defaults to the root certificate bundled with Trifle.
+     
+     - returns: true if validated, false otherwise
      */
     public func verify(
         certificateRequest: MobileCertificateRequest,
