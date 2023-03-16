@@ -31,7 +31,7 @@ import java.security.spec.ECPublicKeySpec
  */
 internal class TinkContentSigner(
   private val privateKeysetHandle: KeysetHandle,
-) : TrifleContentSigner() {
+) : TrifleContentSigner {
   private val outputStream: ByteArrayOutputStream = ByteArrayOutputStream()
   private val publicKeySign: PublicKeySign by lazy {
     privateKeysetHandle.getPrimitive(PublicKeySign::class.java)

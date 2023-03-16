@@ -20,7 +20,7 @@ import java.security.Signature
 @VisibleForTesting
 internal class JCAContentSigner(
   private val keyPair: KeyPair,
-) : TrifleContentSigner() {
+) : TrifleContentSigner {
   private val outputStream: ByteArrayOutputStream = ByteArrayOutputStream()
 
   override fun subjectPublicKeyInfo(): SubjectPublicKeyInfo {
