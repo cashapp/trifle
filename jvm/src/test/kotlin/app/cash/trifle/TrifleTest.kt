@@ -1,7 +1,7 @@
 package app.cash.trifle
 
+import app.cash.trifle.delegate.TinkDelegate
 import app.cash.trifle.internal.providers.BCContentVerifierProvider
-import app.cash.trifle.internal.signers.TinkContentSigner
 import app.cash.trifle.internal.util.TestFixtures
 import app.cash.trifle.internal.util.TestFixtures.RAW_ECDSA_P256_KEY_TEMPLATE
 import app.cash.trifle.protos.api.alpha.MobileCertificateRequest
@@ -12,8 +12,6 @@ import okio.ByteString.Companion.toByteString
 import org.bouncycastle.asn1.x500.X500Name
 import org.bouncycastle.cert.CertException
 import org.bouncycastle.cert.X509CertificateHolder
-import org.bouncycastle.pkcs.PKCS10CertificationRequest
-import org.bouncycastle.pkcs.PKCSException
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -23,27 +21,26 @@ import org.junit.jupiter.api.assertThrows
 import java.time.Duration
 import java.time.Period
 
-internal class CertificateUtilTest {
-  private lateinit var ed25519PrivateKeysetHandle: KeysetHandle
-  private lateinit var ed25519ContentSigner: TinkContentSigner
-  private lateinit var p256PrivateKeysetHandle: KeysetHandle
-  private lateinit var p256ContentSigner: TinkContentSigner
+internal class TrifleTest {
+  private lateinit var certificateAuthority: Trifle.CertificateAuthority
+  private lateinit var mobileClient: Trifle.EndEntity
 
   @BeforeEach
   fun setUp() {
     SignatureConfig.register()
 
-    ed25519PrivateKeysetHandle = KeysetHandle.generateNew(KeyTemplates.get("ED25519WithRawOutput"))
-    ed25519ContentSigner = TinkContentSigner(ed25519PrivateKeysetHandle)
-
-    p256PrivateKeysetHandle = KeysetHandle.generateNew(RAW_ECDSA_P256_KEY_TEMPLATE)
-    p256ContentSigner = TinkContentSigner(p256PrivateKeysetHandle)
+    certificateAuthority = Trifle.CertificateAuthority(
+      KeysetHandle.generateNew(KeyTemplates.get("ED25519WithRawOutput"))
+    )
+    mobileClient = Trifle.EndEntity(
+      KeysetHandle.generateNew(RAW_ECDSA_P256_KEY_TEMPLATE)
+    )
   }
 
   @Test
   fun `test createRootSigningCertificate validity period`() {
-    val cert = CertificateUtil.createRootSigningCertificate(
-      "entity", Period.ofDays(1), ed25519ContentSigner
+    val cert = certificateAuthority.createRootSigningCertificate(
+      "entity", Period.ofDays(1)
     )
 
     val certHolder = X509CertificateHolder(cert.certificate)
@@ -57,8 +54,8 @@ internal class CertificateUtilTest {
 
   @Test
   fun `test createRootSigningCertificate certificate entity`() {
-    val cert = CertificateUtil.createRootSigningCertificate(
-      "entity", Period.ofDays(1), ed25519ContentSigner
+    val cert = certificateAuthority.createRootSigningCertificate(
+      "entity", Period.ofDays(1)
     )
 
     // Extract cert and then entity value.
@@ -68,8 +65,8 @@ internal class CertificateUtilTest {
 
   @Test
   fun `test createRootSigningCertificate certificate issuer`() {
-    val cert = CertificateUtil.createRootSigningCertificate(
-      "entity", Period.ofDays(1), ed25519ContentSigner
+    val cert = certificateAuthority.createRootSigningCertificate(
+      "entity", Period.ofDays(1)
     )
 
     // Extract cert and then entity value.
@@ -80,8 +77,8 @@ internal class CertificateUtilTest {
   @Test
   fun `test createRootSigningCertificate signing`() {
     // Create root signing cert using our keyset.  Root cert is self-signed.
-    val signingCert = CertificateUtil.createRootSigningCertificate(
-      "entity", Period.ofDays(1), ed25519ContentSigner
+    val signingCert = certificateAuthority.createRootSigningCertificate(
+      "entity", Period.ofDays(1)
     )
 
     // Extract the x.509 certificate from our object.
@@ -95,10 +92,13 @@ internal class CertificateUtilTest {
     )
 
     // Different key should not verify
-    val otherCert = CertificateUtil.createRootSigningCertificate(
-      "entity",
-      Period.ofDays(1),
-      TinkContentSigner(KeysetHandle.generateNew(KeyTemplates.get("ED25519WithRawOutput")))
+    val otherCertificateAuthority = Trifle.CertificateAuthority(
+      TinkDelegate(
+        KeysetHandle.generateNew(KeyTemplates.get("ED25519WithRawOutput"))
+      )
+    )
+    val otherCert = otherCertificateAuthority.createRootSigningCertificate(
+      "entity", Period.ofDays(1),
     )
     assertFalse(
       certHolder.isSignatureValid(
@@ -115,59 +115,44 @@ internal class CertificateUtilTest {
   fun `test createMobileCertRequest version`() {
     // Create mobile signing certificate, which represents the request which would come from a
     // mobile client.
-    val mobileCertRequest =
-      CertificateUtil.createMobileCertRequest("entity", p256ContentSigner)
+    val certRequest = mobileClient.createCertRequest("entity")
+    val mobileCertRequest = MobileCertificateRequest.ADAPTER.decode(certRequest.serialize())
 
     assertEquals(0u, mobileCertRequest.version!!.toUInt())
   }
 
   @Test
-  fun `test createMobileCertRequest entity`() {
+  fun `test createCertRequest entity`() {
     // Create mobile signing certificate, which represents the request which would come from a
     // mobile client.
-    val mobileCertRequest =
-      CertificateUtil.createMobileCertRequest("entity", p256ContentSigner)
+    val certRequest = mobileClient.createCertRequest("entity")
 
-    val pkcs10CertificateRequest =
-      PKCS10CertificationRequest(mobileCertRequest.pkcs10_request!!.toByteArray())
-
+    check(certRequest is CertificateRequest.PKCS10Request)
     // Make sure the cert request has the appropriate entity name
-    assertEquals(X500Name("CN=entity"), pkcs10CertificateRequest.subject)
+    assertEquals(X500Name("CN=entity"), certRequest.pkcs10Req.subject)
   }
 
   @Test
-  fun `test createMobileCertRequest signing`() {
+  fun `test createCertRequest signing`() {
     // Create mobile signing certificate, which represents the request which would come from a
     // mobile client.
-    val mobileCertRequest =
-      CertificateUtil.createMobileCertRequest("entity", p256ContentSigner)
-
-    val pkcs10CertificateRequest =
-      PKCS10CertificationRequest(mobileCertRequest.pkcs10_request!!.toByteArray())
+    val certRequest = mobileClient.createCertRequest("entity")
 
     // Make sure that the resulting pkcs10 request is signed by the appropriate key.
     assertTrue(
-      pkcs10CertificateRequest.isSignatureValid(
-        BCContentVerifierProvider(
-          p256ContentSigner.subjectPublicKeyInfo()
-        )
-      )
+      certRequest.verify()
     )
-
-    // While we're here, make sure that any other keysets don't verify.
-    assertThrows<PKCSException> {
-      pkcs10CertificateRequest.isSignatureValid(
-        BCContentVerifierProvider(
-          ed25519ContentSigner.subjectPublicKeyInfo()
-        )
-      )
-    }
   }
 
   @Test
   fun `test signCertificate validity period`() {
+    // Create local copy of issuingCert for use in verifying signature.
+    val issuingCert = certificateAuthority.createRootSigningCertificate(
+      "issuingEntity", Period.ofDays(1)
+    )
+
     val certHolder =
-      X509CertificateHolder(createTestMobileSignedCert().certificate)
+      X509CertificateHolder(createTestMobileSignedCert(issuingCert).certificate)
     val duration =
       Duration.ofMillis(
         certHolder.notAfter.toInstant().minusMillis(certHolder.notBefore.toInstant().toEpochMilli())
@@ -178,18 +163,28 @@ internal class CertificateUtilTest {
 
   @Test
   fun `test signCertificate certificate entity`() {
+    // Create local copy of issuingCert for use in verifying signature.
+    val issuingCert = certificateAuthority.createRootSigningCertificate(
+      "issuingEntity", Period.ofDays(1)
+    )
+
     // Extract cert and then entity value.
     val certHolder = X509CertificateHolder(
-      createTestMobileSignedCert().certificate
+      createTestMobileSignedCert(issuingCert).certificate
     )
     assertEquals("CN=entity", certHolder.subject.toString())
   }
 
   @Test
   fun `test signCertificate certificate issuer`() {
+    // Create local copy of issuingCert for use in verifying signature.
+    val issuingCert = certificateAuthority.createRootSigningCertificate(
+      "issuingEntity", Period.ofDays(1)
+    )
+
     // Extract cert and then entity value.
     val certHolder = X509CertificateHolder(
-      createTestMobileSignedCert().certificate
+      createTestMobileSignedCert(issuingCert).certificate
     )
     assertEquals("CN=issuingEntity", certHolder.issuer.toString())
   }
@@ -197,12 +192,12 @@ internal class CertificateUtilTest {
   @Test
   fun `test signCertificate signing`() {
     // Create local copy of issuingCert for use in verifying signature.
-    val issuingCert = CertificateUtil.createRootSigningCertificate(
-      "issuingEntity", Period.ofDays(1), ed25519ContentSigner
+    val issuingCert = certificateAuthority.createRootSigningCertificate(
+      "issuingEntity", Period.ofDays(1)
     )
 
     // Extract the x.509 certificate from our object.
-    val certHolder = X509CertificateHolder(createTestMobileSignedCert().certificate)
+    val certHolder = X509CertificateHolder(createTestMobileSignedCert(issuingCert).certificate)
     val issuingCertHolder = X509CertificateHolder(issuingCert.certificate)
 
     // Cert should verify when presented with issuing cert
@@ -223,17 +218,17 @@ internal class CertificateUtilTest {
   @Test
   fun `test signCertificate signing from CSR with raw p256 public key`() {
     // Create local copy of issuingCert for use in verifying signature.
-    val issuingCert = CertificateUtil.createRootSigningCertificate(
-      "issuingEntity", Period.ofDays(1), ed25519ContentSigner
+    val issuingCert = certificateAuthority.createRootSigningCertificate(
+      "issuingEntity", Period.ofDays(1)
     )
 
     // Extract the x.509 certificate from our object.
-    val certHolder = X509CertificateHolder(createTestMobileSignedCert {
-      CertificateUtil.mobileCertRequestToCertRequest(
+    val certHolder = X509CertificateHolder(createTestMobileSignedCert(issuingCert) {
+      CertificateRequest.deserialize(
         MobileCertificateRequest(
           0,
           TestFixtures.PKCS10Request.toByteString()
-        ).encodeByteString()
+        ).encode()
       )
     }.certificate)
     val issuingCertHolder = X509CertificateHolder(issuingCert.certificate)
@@ -247,23 +242,15 @@ internal class CertificateUtilTest {
   }
 
   private fun createTestMobileSignedCert(
+    issuingCert: Certificate,
     csrProvider: (() -> CertificateRequest)? = null
   ): Certificate {
-    val issuingCert = CertificateUtil.createRootSigningCertificate(
-      "issuingEntity", Period.ofDays(1), ed25519ContentSigner
-    )
-
     val certRequest = if (csrProvider == null) {
-      CertificateUtil.mobileCertRequestToCertRequest(
-        CertificateUtil.createMobileCertRequest(
-          "entity",
-          p256ContentSigner
-        ).encodeByteString()
-      )
+      mobileClient.createCertRequest("entity")
     } else {
       csrProvider()
     }
 
-    return CertificateUtil.signCertificate(issuingCert, certRequest, ed25519ContentSigner)
+    return certificateAuthority.signCertificate(issuingCert, certRequest)
   }
 }
