@@ -1,7 +1,7 @@
 package app.cash.trifle
 
-import app.cash.trifle.protos.api.alpha.Certificate as CertificateProto
 import okio.ByteString.Companion.toByteString
+import app.cash.trifle.protos.api.alpha.Certificate as CertificateProto
 
 /*
  * Class representing a Trifle certificate.
@@ -21,6 +21,7 @@ class Certificate internal constructor(internal val certificate: ByteArray) {
 
   companion object {
     private const val CERTIFICATE_VERSION: Int = 0
+
     /**
      * Create a Trifle Certificate from its binary representation, which is a serialized proto for
      * this purpose containing an x.509 cert.

@@ -26,17 +26,18 @@ internal object TestFixtures {
 
   // Tink Java does not surface a default template for ecdsa p-256 key template with
   // DER signature encoding and RAW output prefix type (excludes Tink's preamble)
-  val RAW_ECDSA_P256_KEY_TEMPLATE: KeyTemplate get() {
-    val params: EcdsaParams = EcdsaParams.newBuilder()
-      .setHashType(HashType.SHA256)
-      .setCurve(EllipticCurveType.NIST_P256)
-      .setEncoding(EcdsaSignatureEncoding.DER)
-      .build()
-    val format = EcdsaKeyFormat.newBuilder().setParams(params).build()
-    return KeyTemplate.create(
-      SignatureConfig.ECDSA_PRIVATE_KEY_TYPE_URL,
-      format.toByteArray(),
-      KeyTemplate.OutputPrefixType.RAW
-    )
-  }
+  val RAW_ECDSA_P256_KEY_TEMPLATE: KeyTemplate
+    get() {
+      val params: EcdsaParams = EcdsaParams.newBuilder()
+        .setHashType(HashType.SHA256)
+        .setCurve(EllipticCurveType.NIST_P256)
+        .setEncoding(EcdsaSignatureEncoding.DER)
+        .build()
+      val format = EcdsaKeyFormat.newBuilder().setParams(params).build()
+      return KeyTemplate.create(
+        SignatureConfig.ECDSA_PRIVATE_KEY_TYPE_URL,
+        format.toByteArray(),
+        KeyTemplate.OutputPrefixType.RAW
+      )
+    }
 }
