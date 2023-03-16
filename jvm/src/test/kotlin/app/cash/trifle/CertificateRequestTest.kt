@@ -1,5 +1,6 @@
 package app.cash.trifle
 
+import app.cash.trifle.internal.TrifleAlgorithmIdentifier
 import app.cash.trifle.internal.signers.TinkContentSigner
 import app.cash.trifle.internal.signers.TrifleContentSigner
 import app.cash.trifle.internal.util.TestFixtures
@@ -52,7 +53,7 @@ internal class CertificateRequestTest {
       override fun subjectPublicKeyInfo(): SubjectPublicKeyInfo =
         SubjectPublicKeyInfo.getInstance(keyPair.public.encoded)
 
-      override fun getAlgorithmIdentifier(): AlgorithmIdentifier = subjectPublicKeyInfo().algorithm
+      override fun getAlgorithmIdentifier(): AlgorithmIdentifier = TrifleAlgorithmIdentifier.ECDSASha256AlgorithmIdentifier
 
       override fun getOutputStream(): OutputStream = outputStream
 
@@ -74,12 +75,6 @@ internal class CertificateRequestTest {
       noopTrifleContentSigner.subjectPublicKeyInfo()
     ).build(noopTrifleContentSigner)
     val certificateRequest = CertificateRequest.PKCS10Request(pkcs10Request.encoded.toByteString())
-    val exception = assertThrows<PKCSException> {
-      certificateRequest.verify()
-    }
-    assertEquals(
-      "unable to process signature: Unknown/unsupported AlgorithmId provided to obtain Trifle ContentVerifier",
-      exception.message)
 
     assertFalse(certificateRequest.verify())
   }
