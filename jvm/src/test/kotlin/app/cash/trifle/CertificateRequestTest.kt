@@ -46,8 +46,9 @@ internal class CertificateRequestTest {
 
     val keyPair: KeyPair = generator.generateKeyPair()
     val keyPair2: KeyPair = generator.generateKeyPair()
-    val outputStream = ByteArrayOutputStream()
     val mismatchedTrifleContentSigner = object: TrifleContentSigner {
+      val outputStream = ByteArrayOutputStream()
+
       override fun subjectPublicKeyInfo(): SubjectPublicKeyInfo =
         SubjectPublicKeyInfo.getInstance(keyPair.public.encoded)
 
@@ -81,8 +82,9 @@ internal class CertificateRequestTest {
   fun verifyUnknownAlgorithm() {
     // Choose an unsupported signing algorithm type.
     val keyPair = KeyPairGenerator.getInstance("DSA").generateKeyPair();
-    val outputStream = ByteArrayOutputStream()
     val unsupportedTrifleContentSigner = object: TrifleContentSigner {
+      val outputStream = ByteArrayOutputStream()
+
       override fun subjectPublicKeyInfo(): SubjectPublicKeyInfo =
         SubjectPublicKeyInfo.getInstance(keyPair.public.encoded)
 
