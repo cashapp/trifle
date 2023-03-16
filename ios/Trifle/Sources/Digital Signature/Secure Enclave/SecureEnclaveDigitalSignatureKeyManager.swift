@@ -20,22 +20,31 @@ public class SecureEnclaveDigitalSignatureKeyManager
 
     // MARK: - Private Properties
 
-    private let tag: String
+    private let tagFormat: String
 
     // MARK: - Initialization
 
-    public init(tag: String) throws {
-        guard !tag.isEmpty else {
+    public init(reverseDomain: String) throws {
+        guard !reverseDomain.isEmpty else {
             // tag should not be empty
-            throw TrifleError.invalidInput("Tag cannot be empty")
+            throw TrifleError.invalidInput("Reverse domain cannot be empty")
         }
-        self.tag = tag
+        self.tagFormat = reverseDomain + ".digital_signature.{{uuid}}"
     }
  
     // MARK: - Public Methods (DigitalSignatureSigner)
 
-    public func sign(with data: Data) throws -> DigitalSignature {
-        let signature = try signingKey().sign(with: data)
+    public func generateTag() throws -> String {
+        let tag = tagFormat.replacingOccurrences(
+            of: "{{uuid}}",
+            with: UUID().uuidString
+        )
+        try Self.generateKeypair(tag)
+        return tag
+    }
+    
+    public func sign(for tag: String, with data: Data) throws -> DigitalSignature {
+        let signature = try signingKey(tag).sign(with: data)
         return DigitalSignature(
             signingAlgorithm: Self.keyInfo.signingAlgorithm,
             data: signature
@@ -44,50 +53,35 @@ public class SecureEnclaveDigitalSignatureKeyManager
  
     // MARK: - Public Methods (DigitalSignatureVerifier)
 
-    public func verify(data: Data, with signature: Data) throws -> Bool {
-        return try verifyingKey().verify(data: data, with: signature)
-    }
-
-    // MARK: - Public Methods (getKeyHandle)
-    
-    public func getKeyHandle() throws -> KeyHandle {
-        // generates a signing key and store in keychain
-        // if key tag already exists, then return that key
-        // if key tag is new, then generate new key
-        // we don't need the key right now, so throw it away
-        _ = try signingKey()
-        
-        // create a keyHandle
-        return KeyHandle(tag: self.tag)
+    public func verify(for tag: String, data: Data, with signature: Data) throws -> Bool {
+        return try verifyingKey(tag).verify(data: data, with: signature)
     }
 
     // MARK: - Internal Methods (ContentSigner)
  
-    internal func exportPublicKey() throws -> SigningPublicKey {
+    internal func exportPublicKey(_ tag: String) throws -> SigningPublicKey {
         return SigningPublicKey(
             keyInfo: Self.keyInfo,
-            data: try verifyingKey().export()
+            data: try verifyingKey(tag).export()
         )
     }
 
     // MARK: - Internal Methods (DigitalSignatureKeyManager)
 
-    internal func signingKey() throws -> SecureEnclaveSigningKey {
-        let signingAlgorithm = Self.keyInfo.signingAlgorithm.attrs
-
-        guard try keyExists() else {
-            return try SecureEnclaveSigningKey(generateKeypair(), signingAlgorithm)
-        }
-        
+    internal func signingKey(_ tag: String) throws -> SecureEnclaveSigningKey {
         var keyRef: CFTypeRef?
         let preparedQuery = SecureEnclaveKeychainQueries.getQuery(with: tag, returnRef: true)
-        SecItemCopyMatching(preparedQuery, &keyRef)
+        guard case let status = SecItemCopyMatching(preparedQuery, &keyRef),
+                status == errSecSuccess,
+                keyRef != nil else {
+            throw CryptographicKeyError.unavailableKeyPair
+        }
         
-        return try SecureEnclaveSigningKey(keyRef as! SecKey, signingAlgorithm)
+        return try SecureEnclaveSigningKey(keyRef as! SecKey, Self.keyInfo.signingAlgorithm.attrs)
     }
     
-    internal func verifyingKey() throws -> SecureEnclaveVerifyingKey {
-        let signingKey = try signingKey()
+    internal func verifyingKey(_ tag: String) throws -> SecureEnclaveVerifyingKey {
+        let signingKey = try signingKey(tag)
 
         guard let publicKey = SecKeyCopyPublicKey(signingKey.privateKey) else {
             throw CryptographicKeyError.unavailablePublicKey
@@ -98,7 +92,7 @@ public class SecureEnclaveDigitalSignatureKeyManager
     
     // MARK: -
     
-    private func generateKeypair() throws -> SecKey {
+    private static func generateKeypair(_ tag: String) throws {
         let (keyType, keySize) = Self.keyInfo.curve.attrs
         let attributes = try SecureEnclaveKeychainQueries.attributes(
             with: tag,
@@ -107,14 +101,12 @@ public class SecureEnclaveDigitalSignatureKeyManager
         )
 
         var error: Unmanaged<CFError>?
-        guard let keypair = SecKeyCreateRandomKey(attributes, &error) else {
+        guard SecKeyCreateRandomKey(attributes, &error) != nil else {
             throw AccessControlError.invalidAccess(error?.takeRetainedValue() as? Error)
         }
-
-        return keypair
     }
     
-    private func keyExists() throws -> Bool {
+    private static func keyExists(_ tag: String) throws -> Bool {
         let preparedQuery = SecureEnclaveKeychainQueries.getQuery(with: tag)
         let status = SecItemCopyMatching(preparedQuery, nil)
         switch status {

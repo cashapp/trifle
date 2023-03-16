@@ -8,21 +8,19 @@ import XCTest
 
 final class SecureEnclaveDigitalSignatureKeyManagerTests: XCTestCase {
     var manager: SecureEnclaveDigitalSignatureKeyManager!
-    var otherManager: SecureEnclaveDigitalSignatureKeyManager!
     
     override func setUpWithError() throws {
         manager = try SecureEnclaveDigitalSignatureKeyManager(
-            tag: "app.cash.trifle.s2dk.keys.digital_signature")
-        otherManager = try SecureEnclaveDigitalSignatureKeyManager(
-            tag: "com.squareup.trifle.s2dk.keys.digital_signature")
+            reverseDomain: "app.cash.trifle.keys")
     }
     
     func testSignAndVerifySucceeds() throws {
         let data = "hello world".data(using: .utf8)!
+        let tag = try manager.generateTag()
 
-        let signature = try manager.sign(with: data)
+        let signature = try manager.sign(for: tag, with: data)
 
-        let verified = try manager.verify(data: data, with: signature.data)
+        let verified = try manager.verify(for: tag, data: data, with: signature.data)
 
         XCTAssertEqual(verified, true)
     }
@@ -30,20 +28,23 @@ final class SecureEnclaveDigitalSignatureKeyManagerTests: XCTestCase {
     func testSignatureVerificationFails_whenVerifyingOtherData() throws {
         let data = "hello world".data(using: .utf8)!
         let otherData = "bye world".data(using: .utf8)!
+        let tag = try manager.generateTag()
 
-        let signature = try manager.sign(with: data)
+        let signature = try manager.sign(for: tag, with: data)
 
-        let verified = try manager.verify(data: otherData, with: signature.data)
+        let verified = try manager.verify(for: tag, data: otherData, with: signature.data)
 
         XCTAssertEqual(verified, false)
     }
     
     func testSignatureVerificationFails_whenVerifyingWithDifferentKey() throws {
         let data = "hello world".data(using: .utf8)!
+        let tag = try manager.generateTag()
+        let otherTag = try manager.generateTag()
 
-        let signature = try manager.sign(with: data)
+        let signature = try manager.sign(for: tag, with: data)
 
-        let verified = try otherManager.verify(data: data, with: signature.data)
+        let verified = try manager.verify(for: otherTag, data: data, with: signature.data)
 
         XCTAssertEqual(verified, false)
     }

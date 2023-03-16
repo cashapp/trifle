@@ -58,6 +58,7 @@ protocol VerifyingKey: CryptographicKey {
 enum CryptographicKeyError: LocalizedError {
     case unavailablePublicKey
     case unexportablePublicKey
+    case unavailableKeyPair
     case unsupportedAlgorithm
     case unhandled(Error)
     
@@ -67,6 +68,8 @@ enum CryptographicKeyError: LocalizedError {
             return "Public key is unavailable."
         case .unexportablePublicKey:
             return "Public key cannot be exported."
+        case .unavailableKeyPair:
+            return "Key pair is unavailable."
         case .unsupportedAlgorithm:
             return "Invalid algorithm used."
         case let .unhandled(error):
