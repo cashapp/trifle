@@ -75,41 +75,27 @@ public class Trifle {
     public func createSignedData(
         data: Data,
         keyHandle: KeyHandle,
-        certificate: Array<Certificate>
+        certificates: Array<Certificate>
     ) throws -> SignedData {
 
-        guard !data.isEmpty && !certificate.isEmpty else {
-            throw TrifleError.invalidInput("Data or Certifcate should not be empty.")
+        guard let leafCert = certificates.first, !data.isEmpty else {
+            throw TrifleError.invalidInput("Data or Certificate should not be empty.")
         }
         
-        // TODO: check key handle domain matches the one in trifle
+        // TODO: (gelareh) check key handle domain matches the one in trifle
         
-        // TODO: check leaf cert mactches the public key that will be used for signing
+        // TODO: (gelareh) check leaf cert mactches the public key that will be used for signing
         
-        //check cert chain validates
-        // already checked certificate chain is not empty
-        if (certificate.count == 1 ) {
-            guard certificate[0].verify(
-                certificateRequest: nil,
-                intermediateChain: nil,
-                rootCertificate: nil ) else {
-                throw TrifleError.invalidCertificateChain
-            }
-        } else {
-            let chain = certificate.dropFirst(1)
-            guard certificate[0].verify(
-                certificateRequest: nil,
-                intermediateChain: Array(chain),
-                rootCertificate: nil ) else {
-                throw TrifleError.invalidCertificateChain
-            }
+        // check cert chain validates
+        guard leafCert.verify(intermediateChain: Array(certificates.dropFirst(1))) else {
+            throw TrifleError.invalidCertificateChain
         }
         
         // sign data
         // if key handle is invalid, an error is thrown
         return SignedData(raw_data: data,
                           signature: try contentSigner.sign(for: keyHandle.tag, with: data).data,
-                          certificates: certificate)
+                          certificates: certificates)
     }
 }
 
@@ -128,16 +114,14 @@ extension Certificate {
      - returns: true if validated, false otherwise
      */
     public func verify(
-        certificateRequest: MobileCertificateRequest?,
-        intermediateChain: Array<Certificate>?,
-        rootCertificate: Certificate?
+        certificateRequest: MobileCertificateRequest? = nil,
+        intermediateChain: Array<Certificate>,
+        rootCertificate: Certificate? = nil
     ) -> Bool {
         
         // TODO: validate PK in MobileCertificateRequest against certificate
-        var chain : Array<Certificate> = [self]
-        if (intermediateChain != nil) {
-            chain = intermediateChain!
-        }
+        
+        var chain : Array<Certificate> = [self] + intermediateChain
         if (rootCertificate != nil) {
             chain = chain + [ rootCertificate!]
         }
