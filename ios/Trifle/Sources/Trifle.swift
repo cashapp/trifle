@@ -62,13 +62,12 @@ public class Trifle {
     }
     
     /**
-     // TODO(dcashman): define message format //
      Sign the provided data with the provided key, including appropriate Trifle
      metadata, such as the accompanying certificate.
 
      - parameters: data - raw data to be signed.
      - parameters: keyHandle - key handle used for the signing.
-     - parameters: certificate - certificate to be included in the SignedData message.
+     - parameters: certificate list - certificate chain to be included in the SignedData message.
         Must match the key in keyHandle.
 
      - returns:`SignedData` - signed data message in the Trifle format.
@@ -76,10 +75,41 @@ public class Trifle {
     public func createSignedData(
         data: Data,
         keyHandle: KeyHandle,
-        certificate: Certificate
-    ) -> SignedData {
-        // TODO: IMPLEMENT
-        SignedData()
+        certificate: Array<Certificate>
+    ) throws -> SignedData {
+
+        guard !data.isEmpty && !certificate.isEmpty else {
+            throw TrifleError.invalidInput("Data or Certifcate should not be empty.")
+        }
+        
+        // TODO: check key handle domain matches the one in trifle
+        
+        // TODO: check leaf cert mactches the public key that will be used for signing
+        
+        //check cert chain validates
+        // already checked certificate chain is not empty
+        if (certificate.count == 1 ) {
+            guard certificate[0].verify(
+                certificateRequest: nil,
+                intermediateChain: nil,
+                rootCertificate: nil ) else {
+                throw TrifleError.invalidCertificateChain
+            }
+        } else {
+            let chain = certificate.dropFirst(1)
+            guard certificate[0].verify(
+                certificateRequest: nil,
+                intermediateChain: Array(chain),
+                rootCertificate: nil ) else {
+                throw TrifleError.invalidCertificateChain
+            }
+        }
+        
+        // sign data
+        // if key handle is invalid, an error is thrown
+        return SignedData(raw_data: data,
+                          signature: try contentSigner.sign(for: keyHandle.tag, with: data).data,
+                          certificates: certificate)
     }
 }
 
@@ -98,21 +128,37 @@ extension Certificate {
      - returns: true if validated, false otherwise
      */
     public func verify(
-        certificateRequest: MobileCertificateRequest,
-        certificateChain: Array<Certificate>,
-        rootCertificate: Certificate
+        certificateRequest: MobileCertificateRequest?,
+        intermediateChain: Array<Certificate>?,
+        rootCertificate: Certificate?
     ) -> Bool {
-        return X509TrustManager.evaluate([self] + certificateChain + [rootCertificate])
+        
+        // TODO: validate PK in MobileCertificateRequest against certificate
+        var chain : Array<Certificate> = [self]
+        if (intermediateChain != nil) {
+            chain = intermediateChain!
+        }
+        if (rootCertificate != nil) {
+            chain = chain + [ rootCertificate!]
+        }
+        return X509TrustManager.evaluate( chain )
     }
 }
 
 public enum TrifleError: LocalizedError {
     case invalidInput(String)
+    case unhandled(Error)
+    case invalidCertificateChain
 
     public var errorDescription: String? {
         switch self {
-        case let .invalidInput(error) :
+        case .invalidCertificateChain:
+            return "Invalid certificate chain."
+        case let .invalidInput(error):
             return error
+
+        case let .unhandled(error):
+            return error.localizedDescription
         }
     }
 }

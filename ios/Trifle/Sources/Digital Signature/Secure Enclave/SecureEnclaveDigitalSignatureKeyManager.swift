@@ -29,7 +29,7 @@ public class SecureEnclaveDigitalSignatureKeyManager
             // tag should not be empty
             throw TrifleError.invalidInput("Reverse domain cannot be empty")
         }
-        self.tagFormat = reverseDomain + ".digital_signature.{{uuid}}"
+        self.tagFormat = reverseDomain + ".sign.{{uuid}}"
     }
  
     // MARK: - Public Methods (DigitalSignatureSigner)
