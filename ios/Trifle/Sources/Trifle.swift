@@ -121,11 +121,14 @@ extension Certificate {
         
         // TODO: validate PK in MobileCertificateRequest against certificate
         
-        var chain : Array<Certificate> = [self] + intermediateChain
+        let chain : Array<Certificate>
         if (rootCertificate != nil) {
-            chain = chain + [ rootCertificate!]
+            chain = [self] + intermediateChain + [rootCertificate!]
+        } else {
+            chain = [self] + intermediateChain
         }
-        return X509TrustManager.evaluate( chain )
+        
+        return X509TrustManager.evaluate(chain)
     }
 }
 
