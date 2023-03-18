@@ -24,7 +24,6 @@
 		E15829A429B27DBC0037096B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E15829A329B27DBC0037096B /* Preview Assets.xcassets */; };
 		E1777ED829A0AE6900E5AC74 /* PKCS10CertificationRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1777ED729A0AE6900E5AC74 /* PKCS10CertificationRequestTests.swift */; };
 		E17B12F229882D6100063394 /* SecureEnclaveDigitalSignatureKeyManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17B12F129882D6100063394 /* SecureEnclaveDigitalSignatureKeyManagerTests.swift */; };
-		E1EFABD329B714330092435B /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = E1EFABD229B714330092435B /* Config.xcconfig */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -68,7 +67,6 @@
 		E15829A329B27DBC0037096B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		E1777ED729A0AE6900E5AC74 /* PKCS10CertificationRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKCS10CertificationRequestTests.swift; sourceTree = "<group>"; };
 		E17B12F129882D6100063394 /* SecureEnclaveDigitalSignatureKeyManagerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecureEnclaveDigitalSignatureKeyManagerTests.swift; sourceTree = "<group>"; };
-		E1EFABD229B714330092435B /* Config.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		E712027BFE0B4A17086CA56F /* Pods-Trifle_macOS_Dummy.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Trifle_macOS_Dummy.debug.xcconfig"; path = "Target Support Files/Pods-Trifle_macOS_Dummy/Pods-Trifle_macOS_Dummy.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -113,7 +111,6 @@
 		607FACC71AFB9204008FA782 = {
 			isa = PBXGroup;
 			children = (
-				E1EFABD229B714330092435B /* Config.xcconfig */,
 				607FACF51AFB993E008FA782 /* Podspec Metadata */,
 				607FACD21AFB9204008FA782 /* Example for Trifle */,
 				607FACE81AFB9204008FA782 /* Tests */,
@@ -227,7 +224,6 @@
 			buildConfigurationList = 607FACEF1AFB9204008FA782 /* Build configuration list for PBXNativeTarget "Trifle_Example" */;
 			buildPhases = (
 				D51338B2042CAE56BF79539A /* [CP] Check Pods Manifest.lock */,
-				E11875B829B71849007FFC9F /* Run Script */,
 				607FACCC1AFB9204008FA782 /* Sources */,
 				607FACCD1AFB9204008FA782 /* Frameworks */,
 				607FACCE1AFB9204008FA782 /* Resources */,
@@ -247,7 +243,6 @@
 			buildConfigurationList = 607FACF21AFB9204008FA782 /* Build configuration list for PBXNativeTarget "Trifle_Tests" */;
 			buildPhases = (
 				E4B4C7C9CA5453372B3F950C /* [CP] Check Pods Manifest.lock */,
-				E180558429B7D38600BD6AE0 /* ShellScript */,
 				607FACE11AFB9204008FA782 /* Sources */,
 				607FACE21AFB9204008FA782 /* Frameworks */,
 				607FACE31AFB9204008FA782 /* Resources */,
@@ -330,7 +325,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E1EFABD329B714330092435B /* Config.xcconfig in Resources */,
 				607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */,
 				607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */,
 				607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */,
@@ -385,10 +379,12 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Trifle_Example/Pods-Trifle_Example-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Trifle/Trifle.framework",
 				"${BUILT_PRODUCTS_DIR}/Wire/Wire.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Trifle.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Wire.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -417,41 +413,6 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
-		};
-		E11875B829B71849007FFC9F /* Run Script */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Run Script";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"$PODS_ROOT\"/../../Scripts/XcodeBuildPhases/FixTinkForAppleSilicon\n";
-		};
-		E180558429B7D38600BD6AE0 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"$PODS_ROOT\"/../../Scripts/XcodeBuildPhases/FixTinkForAppleSilicon\n";
 		};
 		E4B4C7C9CA5453372B3F950C /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -541,7 +502,6 @@
 /* Begin XCBuildConfiguration section */
 		607FACED1AFB9204008FA782 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E1EFABD229B714330092435B /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -595,7 +555,6 @@
 		};
 		607FACEE1AFB9204008FA782 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E1EFABD229B714330092435B /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
