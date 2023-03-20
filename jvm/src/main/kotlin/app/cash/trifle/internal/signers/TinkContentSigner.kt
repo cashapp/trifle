@@ -12,7 +12,7 @@ import com.google.crypto.tink.proto.EllipticCurveType
 import com.google.crypto.tink.signature.SignatureConfig.ECDSA_PUBLIC_KEY_TYPE_URL
 import com.google.crypto.tink.signature.SignatureConfig.ED25519_PUBLIC_KEY_TYPE_URL
 import com.google.crypto.tink.tinkkey.KeyAccess
-import com.google.crypto.tink.tinkkey.ProtoKey
+import com.google.crypto.tink.tinkkey.internal.ProtoKey
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo
 import org.bouncycastle.jce.ECNamedCurveTable
