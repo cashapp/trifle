@@ -57,7 +57,7 @@ repositories {
 dependencies {
     implementation("org.bouncycastle:bcprov-jdk15to18:1.70")
     implementation("org.bouncycastle:bcpkix-jdk15to18:1.70")
-    implementation("com.google.crypto.tink:tink:1.6.0")
+    api("com.google.crypto.tink:tink:1.7.0")
     testImplementation("org.junit.jupiter:junit-jupiter:5.7.0")
 }
 

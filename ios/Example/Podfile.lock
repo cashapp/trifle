@@ -1,9 +1,5 @@
 PODS:
-  - rapidjson (1.1.0)
-  - Tink (1.6.1):
-    - rapidjson (~> 1.1.0)
-  - Trifle (0.1.2):
-    - Tink (~> 1.6.1)
+  - Trifle (0.1.3):
     - Wire (~> 4.5.1)
   - Wire (4.5.1)
   - WireCompiler (4.5.1)
@@ -14,8 +10,6 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - rapidjson
-    - Tink
     - Wire
     - WireCompiler
 
@@ -24,9 +18,7 @@ EXTERNAL SOURCES:
     :path: "../../"
 
 SPEC CHECKSUMS:
-  rapidjson: 926ddeea70d7a0987b6d746cd9fa51f165467cd3
-  Tink: 6bc1e1c5381a750ca2ee7e897cc3ee448bfe175d
-  Trifle: 0c4da70e1a4cdfd04497c21f0038411216b64bed
+  Trifle: 9fa746b5a578e77ea81ea41da6ba03b1e58940ca
   Wire: b07a2ff1c4cd4b71f5ae26771cdd13fc7868c9df
   WireCompiler: 417c2ac583c01de328010738658758556ea92a92
 
