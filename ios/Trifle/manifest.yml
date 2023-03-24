@@ -3,4 +3,6 @@ Protos:
     - app.cash.trifle.api.alpha.Certificate
     - app.cash.trifle.api.alpha.MobileCertificateRequest
     - app.cash.trifle.api.alpha.MobileCertificateResponse
+    - app.cash.trifle.api.alpha.SignedData.EnvelopedData
+    - app.cash.trifle.api.alpha.SignedData.Algorithm
     - app.cash.trifle.api.alpha.SignedData
