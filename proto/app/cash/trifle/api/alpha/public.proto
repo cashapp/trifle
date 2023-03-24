@@ -57,7 +57,7 @@ message SignedData {
 
   // Datatype provided by the Trifle library associated with the signing of
   // the associated client data.
-  message SigningMessage {
+  message EnvelopedData{
     // Signing Format version associated with this payload. This is to enable
     // immediate verification without having to parse the signed data.
     // Verifier should verify that this matches the signed version to prevent
@@ -71,11 +71,11 @@ message SignedData {
     optional bytes data = 3;
   }
 
-  // The data which has been signed. This should deserialize to a SigningMessage
+  // The data which has been signed. This should deserialize to a EnvelopedData
   // message after verification.
-  optional bytes raw_data = 1;
+  optional bytes enveloped_data = 1;
 
-  // The actual signature over the associated Data, generated according to
+  // The actual signature over the signed object, generated according to
   // the algorithm and private key with the associated certificate.
   optional bytes signature = 2;
 

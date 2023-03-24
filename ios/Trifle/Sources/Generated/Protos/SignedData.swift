@@ -4,7 +4,7 @@ import Foundation
 import Wire
 
 /**
- * The signed data object handled by s2dk. This proto is used as a serialization/deserialization
+ * The signed data object handled by Trifle. This proto is used as a serialization/deserialization
  * mechanism for an otherwise opaque object whose representation is internal to the library only.
  * The purpose of this message is to represent a signed message that contains the client encoded
  * data, certificate chain (includes the signing certificate), signature, and Trifle metadata.
@@ -12,12 +12,12 @@ import Wire
 public struct SignedData {
 
     /**
-     * The data which has been signed. This should deserialize to a SigningMessage
+     * The data which has been signed. This should deserialize to a EnvelopedData
      * message after verification.
      */
-    public var raw_data: Data?
+    public var enveloped_data: Data?
     /**
-     * The actual signature over the associated Data, generated according to
+     * The actual signature over the signed object, generated according to
      * the algorithm and private key with the associated certificate.
      */
     public var signature: Data?
@@ -35,16 +35,146 @@ public struct SignedData {
     public var unknownFields: Data = .init()
 
     public init(
-        raw_data: Data? = nil,
+        enveloped_data: Data? = nil,
         signature: Data? = nil,
         certificates: [Certificate] = []
     ) {
-        self.raw_data = raw_data
+        self.enveloped_data = enveloped_data
         self.signature = signature
         self.certificates = certificates
     }
 
+    /**
+     * Signing algorithms supported by Trifle
+     */
+    public enum Algorithm : UInt32, CaseIterable, ProtoEnum {
+
+        case DO_NOT_USE = 0
+        case ECDSA_SHA256 = 1
+        case ED25519 = 2
+
+        public var description: String {
+            switch self {
+            case .DO_NOT_USE: return "DO_NOT_USE"
+            case .ECDSA_SHA256: return "ECDSA_SHA256"
+            case .ED25519: return "ED25519"
+            }
+        }
+
+    }
+
+    /**
+     * Datatype provided by the Trifle library associated with the signing of
+     * the associated client data.
+     */
+    public struct EnvelopedData {
+
+        /**
+         * Signing Format version associated with this payload. This is to enable
+         * immediate verification without having to parse the signed data.
+         * Verifier should verify that this matches the signed version to prevent
+         * rollback attacks.
+         */
+        public var version: UInt32?
+        /**
+         * Signing algorithm used to sign over the SigningMessage message.
+         */
+        public var signing_algorithm: Algorithm?
+        /**
+         * Data provided directly by the Trifle library client.
+         */
+        public var data: Data?
+        public var unknownFields: Data = .init()
+
+        public init(
+            version: UInt32? = nil,
+            signing_algorithm: Algorithm? = nil,
+            data: Data? = nil
+        ) {
+            self.version = version
+            self.signing_algorithm = signing_algorithm
+            self.data = data
+        }
+
+    }
+
 }
+
+#if swift(>=5.5)
+extension SignedData.Algorithm : Sendable {
+}
+#endif
+
+#if !WIRE_REMOVE_EQUATABLE
+extension SignedData.EnvelopedData : Equatable {
+}
+#endif
+
+#if !WIRE_REMOVE_HASHABLE
+extension SignedData.EnvelopedData : Hashable {
+}
+#endif
+
+#if swift(>=5.5)
+extension SignedData.EnvelopedData : Sendable {
+}
+#endif
+
+extension SignedData.EnvelopedData : ProtoMessage {
+    public static func protoMessageTypeURL() -> String {
+        return "type.googleapis.com/app.cash.trifle.api.alpha.SignedData.EnvelopedData"
+    }
+}
+
+extension SignedData.EnvelopedData : Proto2Codable {
+    public init(from reader: ProtoReader) throws {
+        var version: UInt32? = nil
+        var signing_algorithm: SignedData.Algorithm? = nil
+        var data: Data? = nil
+
+        let token = try reader.beginMessage()
+        while let tag = try reader.nextTag(token: token) {
+            switch tag {
+            case 1: version = try reader.decode(UInt32.self)
+            case 2: signing_algorithm = try reader.decode(SignedData.Algorithm.self)
+            case 3: data = try reader.decode(Data.self)
+            default: try reader.readUnknownField(tag: tag)
+            }
+        }
+        self.unknownFields = try reader.endMessage(token: token)
+
+        self.version = version
+        self.signing_algorithm = signing_algorithm
+        self.data = data
+    }
+
+    public func encode(to writer: ProtoWriter) throws {
+        try writer.encode(tag: 1, value: self.version)
+        try writer.encode(tag: 2, value: self.signing_algorithm)
+        try writer.encode(tag: 3, value: self.data)
+        try writer.writeUnknownFields(unknownFields)
+    }
+}
+
+#if !WIRE_REMOVE_CODABLE
+extension SignedData.EnvelopedData : Codable {
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: StringLiteralCodingKeys.self)
+        self.version = try container.decodeIfPresent(UInt32.self, forKey: "version")
+        self.signing_algorithm = try container.decodeIfPresent(SignedData.Algorithm.self, firstOfKeys: "signingAlgorithm", "signing_algorithm")
+        self.data = try container.decodeIfPresent(stringEncoded: Data.self, forKey: "data")
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: StringLiteralCodingKeys.self)
+        let preferCamelCase = encoder.protoKeyNameEncodingStrategy == .camelCase
+
+        try container.encodeIfPresent(self.version, forKey: "version")
+        try container.encodeIfPresent(self.signing_algorithm, forKey: preferCamelCase ? "signingAlgorithm" : "signing_algorithm")
+        try container.encodeIfPresent(stringEncoded: self.data, forKey: "data")
+    }
+}
+#endif
 
 #if !WIRE_REMOVE_EQUATABLE
 extension SignedData : Equatable {
@@ -69,14 +199,14 @@ extension SignedData : ProtoMessage {
 
 extension SignedData : Proto2Codable {
     public init(from reader: ProtoReader) throws {
-        var raw_data: Data? = nil
+        var enveloped_data: Data? = nil
         var signature: Data? = nil
         var certificates: [Certificate] = []
 
         let token = try reader.beginMessage()
         while let tag = try reader.nextTag(token: token) {
             switch tag {
-            case 1: raw_data = try reader.decode(Data.self)
+            case 1: enveloped_data = try reader.decode(Data.self)
             case 2: signature = try reader.decode(Data.self)
             case 3: try reader.decode(into: &certificates)
             default: try reader.readUnknownField(tag: tag)
@@ -84,13 +214,13 @@ extension SignedData : Proto2Codable {
         }
         self.unknownFields = try reader.endMessage(token: token)
 
-        self.raw_data = raw_data
+        self.enveloped_data = enveloped_data
         self.signature = signature
         self.certificates = certificates
     }
 
     public func encode(to writer: ProtoWriter) throws {
-        try writer.encode(tag: 1, value: self.raw_data)
+        try writer.encode(tag: 1, value: self.enveloped_data)
         try writer.encode(tag: 2, value: self.signature)
         try writer.encode(tag: 3, value: self.certificates)
         try writer.writeUnknownFields(unknownFields)
@@ -101,7 +231,7 @@ extension SignedData : Proto2Codable {
 extension SignedData : Codable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: StringLiteralCodingKeys.self)
-        self.raw_data = try container.decodeIfPresent(stringEncoded: Data.self, firstOfKeys: "rawData", "raw_data")
+        self.enveloped_data = try container.decodeIfPresent(stringEncoded: Data.self, firstOfKeys: "envelopedData", "enveloped_data")
         self.signature = try container.decodeIfPresent(stringEncoded: Data.self, forKey: "signature")
         self.certificates = try container.decodeProtoArray(Certificate.self, forKey: "certificates")
     }
@@ -111,7 +241,7 @@ extension SignedData : Codable {
         let preferCamelCase = encoder.protoKeyNameEncodingStrategy == .camelCase
         let includeDefaults = encoder.protoDefaultValuesEncodingStrategy == .include
 
-        try container.encodeIfPresent(stringEncoded: self.raw_data, forKey: preferCamelCase ? "rawData" : "raw_data")
+        try container.encodeIfPresent(stringEncoded: self.enveloped_data, forKey: preferCamelCase ? "envelopedData" : "enveloped_data")
         try container.encodeIfPresent(stringEncoded: self.signature, forKey: "signature")
         if includeDefaults || !self.certificates.isEmpty {
             try container.encodeProtoArray(self.certificates, forKey: "certificates")
