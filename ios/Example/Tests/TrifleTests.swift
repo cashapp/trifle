@@ -5,6 +5,7 @@
 
 import Trifle
 import XCTest
+import Wire
 
 final class TrifleTests: XCTestCase {
 
@@ -146,17 +147,24 @@ WLq6hmtSmQ==
         let deviceCertificate = Certificate(version: 0, certificate: deviceCertEncoded2)
         let rootCertificate = Certificate(version: 0, certificate: rootCertEncoded)
 
-        // cert chain of length 2
-        let signDataWithRoot = try trifle.createSignedData(data: data,
-                                    keyHandle: keyHandle,
-                                    certificates: [deviceCertificate, rootCertificate])
-        XCTAssertNotNil(signDataWithRoot, "This is TODO - once this is validated, this test should FAIL")
         
         // cert chain of length 1
         let signDataWithoutRoot = try trifle.createSignedData(data: data,
                                      keyHandle: keyHandle,
                                      certificates: [deviceCertificate] )
         XCTAssertNotNil(signDataWithoutRoot, "This is TODO - once this is validated, this test should FAIL")
+
+        
+        let envData = try ProtoDecoder().decode(SignedData.EnvelopedData.self, from: signDataWithoutRoot.enveloped_data!)
+        XCTAssertEqual(envData.version, 0)
+        XCTAssertEqual(envData.data, data)
+        XCTAssertEqual(envData.signing_algorithm, SignedData.Algorithm.ECDSA_SHA256)
+
+        // cert chain of length 2
+        let signDataWithRoot = try trifle.createSignedData(data: data,
+                                    keyHandle: keyHandle,
+                                    certificates: [deviceCertificate, rootCertificate])
+        XCTAssertNotNil(signDataWithRoot, "This is TODO - once this is validated, this test should FAIL")
     }
     
     func testSignMultipleKeys_succeeds() throws {

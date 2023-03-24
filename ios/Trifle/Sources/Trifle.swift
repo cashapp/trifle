@@ -4,6 +4,7 @@
 //
 
 import Foundation
+import Wire
 
 public class Trifle {
     
@@ -11,8 +12,12 @@ public class Trifle {
     
     private static let mobileCertificateRequestVersion = UInt32(0)
     
-    private let contentSigner: ContentSigner
+    private let envelopeDataVersion = UInt32(0)
     
+    private let signingDataAlgorithm = SignedData.Algorithm.ECDSA_SHA256
+    
+    private let contentSigner: ContentSigner
+
     /**
       Initialize the SDK with the key tag that is passed in.
      
@@ -91,9 +96,14 @@ public class Trifle {
             throw TrifleError.invalidCertificateChain
         }
         
+        // create serialized data
+        let serializedData = try ProtoEncoder().encode(SignedData.EnvelopedData(version: envelopeDataVersion,
+                                                                           signing_algorithm: signingDataAlgorithm,
+                                                                            data: data))
+        
         // sign data
         // if key handle is invalid, an error is thrown
-        return SignedData(enveloped_data: data,
+        return SignedData(enveloped_data: serializedData,
                           signature: try contentSigner.sign(for: keyHandle.tag, with: data).data,
                           certificates: certificates)
     }
