@@ -8,6 +8,8 @@ import Foundation
 /// Inherits `DigitalSignatureSigner` to add an additional
 ///  requirement of exporting the public key
 protocol ContentSigner: DigitalSignatureSigner {
+    var signingAlgorithm: SigningAlgorithm { get }
+
     /**
      Exports a `SigningPublicKey`
      
