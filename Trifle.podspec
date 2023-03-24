@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'Trifle'
-  s.version          = '0.1.3'
+  s.version          = '0.1.4'
   s.summary          = 'Security related functions.'
 
   s.description      = <<-DESC
