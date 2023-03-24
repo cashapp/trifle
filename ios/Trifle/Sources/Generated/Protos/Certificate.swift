@@ -4,7 +4,7 @@ import Foundation
 import Wire
 
 /**
- * The certificate object handled by s2dk. This proto is used as a serialization/deserialization
+ * The certificate object handled by Trifle. This proto is used as a serialization/deserialization
  * mechanism for an otherwise opaque object whose representation is internal to the library only.
  * The purpose of this message is to bind a public key with a set of verified attributes about the
  * entity which controls the private key corresponding to the given public key.
@@ -13,7 +13,7 @@ public struct Certificate {
 
     /**
      * Version describing the current format of the underlying bytes of the certificate. This tells
-     * the s2dk library how to interpret the certificate bytes.
+     * the Trifle library how to interpret the certificate bytes.
      * Required.
      */
     public var version: UInt32?

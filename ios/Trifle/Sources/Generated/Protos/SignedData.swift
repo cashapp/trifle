@@ -4,7 +4,7 @@ import Foundation
 import Wire
 
 /**
- * The signed data object handled by s2dk. This proto is used as a serialization/deserialization
+ * The signed data object handled by Trifle. This proto is used as a serialization/deserialization
  * mechanism for an otherwise opaque object whose representation is internal to the library only.
  * The purpose of this message is to represent a signed message that contains the client encoded
  * data, certificate chain (includes the signing certificate), signature, and Trifle metadata.

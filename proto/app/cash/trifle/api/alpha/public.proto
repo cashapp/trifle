@@ -48,29 +48,6 @@ message Certificate {
  * data, certificate chain (includes the signing certificate), signature, and Trifle metadata.
  */
 message SignedData {
-  // Signing algorithms supported by Trifle
-  enum Algorithm {
-    DO_NOT_USE = 0;
-    ECDSA_SHA256 = 1;
-    ED25519 = 2;
-  }
-
-  // Datatype provided by the Trifle library associated with the signing of
-  // the associated client data.
-  message SigningMessage {
-    // Signing Format version associated with this payload. This is to enable
-    // immediate verification without having to parse the signed data.
-    // Verifier should verify that this matches the signed version to prevent
-    // rollback attacks.
-    optional uint32 version = 1;
-
-    // Signing algorithm used to sign over the SigningMessage message.
-    optional Algorithm signing_algorithm = 2;
-
-    // Data provided directly by the Trifle library client.
-    optional bytes data = 3;
-  }
-
   // The data which has been signed. This should deserialize to a SigningMessage
   // message after verification.
   optional bytes raw_data = 1;
@@ -88,4 +65,27 @@ message SignedData {
   // The leaf certificate embeds the verification (public) key. The certificate must
   // match the certificate of the signed data.
   repeated Certificate certificates = 3;
+}
+
+// Signing algorithms supported by Trifle
+enum Algorithm {
+  DO_NOT_USE = 0;
+  ECDSA_SHA256 = 1;
+  ED25519 = 2;
+}
+
+// Datatype provided by the Trifle library associated with the signing of
+// the associated client data.
+message SigningMessage {
+  // Signing Format version associated with this payload. This is to enable
+  // immediate verification without having to parse the signed data.
+  // Verifier should verify that this matches the signed version to prevent
+  // rollback attacks.
+  optional uint32 version = 1;
+
+  // Signing algorithm used to sign over the SigningMessage message.
+  optional Algorithm signing_algorithm = 2;
+
+  // Data provided directly by the Trifle library client.
+  optional bytes data = 3;
 }
