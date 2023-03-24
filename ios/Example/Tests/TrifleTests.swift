@@ -159,7 +159,7 @@ WLq6hmtSmQ==
         XCTAssertEqual(envData.version, 0)
         XCTAssertEqual(envData.data, data)
         XCTAssertEqual(envData.signing_algorithm, SignedData.Algorithm.ECDSA_SHA256)
-
+        
         // cert chain of length 2
         let signDataWithRoot = try trifle.createSignedData(data: data,
                                     keyHandle: keyHandle,

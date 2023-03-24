@@ -104,7 +104,7 @@ public class Trifle {
         // sign data
         // if key handle is invalid, an error is thrown
         return SignedData(enveloped_data: serializedData,
-                          signature: try contentSigner.sign(for: keyHandle.tag, with: data).data,
+                          signature: try contentSigner.sign(for: keyHandle.tag, with: serializedData).data,
                           certificates: certificates)
     }
 }
