@@ -1,10 +1,12 @@
 package app.cash.trifle
 
+import app.cash.trifle.Trifle.verify
 import app.cash.trifle.delegate.TinkDelegate
 import app.cash.trifle.internal.providers.BCContentVerifierProvider
 import app.cash.trifle.internal.util.TestFixtures
 import app.cash.trifle.internal.util.TestFixtures.RAW_ECDSA_P256_KEY_TEMPLATE
 import app.cash.trifle.protos.api.alpha.MobileCertificateRequest
+import app.cash.trifle.protos.api.alpha.SignedData
 import com.google.crypto.tink.KeyTemplates
 import com.google.crypto.tink.KeysetHandle
 import com.google.crypto.tink.signature.SignatureConfig
@@ -20,6 +22,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.time.Duration
 import java.time.Period
+import java.util.Base64
 
 internal class TrifleTest {
   private lateinit var certificateAuthority: Trifle.CertificateAuthority
@@ -30,7 +33,7 @@ internal class TrifleTest {
     SignatureConfig.register()
 
     certificateAuthority = Trifle.CertificateAuthority(
-      KeysetHandle.generateNew(KeyTemplates.get("ED25519WithRawOutput"))
+      KeysetHandle.generateNew(RAW_ECDSA_P256_KEY_TEMPLATE)
     )
     mobileClient = Trifle.EndEntity(
       KeysetHandle.generateNew(RAW_ECDSA_P256_KEY_TEMPLATE)
@@ -50,6 +53,14 @@ internal class TrifleTest {
           .toEpochMilli()
       )
     assertEquals(1, duration.toDays())
+  }
+
+  @Test
+  fun `verifies signed data`() {
+    val rawData = Base64.getDecoder().decode("ChEIABABGgtoZWxsbyB3b3JsZBJIMEYCIQC6sVAW0Eywl2x8WWt6h6SOrMhL0/jgpd1mfYAbLgKYXQIhAMn5nahPynglT2jBZaPd2aXD8ngUKkI38s5FmhLOnQykGpUCCAASkAIwggEMMIGyoAMCAQICBgGHI/31KTAKBggqhkjOPQQDAjAYMRYwFAYDVQQDDA1pc3N1aW5nRW50aXR5MB4XDTIzMDMyNzE2NTQxOFoXDTIzMDkyMzE2NTQxOFowAjEAMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgEE4BzOricjuneL2x5xrHO9bzzAdc7Ujo/TBkb9Hjs2G5LY842m5/euCmkgLFavVdjL7aQGe8PwVtcRs+vA2cXxEjAKBggqhkjOPQQDAgNJADBGAiEA/ShhUCz24imaCEF8a8+W89Y8UYLHyTl46L3GAbAXvFQCIQDY202vuMx06tpVlXqMAfMSoxqaaX/L0Qt9z6Jr1L8JPhrtAggAEugCMIIBZDCCAQqgAwIBAgIBATAKBggqhkjOPQQDAjAYMRYwFAYDVQQDDA1pc3N1aW5nRW50aXR5MB4XDTIzMDMyNzE2NTIxNFoXDTI1MTIyMTE2NTIxNFowGDEWMBQGA1UEAwwNaXNzdWluZ0VudGl0eTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABBFxFhSwrwROj0VBbuz9kJM74f0sbi35y1W1HH0NbaqzImTER7V06rxHlDGYC8o6nWnVijodCjlu0yKO0h0eOu2jRTBDMA8GA1UdEwEB/wQFMAMBAf8wDgYDVR0PAQH/BAQDAgIEMCAGA1UdDgEB/wQWBBSUlrcm/BoAeAGlNA05wGEYyveTmDAKBggqhkjOPQQDAgNIADBFAiEAiXXdQrMkyjdCRUw7CcMxsYIUobNLajKE/i8zCmo6MncCIEKT9to/dbjJekdexnbeE3r4QTawL3fltENkcAx75UHF")
+    val signedData = SignedData.ADAPTER.decode(rawData)
+
+    assertEquals(signedData.verify(), true)
   }
 
   @Test
