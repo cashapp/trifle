@@ -17,6 +17,8 @@ public class SecureEnclaveDigitalSignatureKeyManager
         EllipticCurve.p256(kSecAttrKeyTypeECSECPrimeRandom, 256),
         SigningAlgorithm.ecdsaSha256(.ecdsaSignatureMessageX962SHA256)
     )
+    
+    internal let signingAlgorithm = keyInfo.signingAlgorithm
 
     // MARK: - Private Properties
 
