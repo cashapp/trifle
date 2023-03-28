@@ -6,19 +6,23 @@ import org.bouncycastle.operator.DefaultSignatureNameFinder
 
 object Util {
 
-  fun getAlgorithmIdentifier(algorithmIdentifier: AlgorithmIdentifier): AlgorithmIdentifier {
-    when (algorithmIdentifier) {
+  // fun getAlgorithmIdentifier(algorithmIdentifier: AlgorithmIdentifier): AlgorithmIdentifier {
+  fun AlgorithmIdentifier.getSigningAlgorithmIdentifier(): AlgorithmIdentifier {
+
+      when (this) {
       TrifleAlgorithmIdentifier.ECPublicKeyAlgorithmIdentifier(TrifleAlgorithmIdentifier.P256v1AlgorithmIdentifier) ->
         return TrifleAlgorithmIdentifier.ECDSASha256AlgorithmIdentifier
 
       else -> throw UnsupportedOperationException(
-        "Default signature algorithm is not supported for key algorithm: $algorithmIdentifier"
+        "Default signature algorithm is not supported for key algorithm: $this"
       )
     }
   }
 
-  fun getSignatureName(algorithmIdentifier: AlgorithmIdentifier): String{
+  // fun getSignatureName(algorithmIdentifier: AlgorithmIdentifier): String{
+  fun AlgorithmIdentifier.getSigningAlgorithmName(): String {
+
     return DefaultSignatureNameFinder()
-      .getAlgorithmName(algorithmIdentifier)
+      .getAlgorithmName(this)
   }
 }

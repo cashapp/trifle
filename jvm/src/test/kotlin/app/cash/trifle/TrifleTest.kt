@@ -61,7 +61,7 @@ internal class TrifleTest {
     val signedData = SignedData.ADAPTER.decode(rawData)
 
     val certAnchor = Base64.getDecoder().decode("MIIBZDCCAQqgAwIBAgIBATAKBggqhkjOPQQDAjAYMRYwFAYDVQQDDA1pc3N1aW5nRW50aXR5MB4XDTIzMDMyNzE2NTIxNFoXDTI1MTIyMTE2NTIxNFowGDEWMBQGA1UEAwwNaXNzdWluZ0VudGl0eTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABBFxFhSwrwROj0VBbuz9kJM74f0sbi35y1W1HH0NbaqzImTER7V06rxHlDGYC8o6nWnVijodCjlu0yKO0h0eOu2jRTBDMA8GA1UdEwEB/wQFMAMBAf8wDgYDVR0PAQH/BAQDAgIEMCAGA1UdDgEB/wQWBBSUlrcm/BoAeAGlNA05wGEYyveTmDAKBggqhkjOPQQDAgNIADBFAiEAiXXdQrMkyjdCRUw7CcMxsYIUobNLajKE/i8zCmo6MncCIEKT9to/dbjJekdexnbeE3r4QTawL3fltENkcAx75UHF")
-    assertEquals(signedData.verify(certAnchor), true)
+    assertEquals(signedData.verify(Certificate(certAnchor)), true)
   }
 
   @Test

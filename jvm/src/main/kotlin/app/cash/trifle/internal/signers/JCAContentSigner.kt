@@ -1,6 +1,8 @@
 package app.cash.trifle.internal.signers
 
 import app.cash.trifle.common.Util
+import app.cash.trifle.common.Util.getSigningAlgorithmIdentifier
+import app.cash.trifle.common.Util.getSigningAlgorithmName
 import app.cash.trifle.internal.TrifleAlgorithmIdentifier.ECDSASha256AlgorithmIdentifier
 import app.cash.trifle.internal.TrifleAlgorithmIdentifier.ECPublicKeyAlgorithmIdentifier
 import app.cash.trifle.internal.TrifleAlgorithmIdentifier.P256v1AlgorithmIdentifier
@@ -31,13 +33,13 @@ internal class JCAContentSigner(
   }
 
   override fun getAlgorithmIdentifier(): AlgorithmIdentifier {
-    return Util.getAlgorithmIdentifier(subjectPublicKeyInfo().algorithm)
+    return subjectPublicKeyInfo().algorithm.getSigningAlgorithmIdentifier()
   }
 
   override fun getOutputStream(): OutputStream = outputStream
 
   override fun getSignature(): ByteArray {
-    val signature = Signature.getInstance(Util.getSignatureName(algorithmIdentifier))
+    val signature = Signature.getInstance(algorithmIdentifier.getSigningAlgorithmName())
     signature.initSign(keyPair.private)
     signature.update(outputStream.toByteArray())
     outputStream.reset()
