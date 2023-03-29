@@ -12,7 +12,6 @@ import org.bouncycastle.cert.X509CertificateHolder
 import java.io.ByteArrayInputStream
 import java.security.KeyFactory
 import java.security.Signature
-import java.security.cert.CertPath
 import java.security.cert.CertPathValidator
 import java.security.cert.Certificate
 import java.security.cert.CertificateFactory
@@ -92,11 +91,11 @@ object Trifle {
   private fun removeRootFromChain(list: List<Certificate>, root: Certificate) : List<Certificate> {
     // Remove root and all certs following it in the chain
     val rootIndex = list.indexOf(root)
-    if (rootIndex > -1) {
-      return list.dropLast(list.size - rootIndex).toMutableList()
+    return if (rootIndex > -1) {
+      list.dropLast(list.size - rootIndex)
     } else
-      return list
+      list
   }
 
-  val TRIFLE_SIGNING_MESSAGE_VERSION: Int = 0
+  private const val TRIFLE_SIGNING_MESSAGE_VERSION: Int = 0
 }
