@@ -12,7 +12,7 @@ import org.bouncycastle.operator.jcajce.JcaContentVerifierProviderBuilder
 /**
  * Internal trifle class to enable delegation to bouncycastle for signing with raw JCE keys.
  */
-internal class BCContentVerifierProvider(
+internal class JCAContentVerifierProvider(
   private val subjectPublicKeyInfo: SubjectPublicKeyInfo,
 ) : TrifleContentVerifierProvider() {
   private val delegateProvider by lazy {
