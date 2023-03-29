@@ -6,7 +6,6 @@ import org.bouncycastle.operator.DefaultSignatureNameFinder
 
 object Util {
 
-  // fun getAlgorithmIdentifier(algorithmIdentifier: AlgorithmIdentifier): AlgorithmIdentifier {
   fun AlgorithmIdentifier.getSigningAlgorithmIdentifier(): AlgorithmIdentifier {
 
       when (this) {
@@ -19,7 +18,6 @@ object Util {
     }
   }
 
-  // fun getSignatureName(algorithmIdentifier: AlgorithmIdentifier): String{
   fun AlgorithmIdentifier.getSigningAlgorithmName(): String {
 
     return DefaultSignatureNameFinder()

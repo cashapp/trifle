@@ -57,14 +57,10 @@ object Trifle {
     }
 
     val cf = CertificateFactory.getInstance("X.509");
-    val root: Certificate? = cf.generateCertificate(ByteArrayInputStream(certAnchor.certificate))
-    var list = mutableListOf<Certificate>()
+    val root: Certificate = cf.generateCertificate(ByteArrayInputStream(certAnchor.certificate))
 
     // Set up certPath. Remove root if in certPath
-    for(i in 1..certificatesIn.size) {
-      val cert = cf.generateCertificate( ByteArrayInputStream(certificatesIn[i-1].certificate?.toByteArray() ))
-      list.add(cert)
-    }
+    var list = certificatesIn.map{ cf.generateCertificate(ByteArrayInputStream(it.certificate?.toByteArray())) }
     list = removeRootFromChain(list, root)
     val certPath = cf.generateCertPath(list)
 
@@ -93,7 +89,7 @@ object Trifle {
     return signer.verify(signatureIn.toByteArray())
   }
 
-  private fun removeRootFromChain(list: MutableList<Certificate>, root: Certificate?) : MutableList<Certificate> {
+  private fun removeRootFromChain(list: List<Certificate>, root: Certificate) : List<Certificate> {
     // Remove root and all certs following it in the chain
     val rootIndex = list.indexOf(root)
     if (rootIndex > -1) {
