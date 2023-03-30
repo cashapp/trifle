@@ -1,0 +1,148 @@
+package app.cash.trifle
+
+import app.cash.trifle.internal.TrifleAlgorithmIdentifier
+import app.cash.trifle.internal.providers.JCAContentVerifierProvider
+import app.cash.trifle.internal.signers.TrifleContentSigner
+import app.cash.trifle.internal.util.TestFixtures
+import okio.ByteString.Companion.toByteString
+import org.bouncycastle.asn1.x500.X500Name
+import org.bouncycastle.asn1.x509.AlgorithmIdentifier
+import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo
+import org.bouncycastle.jce.provider.BouncyCastleProvider
+import org.bouncycastle.operator.DefaultSignatureNameFinder
+import org.bouncycastle.pkcs.PKCS10CertificationRequestBuilder
+import org.bouncycastle.pkcs.PKCSException
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+import java.io.ByteArrayOutputStream
+import java.io.OutputStream
+import java.security.KeyPair
+import java.security.KeyPairGenerator
+import java.security.SecureRandom
+import java.security.Security
+import java.security.Signature
+import java.security.spec.ECGenParameterSpec
+
+internal class CertificateRequestTests {
+  @Nested
+  @DisplayName("CertificateRequest#verify() Tests")
+  inner class CertificateRequestVerifyTests {
+    @Test
+    fun `test verify() returns true for a properly signed request`() {
+      val certificateRequest = CertificateRequest.PKCS10Request(
+        TestFixtures.PKCS10Request.toByteString()
+      )
+      assertTrue(certificateRequest.verify())
+    }
+
+    @Test
+    fun `test verify() returns false due to incorrectly signed request`() {
+      val pkcs10Request = PKCS10CertificationRequestBuilder(
+        X500Name("CN=testName"),
+        mismatchedTrifleContentSigner.subjectPublicKeyInfo()
+      ).build(mismatchedTrifleContentSigner)
+
+      val certificateRequest =
+        CertificateRequest.PKCS10Request(pkcs10Request.encoded.toByteString())
+      assertFalse(certificateRequest.verify())
+    }
+
+    @Test
+    fun `test verify() throws an exception due to unsupported algorithm`() {
+      val pkcs10Request = PKCS10CertificationRequestBuilder(
+        X500Name("CN=testName"),
+        unsupportedTrifleContentSigner.subjectPublicKeyInfo()
+      ).build(unsupportedTrifleContentSigner)
+
+      val certificateRequest =
+        CertificateRequest.PKCS10Request(pkcs10Request.encoded.toByteString())
+      assertThrows<PKCSException>(
+        "unable to process signature: Unknown/unsupported AlgorithmId provided to obtain " +
+          "Trifle ContentVerifier"
+      ) {
+        certificateRequest.verify()
+      }
+    }
+  }
+
+  companion object {
+    private lateinit var contentVerifierProvider: JCAContentVerifierProvider
+    private lateinit var mismatchedTrifleContentSigner: TrifleContentSigner
+    private lateinit var unsupportedTrifleContentSigner: TrifleContentSigner
+
+    @JvmStatic
+    @BeforeAll
+    fun setUp() {
+      Security.addProvider(BouncyCastleProvider())
+
+      mismatchedTrifleContentSigner = object : TrifleContentSigner {
+        private val keyPair: KeyPair
+        private val keyPair2: KeyPair
+
+        init {
+          val ecSpec = ECGenParameterSpec("secp256r1")
+          val generator = KeyPairGenerator.getInstance("EC")
+          generator.initialize(ecSpec, SecureRandom())
+          keyPair = generator.generateKeyPair()
+          keyPair2 = generator.generateKeyPair()
+        }
+
+        val outputStream = ByteArrayOutputStream()
+
+        override fun subjectPublicKeyInfo(): SubjectPublicKeyInfo =
+          SubjectPublicKeyInfo.getInstance(keyPair.public.encoded)
+
+        override fun getAlgorithmIdentifier(): AlgorithmIdentifier =
+          TrifleAlgorithmIdentifier.ECDSASha256AlgorithmIdentifier
+
+        override fun getOutputStream(): OutputStream = outputStream
+
+        override fun getSignature(): ByteArray {
+          val signature = Signature.getInstance(
+            DefaultSignatureNameFinder()
+              .getAlgorithmName(algorithmIdentifier)
+          )
+          signature.initSign(keyPair2.private)
+          signature.update(outputStream.toByteArray())
+          outputStream.reset()
+
+          return signature.sign()
+        }
+      }
+
+      unsupportedTrifleContentSigner = object : TrifleContentSigner {
+        // Choose an unsupported signing algorithm type.
+        val keyPair = KeyPairGenerator.getInstance("DSA").generateKeyPair()
+        val outputStream = ByteArrayOutputStream()
+
+        override fun subjectPublicKeyInfo(): SubjectPublicKeyInfo =
+          SubjectPublicKeyInfo.getInstance(keyPair.public.encoded)
+
+        override fun getAlgorithmIdentifier(): AlgorithmIdentifier =
+          subjectPublicKeyInfo().algorithm
+
+        override fun getOutputStream(): OutputStream = outputStream
+
+        override fun getSignature(): ByteArray {
+          val signature = Signature.getInstance(
+            DefaultSignatureNameFinder()
+              .getAlgorithmName(algorithmIdentifier)
+          )
+          signature.initSign(keyPair.private)
+          signature.update(outputStream.toByteArray())
+          outputStream.reset()
+
+          return signature.sign()
+        }
+      }
+
+      contentVerifierProvider = JCAContentVerifierProvider(
+        SubjectPublicKeyInfo.getInstance(TestFixtures.EC_KEYPAIR.public.encoded)
+      )
+    }
+  }
+}

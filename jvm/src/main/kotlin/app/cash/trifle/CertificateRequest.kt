@@ -1,6 +1,6 @@
 package app.cash.trifle
 
-import app.cash.trifle.internal.providers.BCContentVerifierProvider
+import app.cash.trifle.internal.providers.JCAContentVerifierProvider
 import app.cash.trifle.protos.api.alpha.MobileCertificateRequest
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
@@ -22,7 +22,7 @@ sealed class CertificateRequest {
   fun verify(): Boolean {
     return when (this) {
       is PKCS10Request -> pkcs10Req.isSignatureValid(
-        BCContentVerifierProvider(pkcs10Req.subjectPublicKeyInfo)
+        JCAContentVerifierProvider(pkcs10Req.subjectPublicKeyInfo)
       )
     }
   }
