@@ -8,12 +8,9 @@ import app.cash.trifle.internal.util.TestFixtures.CERT_REQUEST
 import app.cash.trifle.internal.util.TestFixtures.RAW_ECDSA_P256_KEY_TEMPLATE
 import app.cash.trifle.internal.util.TestFixtures.SIGNED_DATA
 import app.cash.trifle.protos.api.alpha.MobileCertificateRequest
-import app.cash.trifle.protos.api.alpha.SignedData
-import com.google.crypto.tink.KeyTemplates
 import com.google.crypto.tink.KeysetHandle
 import com.google.crypto.tink.signature.SignatureConfig
 import org.bouncycastle.asn1.x500.X500Name
-import org.bouncycastle.cert.CertException
 import org.bouncycastle.cert.X509CertificateHolder
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -22,7 +19,6 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import java.time.Duration
 import java.time.Period
 
@@ -72,7 +68,7 @@ internal class TrifleTest {
       // Different key should not verify
       val otherCertificateAuthority = Trifle.CertificateAuthority(
         TinkDelegate(
-          KeysetHandle.generateNew(KeyTemplates.get("ED25519WithRawOutput"))
+          KeysetHandle.generateNew(RAW_ECDSA_P256_KEY_TEMPLATE)
         )
       )
       val otherCert = otherCertificateAuthority.createRootSigningCertificate(
@@ -117,7 +113,7 @@ internal class TrifleTest {
 
     @Test
     fun `test certificate entity`() {
-      assertEquals("C=US+CN=cash.app+ST=California+L=San Francisco", certHolder.subject.toString())
+      assertEquals("CN=entity", certHolder.subject.toString())
     }
 
     @Test
@@ -140,11 +136,9 @@ internal class TrifleTest {
     @Test
     fun `test isSignatureValid() returns false due to incorrectly signed certificate`() {
       // Different key should not verify (in this case it is not self-signed)
-      assertThrows<CertException> {
-        certHolder.isSignatureValid(
-          JCAContentVerifierProvider(certHolder.subjectPublicKeyInfo)
-        )
-      }
+      assertFalse(
+        certHolder.isSignatureValid(JCAContentVerifierProvider(certHolder.subjectPublicKeyInfo))
+      )
     }
 
     private fun signCertRequestWith(issuingCert: Certificate): Certificate =
@@ -183,8 +177,7 @@ internal class TrifleTest {
   inner class SignedDataTests {
     @Test
     fun `test verifies signed data`() {
-      val signedData = SignedData.ADAPTER.decode(SIGNED_DATA)
-      assertTrue(signedData.verify(Certificate.Companion.deserialize(CERT_ANCHOR)))
+      assertTrue(SIGNED_DATA.verify(CERT_ANCHOR))
     }
   }
 
@@ -198,7 +191,7 @@ internal class TrifleTest {
       SignatureConfig.register()
 
       certificateAuthority = Trifle.CertificateAuthority(
-        KeysetHandle.generateNew(KeyTemplates.get("ED25519WithRawOutput"))
+        KeysetHandle.generateNew(RAW_ECDSA_P256_KEY_TEMPLATE)
       )
       mobileClient = Trifle.EndEntity(
         KeysetHandle.generateNew(RAW_ECDSA_P256_KEY_TEMPLATE)

@@ -1,5 +1,6 @@
 package app.cash.trifle.internal
 
+import app.cash.trifle.protos.api.alpha.SignedData
 import org.bouncycastle.asn1.ASN1ObjectIdentifier
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier
 
@@ -27,4 +28,15 @@ sealed class TrifleAlgorithmIdentifier(
   // Registry http://oid-info.com/cgi-bin/display?oid=1.2.840.10045.2.1&a=display
   class ECPublicKeyAlgorithmIdentifier(curve: TrifleAlgorithmIdentifier)
     : TrifleAlgorithmIdentifier(oid = "1.2.840.10045.2.1", params = curve.algorithm)
+
+  internal companion object {
+    fun convert(signingAlgorithm: SignedData.Algorithm): TrifleAlgorithmIdentifier {
+      return when (signingAlgorithm) {
+        SignedData.Algorithm.ECDSA_SHA256 -> ECDSASha256AlgorithmIdentifier
+        else -> {
+          throw Exception("Unsupported signing algorithm")
+        }
+      }
+    }
+  }
 }
