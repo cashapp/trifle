@@ -6,8 +6,8 @@ import okio.ByteString
 import okio.ByteString.Companion.toByteString
 import org.bouncycastle.pkcs.PKCS10CertificationRequest
 
-sealed class CertificateRequest {
-  class PKCS10Request internal constructor(encoded: ByteString) : CertificateRequest() {
+sealed interface CertificateRequest {
+  class PKCS10Request internal constructor(encoded: ByteString) : CertificateRequest {
     val pkcs10Req = PKCS10CertificationRequest(encoded.toByteArray())
   }
 

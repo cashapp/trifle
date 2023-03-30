@@ -1,8 +1,5 @@
 package app.cash.trifle.internal.signers
 
-import app.cash.trifle.common.Util
-import app.cash.trifle.common.Util.getSigningAlgorithmIdentifier
-import app.cash.trifle.common.Util.getSigningAlgorithmName
 import app.cash.trifle.internal.TrifleAlgorithmIdentifier.ECDSASha256AlgorithmIdentifier
 import app.cash.trifle.internal.TrifleAlgorithmIdentifier.ECPublicKeyAlgorithmIdentifier
 import app.cash.trifle.internal.TrifleAlgorithmIdentifier.P256v1AlgorithmIdentifier
@@ -33,13 +30,23 @@ internal class JCAContentSigner(
   }
 
   override fun getAlgorithmIdentifier(): AlgorithmIdentifier {
-    return subjectPublicKeyInfo().algorithm.getSigningAlgorithmIdentifier()
+    when (val algorithm = subjectPublicKeyInfo().algorithm) {
+      ECPublicKeyAlgorithmIdentifier(P256v1AlgorithmIdentifier) ->
+        return ECDSASha256AlgorithmIdentifier
+
+      else -> throw UnsupportedOperationException(
+        "Default signature algorithm is not supported for key algorithm: $algorithm"
+      )
+    }
   }
 
   override fun getOutputStream(): OutputStream = outputStream
 
   override fun getSignature(): ByteArray {
-    val signature = Signature.getInstance(algorithmIdentifier.getSigningAlgorithmName())
+    val signature = Signature.getInstance(
+      DefaultSignatureNameFinder()
+        .getAlgorithmName(algorithmIdentifier)
+    )
     signature.initSign(keyPair.private)
     signature.update(outputStream.toByteArray())
     outputStream.reset()

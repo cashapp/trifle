@@ -1,12 +1,12 @@
 package app.cash.trifle.internal.providers
 
+import app.cash.trifle.CertificateRequest
 import app.cash.trifle.internal.TrifleAlgorithmIdentifier.ECDSASha256AlgorithmIdentifier
 import app.cash.trifle.internal.TrifleAlgorithmIdentifier.Ed25519AlgorithmIdentifier
 import app.cash.trifle.internal.util.TestFixtures
 import app.cash.trifle.internal.util.TestFixtures.EC_KEYPAIR
 import com.google.crypto.tink.signature.SignatureConfig
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo
-import org.bouncycastle.pkcs.PKCS10CertificationRequest
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -88,7 +88,9 @@ internal class TrifleContentVerifierProviderTests {
 
     @Test
     fun `test isSignatureValid() with iOS PKCS10 Certificate Request`() {
-      val pkcs10CertificateRequest = PKCS10CertificationRequest(TestFixtures.PKCS10Request)
+      val certificateRequest = TestFixtures.CERT_REQUEST
+      check(certificateRequest is CertificateRequest.PKCS10Request)
+      val pkcs10CertificateRequest = certificateRequest.pkcs10Req
 
       // Make sure that the pkcs10 request is signature is validated
       assertTrue(

@@ -4,6 +4,7 @@ import app.cash.trifle.internal.TrifleAlgorithmIdentifier
 import app.cash.trifle.internal.providers.JCAContentVerifierProvider
 import app.cash.trifle.internal.signers.TrifleContentSigner
 import app.cash.trifle.internal.util.TestFixtures
+import app.cash.trifle.internal.util.TestFixtures.CERT_REQUEST
 import okio.ByteString.Companion.toByteString
 import org.bouncycastle.asn1.x500.X500Name
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier
@@ -33,10 +34,7 @@ internal class CertificateRequestTests {
   inner class CertificateRequestVerifyTests {
     @Test
     fun `test verify() returns true for a properly signed request`() {
-      val certificateRequest = CertificateRequest.PKCS10Request(
-        TestFixtures.PKCS10Request.toByteString()
-      )
-      assertTrue(certificateRequest.verify())
+      assertTrue(CERT_REQUEST.verify())
     }
 
     @Test

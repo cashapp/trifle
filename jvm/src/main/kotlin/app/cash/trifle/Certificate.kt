@@ -8,7 +8,10 @@ import app.cash.trifle.protos.api.alpha.Certificate as CertificateProto
  *
  * @property certificate - bytearray encoding of an x.509 certificate. Subject to change.
  */
-data class Certificate internal constructor(internal val certificate: ByteArray) {
+data class Certificate internal constructor(
+  internal val certificate: ByteArray,
+  internal val version: Int = CERTIFICATE_VERSION,
+) {
   /**
    * Serialize the Trifle Certificate to a ByteArray so clients can store it for inclusion in future
    * signing operations or provide it as a root certificate to verify signed messages.
@@ -35,13 +38,18 @@ data class Certificate internal constructor(internal val certificate: ByteArray)
   }
 
   companion object {
-    private const val CERTIFICATE_VERSION: Int = 0
+    internal const val CERTIFICATE_VERSION: Int = 0
 
     /**
      * Create a Trifle Certificate from its binary representation, which is a serialized proto for
      * this purpose containing an x.509 cert.
      */
-    fun deserialize(bytes: ByteArray): Certificate =
-      Certificate(CertificateProto.ADAPTER.decode(bytes).certificate!!.toByteArray())
+    fun deserialize(bytes: ByteArray): Certificate {
+      val certProto = CertificateProto.ADAPTER.decode(bytes)
+      return Certificate(
+        certificate = checkNotNull(certProto.certificate).toByteArray(),
+        version = checkNotNull(certProto.version),
+      )
+    }
   }
 }
