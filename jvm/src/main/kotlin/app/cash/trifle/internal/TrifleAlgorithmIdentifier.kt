@@ -29,14 +29,21 @@ sealed class TrifleAlgorithmIdentifier(
   class ECPublicKeyAlgorithmIdentifier(curve: TrifleAlgorithmIdentifier)
     : TrifleAlgorithmIdentifier(oid = "1.2.840.10045.2.1", params = curve.algorithm)
 
-  internal companion object {
-    fun convert(signingAlgorithm: SignedData.Algorithm): TrifleAlgorithmIdentifier {
-      return when (signingAlgorithm) {
-        SignedData.Algorithm.ECDSA_SHA256 -> ECDSASha256AlgorithmIdentifier
-        else -> {
-          throw Exception("Unsupported signing algorithm")
-        }
+  fun encode(): SignedData.Algorithm =
+    when (this) {
+      is ECDSASha256AlgorithmIdentifier -> SignedData.Algorithm.ECDSA_SHA256
+      else -> {
+        throw Exception("Unsupported signing algorithm encoding")
       }
     }
+
+  internal companion object {
+    fun decode(signingAlgorithm: SignedData.Algorithm): TrifleAlgorithmIdentifier =
+      when (signingAlgorithm) {
+        SignedData.Algorithm.ECDSA_SHA256 -> ECDSASha256AlgorithmIdentifier
+        else -> {
+          throw Exception("Unsupported signing algorithm decoding")
+        }
+      }
   }
 }

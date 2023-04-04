@@ -2,7 +2,7 @@ package app.cash.trifle.internal.util
 
 import app.cash.trifle.Certificate
 import app.cash.trifle.CertificateRequest
-import app.cash.trifle.protos.api.alpha.SignedData
+import app.cash.trifle.SignedData
 import com.google.crypto.tink.KeyTemplate
 import com.google.crypto.tink.KeyTemplates
 import com.google.crypto.tink.proto.EcdsaKeyFormat
@@ -38,7 +38,7 @@ internal object TestFixtures {
     )
   )
 
-  val SIGNED_DATA: SignedData = SignedData.ADAPTER.decode(
+  val SIGNED_DATA: SignedData = SignedData.deserialize(
     Base64.getDecoder().decode(
       """
         ChEIABABGgtoZWxsbyB3b3JsZBJIMEYCIQC6sVAW0Eywl2x8WWt6h6SOrMhL0
@@ -62,9 +62,7 @@ internal object TestFixtures {
     )
   )
 
-  val CERT_CHAIN: List<Certificate> = SIGNED_DATA.certificates.map {
-    Certificate(it.certificate!!.toByteArray())
-  }
+  val CERT_CHAIN: List<Certificate> = SIGNED_DATA.certificates
 
   val CERT_ANCHOR: Certificate = Certificate.deserialize(
     Base64.getDecoder().decode(

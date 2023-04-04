@@ -1,6 +1,5 @@
 package app.cash.trifle
 
-import app.cash.trifle.Trifle.verify
 import app.cash.trifle.delegate.TinkDelegate
 import app.cash.trifle.internal.providers.JCAContentVerifierProvider
 import app.cash.trifle.internal.util.TestFixtures.CERT_ANCHOR
