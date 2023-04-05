@@ -3,7 +3,7 @@ package app.cash.trifle
 import okio.ByteString.Companion.toByteString
 import app.cash.trifle.protos.api.alpha.Certificate as CertificateProto
 
-/*
+/**
  * Class representing a Trifle certificate.
  *
  * @property certificate - bytearray encoding of an x.509 certificate. Subject to change.
@@ -18,8 +18,8 @@ data class Certificate internal constructor(
    */
   fun serialize(): ByteArray =
     CertificateProto(
-      version = CERTIFICATE_VERSION,
-      certificate = certificate.toByteString()
+      certificate = certificate.toByteString(),
+      version = CERTIFICATE_VERSION
     ).encode()
 
   override fun equals(other: Any?): Boolean {
@@ -29,12 +29,15 @@ data class Certificate internal constructor(
     other as Certificate
 
     if (!certificate.contentEquals(other.certificate)) return false
+    if (version != other.version) return false
 
     return true
   }
 
   override fun hashCode(): Int {
-    return certificate.contentHashCode()
+    var result = certificate.contentHashCode()
+    result = 31 * result + version
+    return result
   }
 
   companion object {
@@ -46,9 +49,11 @@ data class Certificate internal constructor(
      */
     fun deserialize(bytes: ByteArray): Certificate {
       val certProto = CertificateProto.ADAPTER.decode(bytes)
+      check(certProto.version == CERTIFICATE_VERSION)
+
       return Certificate(
         certificate = checkNotNull(certProto.certificate).toByteArray(),
-        version = checkNotNull(certProto.version),
+        version = certProto.version,
       )
     }
   }
