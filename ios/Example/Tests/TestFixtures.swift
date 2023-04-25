@@ -50,5 +50,15 @@ ZZ46kcrJ9a2jAKBggqhkjOPQQDAgNJADBGAiEAvffuwvImKNaolqnEr4ENB\
 WLq6hmtSmQ==
 """)
     
+    // https://www.sslshopper.com/certificate-decoder.html
+    // Valid To: April 22, 2023
+    public static let expiredCertEncoded = Data(base64Encoded: """
+MIIBEzCBuqADAgECAgYBh6Zjz8EwCgYIKoZIzj0EAwIwETEPMA0GA1UEAwwGZW50aXR5MB4XDTIzMDQyMjAwMzYxMVoXDTIzMDQyMzAwMzYxMVowETEPMA0GA1UEAxMGZW50aXR5MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgIE1g6XHlFG0xegJJuHOlLCMolUJomxSFOrZzlF++MPBV+9y+CwiIczKhtEIMhoa3VJus3Vt9+JTmAGpT54HZwMVDAKBggqhkjOPQQDAgNIADBFAiBVs3NLjvIS+WpH9l424rNIGe6gWMSqoSX70qxfP5MwAQIhAPb4T+lNsNk9LgIgOhlcTeG6pqQrkTZ4Z+s2fGl9wJIf
+""")
+    // Valid To: October 14, 2028
+    public static let validCertEncoded = Data(base64Encoded: """
+MIIBEjCBuqADAgECAgYBh7WhKSUwCgYIKoZIzj0EAwIwETEPMA0GA1UEAwwGZW50aXR5MB4XDTIzMDQyNDIzMzczMFoXDTI4MTAxNDIzMzczMFowETEPMA0GA1UEAxMGZW50aXR5MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgIE1g6XHlFG0xegJJuHOlLCMolUJomxSFOrZzlF++MPBV+9y+CwiIczKhtEIMhoa3VJus3Vt9+JTmAGpT54HZwMVDAKBggqhkjOPQQDAgNHADBEAiBI/myZDONM/aqwI9ie69rxhzwKX6bZ/8SG20v6LkLvtQIgeBtZOpN/Gx0Gkf5dijVLZHT2TNMFbYDXK9k7EH1yRw0=
+""")
+
     public static let data = "hello world".data(using: .utf8)!
 }
