@@ -4,7 +4,6 @@
 //
 
 import Foundation
-import Security
 
 internal struct X509TrustManager {
     
