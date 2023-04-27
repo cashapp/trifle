@@ -10,7 +10,11 @@ class MainActivity : AppCompatActivity() {
     super.onCreate(savedInstanceState)
 
     val version = LibraryVersion()
-    Log.v(TAG, "Security SDK version: $version")
+    Log.v(TAG, "Trifle version: $version")
+
+    //Example Trifle use.  Shouldn't typically be on the main UI thread, but that's the only reason
+    // we're here so it's ok.
+    val keyHandle = KeyHandle.generateKeyHandle("alias")
 
     setContentView(R.layout.activity_main)
   }
