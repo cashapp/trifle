@@ -7,7 +7,7 @@ import java.security.KeyPairGenerator
 import java.security.KeyStore
 import java.security.spec.ECGenParameterSpec
 
-data class KeyHandle internal constructor(private val alias: String) {
+class KeyHandle internal constructor(private val alias: String) {
   init {
     val ks = KeyStore.getInstance(ANDROID_KEYSTORE_TYPE).apply {
       load(null)
@@ -50,6 +50,7 @@ data class KeyHandle internal constructor(private val alias: String) {
       return KeyHandle(alias)
     }
 
+    //TODO(dcashman): Consoidate API surface with iOS surface.
     fun generateKeyHandle(alias: String): KeyHandle {
       return KeyHandle(alias)
     }
