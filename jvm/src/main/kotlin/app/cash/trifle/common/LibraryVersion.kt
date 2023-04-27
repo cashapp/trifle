@@ -3,7 +3,7 @@ package app.cash.trifle.common
 class LibraryVersion : Version {
 
   // TODO(dcashman): Get this value from the gradle build setup.
-  private val recordedVersion: String = "0.1.5-SNAPSHOT"
+  private val recordedVersion: String = "0.1.7"
 
   override fun complete(): String = recordedVersion
 
