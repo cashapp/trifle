@@ -8,7 +8,7 @@ import Wire
 
 public class Trifle {
     
-    public static let version = "0.1.4"
+    public static let version = "0.1.5"
     
     private static let mobileCertificateRequestVersion = UInt32(0)
     
@@ -90,7 +90,7 @@ public class Trifle {
         // TODO: (gelareh) check leaf cert mactches the public key that will be used for signing
         
         // check cert chain validates
-        guard leafCert.verify(intermediateChain: Array(certificates.dropFirst(1))) else {
+        guard try leafCert.verify(intermediateChain: Array(certificates.dropFirst(1))) else {
             throw TrifleError.invalidCertificateChain
         }
         
@@ -137,7 +137,7 @@ extension Certificate {
         certificateRequest: MobileCertificateRequest? = nil,
         intermediateChain: Array<Certificate>,
         rootCertificate: Certificate? = nil
-    ) -> Bool {
+    ) throws -> Bool {
         
         // TODO: validate PK in MobileCertificateRequest against certificate
         
@@ -148,7 +148,22 @@ extension Certificate {
             chain = [self] + intermediateChain
         }
         
-        return X509TrustManager.evaluate(chain)
+        let result = X509TrustManager.evaluate(chain)
+        var error: NSError?
+        
+        if !result {
+            if let error = error {
+                if error.code == errSecCertificateExpired {
+                    throw TrifleError.expiredCertificate
+                } else {
+                    throw TrifleError.invalidCertificate
+                }
+            } else {
+                // There was an error, but error object is nil
+                throw TrifleError.invalidCertificate
+            }
+        }
+        return result
     }
 }
 
@@ -156,11 +171,17 @@ public enum TrifleError: LocalizedError {
     case invalidInput(String)
     case unhandled(Error)
     case invalidCertificateChain
+    case expiredCertificate
+    case invalidCertificate
 
     public var errorDescription: String? {
         switch self {
         case .invalidCertificateChain:
             return "Invalid certificate chain."
+        case .expiredCertificate:
+            return "Certificate is expired."
+        case .invalidCertificate:
+            return "Certificate is invalid."
         case let .invalidInput(error):
             return error
 
