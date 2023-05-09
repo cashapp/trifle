@@ -5,9 +5,8 @@ plugins {
 
 android {
   compileSdkVersion(33)
-  buildToolsVersion("30.0.2")
 
-  defaultConfig {
+    defaultConfig {
     applicationId = "app.cash.trifle"
     minSdkVersion(24)
     targetSdkVersion(33)
