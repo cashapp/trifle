@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-  compileSdkVersion(33)
+  compileSdk = 33
+  buildToolsVersion = "30.0.2"
 
-    defaultConfig {
-    minSdkVersion(24)
-    targetSdkVersion(33)
+  defaultConfig {
+    minSdk = 26
 
     buildConfigField("String", "VERSION_CODE", "\"${project.property("VERSION_CODE")}\"")
     buildConfigField("String", "VERSION_NAME", "\"${project.property("VERSION_NAME")}\"")
@@ -29,17 +29,19 @@ android {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
   }
+  composeOptions {
+    kotlinCompilerExtensionVersion = "1.4.7"
+  }
   kotlinOptions {
     jvmTarget = "11"
   }
 }
 
 dependencies {
-  implementation("org.jetbrains.kotlin:kotlin-stdlib:1.7.10")
-  implementation("androidx.core:core-ktx:1.9.0")
-  implementation("androidx.appcompat:appcompat:1.6.0")
-  implementation("com.google.android.material:material:1.8.0")
-  testImplementation("junit:junit:4.+")
+  implementation("androidx.core:core-ktx:1.10.0")
+  implementation("androidx.appcompat:appcompat:1.6.1")
+  implementation("com.google.android.material:material:1.9.0")
+  testImplementation("junit:junit:4.13.2")
   androidTestImplementation("androidx.test.ext:junit:1.1.5")
   androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
