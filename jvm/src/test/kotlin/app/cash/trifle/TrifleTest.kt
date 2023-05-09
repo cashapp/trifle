@@ -18,6 +18,9 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import java.security.KeyPairGenerator
+import java.security.SecureRandom
+import java.security.spec.ECGenParameterSpec
 import java.time.Duration
 import java.time.Period
 
@@ -188,12 +191,15 @@ internal class TrifleTest {
     @BeforeAll
     fun setUp() {
       SignatureConfig.register()
+      val ecSpec = ECGenParameterSpec("secp256r1")
+      val generator = KeyPairGenerator.getInstance("EC")
+      generator.initialize(ecSpec, SecureRandom())
 
       certificateAuthority = Trifle.CertificateAuthority(
         KeysetHandle.generateNew(RAW_ECDSA_P256_KEY_TEMPLATE)
       )
       mobileClient = Trifle.EndEntity(
-        KeysetHandle.generateNew(RAW_ECDSA_P256_KEY_TEMPLATE)
+        generator.genKeyPair()
       )
     }
   }
