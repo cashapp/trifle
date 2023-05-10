@@ -42,7 +42,9 @@ class KeyHandle internal constructor(private val alias: String) {
 
     fun deserialize(bytes: ByteArray): KeyHandle {
       val alias = bytes.toString(Charsets.UTF_8)
-      val ks = KeyStore.getInstance(ANDROID_KEYSTORE_TYPE)
+      val ks = KeyStore.getInstance(ANDROID_KEYSTORE_TYPE).apply {
+        load(null)
+      }
       if (!ks.containsAlias(alias)) {
         throw IllegalArgumentException(
           "Android KeyStore does not contain a keypair corresponding to the $alias alias")
