@@ -3,8 +3,10 @@ package app.cash.trifle
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Log
+import java.security.KeyPair
 import java.security.KeyPairGenerator
 import java.security.KeyStore
+import java.security.PublicKey
 import java.security.spec.ECGenParameterSpec
 
 class KeyHandle internal constructor(private val alias: String) {
@@ -33,6 +35,21 @@ class KeyHandle internal constructor(private val alias: String) {
       val kp = kpg.generateKeyPair()
       Log.i("TRIFLE", "Created KeyHandle with alias $alias")
     }
+  }
+
+  internal fun getKeyPair(): KeyPair? {
+    val ks: KeyStore = KeyStore.getInstance("AndroidKeyStore").apply {
+      load(null)
+    }
+    try {
+      val entry: KeyStore.Entry = ks.getEntry(alias, null)
+      if (entry is KeyStore.PrivateKeyEntry) {
+        return KeyPair(entry.certificate.publicKey, entry.privateKey)
+      }
+    } catch (e: Exception) {
+      throw IllegalArgumentException("Android KeyStore does not contain a keypair corresponding to the $alias alias", e)
+    }
+    return null
   }
 
   fun serialize(): ByteArray = alias.toByteArray(Charsets.UTF_8)
