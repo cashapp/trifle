@@ -13,6 +13,7 @@ import org.bouncycastle.asn1.x500.X500Name
 import org.bouncycastle.cert.X509CertificateHolder
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.DisplayName
@@ -30,7 +31,7 @@ internal class TrifleTest {
   inner class CreateRootSigningCertificateTests {
     private val certHolder = X509CertificateHolder(
       certificateAuthority.createRootSigningCertificate(
-      "entity", Period.ofDays(1)
+        "entity", Period.ofDays(1)
       ).certificate
     )
 
@@ -180,6 +181,35 @@ internal class TrifleTest {
     @Test
     fun `test verifies signed data`() {
       assertTrue(SIGNED_DATA.verify(CERT_ANCHOR))
+    }
+
+    @Test
+    fun `test verifies signed data fails with wrong anchor`() {
+      assertFalse(
+        SIGNED_DATA.verify(
+          certificateAuthority.createRootSigningCertificate(
+            "issuingEntity", Period.ofDays(1)
+          )
+        )
+      )
+    }
+
+    @Test
+    fun `test verifies and extracts appropriate data`() {
+      val expected = VerifiedData(SIGNED_DATA.envelopedData.data, SIGNED_DATA.certificates)
+      assertEquals(expected, SIGNED_DATA.verifyAndExtract(CERT_ANCHOR))
+    }
+
+    @Test
+    fun `test no data extracted with bad verification`() {
+      val expected = VerifiedData(SIGNED_DATA.envelopedData.data, SIGNED_DATA.certificates)
+      assertNull(
+        SIGNED_DATA.verifyAndExtract(
+          certificateAuthority.createRootSigningCertificate(
+            "issuingEntity", Period.ofDays(1)
+          )
+        )
+      )
     }
   }
 
