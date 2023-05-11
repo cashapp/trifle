@@ -1,5 +1,6 @@
 package app.cash.trifle.internal.signers
 
+import app.cash.trifle.internal.TrifleAlgorithmIdentifier
 import app.cash.trifle.internal.TrifleAlgorithmIdentifier.ECDSASha256AlgorithmIdentifier
 import app.cash.trifle.internal.TrifleAlgorithmIdentifier.EdDSAAlgorithmIdentifier
 import com.google.crypto.tink.KeyTemplate
@@ -13,7 +14,6 @@ import com.google.crypto.tink.signature.SignatureConfig.ECDSA_PUBLIC_KEY_TYPE_UR
 import com.google.crypto.tink.signature.SignatureConfig.ED25519_PUBLIC_KEY_TYPE_URL
 import com.google.crypto.tink.tinkkey.KeyAccess
 import com.google.crypto.tink.tinkkey.internal.ProtoKey
-import org.bouncycastle.asn1.x509.AlgorithmIdentifier
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo
 import org.bouncycastle.jce.ECNamedCurveTable
 import org.bouncycastle.jce.spec.ECNamedCurveSpec
@@ -61,7 +61,7 @@ internal class TinkContentSigner(
     }
   }
 
-  override fun getAlgorithmIdentifier(): AlgorithmIdentifier {
+  override fun getAlgorithmIdentifier(): TrifleAlgorithmIdentifier {
     return when (val typeUrl = tinkKey.protoKey.typeUrl) {
       ED25519_PUBLIC_KEY_TYPE_URL -> EdDSAAlgorithmIdentifier
       ECDSA_PUBLIC_KEY_TYPE_URL -> ECDSASha256AlgorithmIdentifier
