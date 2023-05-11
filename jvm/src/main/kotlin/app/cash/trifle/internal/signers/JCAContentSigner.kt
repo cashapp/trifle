@@ -3,13 +3,13 @@ package app.cash.trifle.internal.signers
 import app.cash.trifle.internal.TrifleAlgorithmIdentifier.ECDSASha256AlgorithmIdentifier
 import app.cash.trifle.internal.TrifleAlgorithmIdentifier.ECPublicKeyAlgorithmIdentifier
 import app.cash.trifle.internal.TrifleAlgorithmIdentifier.P256v1AlgorithmIdentifier
-import com.google.common.annotations.VisibleForTesting
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo
 import org.bouncycastle.operator.DefaultSignatureNameFinder
 import java.io.ByteArrayOutputStream
 import java.io.OutputStream
 import java.security.KeyPair
+import java.security.PublicKey
 import java.security.Signature
 
 /**
@@ -17,7 +17,6 @@ import java.security.Signature
  * This should enable trifle Clients to supply an asymmetric keypair directly without needing
  * to reason about their internals.
  */
-@VisibleForTesting
 internal class JCAContentSigner(
   private val keyPair: KeyPair,
 ) : TrifleContentSigner {
@@ -53,4 +52,6 @@ internal class JCAContentSigner(
 
     return signature.sign()
   }
+
+  internal fun getPublicKey(): PublicKey = keyPair.public
 }
