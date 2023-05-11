@@ -3,8 +3,10 @@ package app.cash.trifle
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Log
+import java.security.KeyPair
 import java.security.KeyPairGenerator
 import java.security.KeyStore
+import java.security.PublicKey
 import java.security.spec.ECGenParameterSpec
 
 class KeyHandle internal constructor(private val alias: String) {
@@ -35,6 +37,27 @@ class KeyHandle internal constructor(private val alias: String) {
     }
   }
 
+  internal val keyPair: KeyPair by lazy {
+    val ks: KeyStore = KeyStore.getInstance("AndroidKeyStore").apply {
+      load(null)
+    }
+
+    // Throw an illegal state exception if we can't get hold of the proper key material. This
+    // *should never happen* since the only way to obtain a KeyHandle is to deserialize one, which
+    // should have already checked for this, or to generate a new one.
+    val exceptionMessage =
+      "Android KeyStore does not contain a keypair corresponding to the $alias alias"
+    try {
+      val entry: KeyStore.Entry = ks.getEntry(alias, null)
+      if (entry is KeyStore.PrivateKeyEntry) {
+        KeyPair(entry.certificate.publicKey, entry.privateKey)
+      }
+    } catch (e: Exception) {
+      throw IllegalStateException(exceptionMessage, e)
+    }
+    throw IllegalStateException(exceptionMessage)
+  }
+
   fun serialize(): ByteArray = alias.toByteArray(Charsets.UTF_8)
 
   companion object {
@@ -47,7 +70,8 @@ class KeyHandle internal constructor(private val alias: String) {
       }
       if (!ks.containsAlias(alias)) {
         throw IllegalArgumentException(
-          "Android KeyStore does not contain a keypair corresponding to the $alias alias")
+          "Android KeyStore does not contain a keypair corresponding to the $alias alias"
+        )
       }
       return KeyHandle(alias)
     }
