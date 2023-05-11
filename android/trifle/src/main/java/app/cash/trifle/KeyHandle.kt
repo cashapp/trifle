@@ -45,7 +45,6 @@ class KeyHandle internal constructor(private val alias: String) {
     // Throw an illegal state exception if we can't get hold of the proper key material. This
     // *should never happen* since the only way to obtain a KeyHandle is to deserialize one, which
     // should have already checked for this, or to generate a new one.
-    var exception: IllegalStateException? = null
     val exceptionMessage =
       "Android KeyStore does not contain a keypair corresponding to the $alias alias"
     try {
@@ -54,9 +53,9 @@ class KeyHandle internal constructor(private val alias: String) {
         KeyPair(entry.certificate.publicKey, entry.privateKey)
       }
     } catch (e: Exception) {
-      exception = IllegalStateException(exceptionMessage, e)
+      throw IllegalStateException(exceptionMessage, e)
     }
-    throw exception ?: IllegalStateException(exceptionMessage)
+    throw IllegalStateException(exceptionMessage)
   }
 
   fun serialize(): ByteArray = alias.toByteArray(Charsets.UTF_8)
