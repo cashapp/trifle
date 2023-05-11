@@ -6,15 +6,20 @@ import android.util.Log
 import java.security.KeyPair
 import java.security.KeyPairGenerator
 import java.security.KeyStore
-import java.security.PublicKey
 import java.security.spec.ECGenParameterSpec
 
 class KeyHandle internal constructor(private val alias: String) {
+  // Throw an illegal state exception if we can't get hold of the proper key material. This
+  // *should never happen* since the only way to obtain a KeyHandle is to deserialize one, which
+  // should have already checked for this, or to generate a new one.
+  private val exceptionMessage =
+    "Android KeyStore does not contain a keypair corresponding to the $alias alias"
+  private val keyStore = KeyStore.getInstance(ANDROID_KEYSTORE_TYPE).apply {
+    load(null)
+  }
+
   init {
-    val ks = KeyStore.getInstance(ANDROID_KEYSTORE_TYPE).apply {
-      load(null)
-    }
-    if (!ks.containsAlias(alias)) {
+    if (!keyStore.containsAlias(alias)) {
       // Need to generate a new key for this key alias in the keystore.
       val kpg: KeyPairGenerator = KeyPairGenerator.getInstance(
         KeyProperties.KEY_ALGORITHM_EC,
@@ -38,19 +43,10 @@ class KeyHandle internal constructor(private val alias: String) {
   }
 
   internal val keyPair: KeyPair by lazy {
-    val ks: KeyStore = KeyStore.getInstance("AndroidKeyStore").apply {
-      load(null)
-    }
-
-    // Throw an illegal state exception if we can't get hold of the proper key material. This
-    // *should never happen* since the only way to obtain a KeyHandle is to deserialize one, which
-    // should have already checked for this, or to generate a new one.
-    val exceptionMessage =
-      "Android KeyStore does not contain a keypair corresponding to the $alias alias"
     try {
-      val entry: KeyStore.Entry = ks.getEntry(alias, null)
+      val entry: KeyStore.Entry = keyStore.getEntry(alias, null)
       if (entry is KeyStore.PrivateKeyEntry) {
-        KeyPair(entry.certificate.publicKey, entry.privateKey)
+        return@lazy KeyPair(entry.certificate.publicKey, entry.privateKey)
       }
     } catch (e: Exception) {
       throw IllegalStateException(exceptionMessage, e)
