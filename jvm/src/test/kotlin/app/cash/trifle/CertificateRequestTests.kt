@@ -7,25 +7,16 @@ import app.cash.trifle.internal.util.TestFixtures
 import app.cash.trifle.internal.util.TestFixtures.CERT_REQUEST
 import okio.ByteString.Companion.toByteString
 import org.bouncycastle.asn1.x500.X500Name
-import org.bouncycastle.asn1.x509.AlgorithmIdentifier
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.bouncycastle.operator.DefaultSignatureNameFinder
 import org.bouncycastle.pkcs.PKCS10CertificationRequestBuilder
 import org.bouncycastle.pkcs.PKCSException
+import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import java.io.ByteArrayOutputStream
 import java.io.OutputStream
-import java.security.KeyPair
-import java.security.KeyPairGenerator
-import java.security.SecureRandom
-import java.security.Security
-import java.security.Signature
+import java.security.*
 import java.security.spec.ECGenParameterSpec
 
 internal class CertificateRequestTests {
@@ -94,7 +85,7 @@ internal class CertificateRequestTests {
         override fun subjectPublicKeyInfo(): SubjectPublicKeyInfo =
           SubjectPublicKeyInfo.getInstance(keyPair.public.encoded)
 
-        override fun getAlgorithmIdentifier(): AlgorithmIdentifier =
+        override fun getAlgorithmIdentifier(): TrifleAlgorithmIdentifier =
           TrifleAlgorithmIdentifier.ECDSASha256AlgorithmIdentifier
 
         override fun getOutputStream(): OutputStream = outputStream
@@ -120,8 +111,8 @@ internal class CertificateRequestTests {
         override fun subjectPublicKeyInfo(): SubjectPublicKeyInfo =
           SubjectPublicKeyInfo.getInstance(keyPair.public.encoded)
 
-        override fun getAlgorithmIdentifier(): AlgorithmIdentifier =
-          subjectPublicKeyInfo().algorithm
+        override fun getAlgorithmIdentifier(): TrifleAlgorithmIdentifier =
+          TrifleAlgorithmIdentifier.DSAAlgorithmIdentifier
 
         override fun getOutputStream(): OutputStream = outputStream
 

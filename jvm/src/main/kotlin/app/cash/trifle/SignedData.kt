@@ -120,7 +120,7 @@ data class SignedData internal constructor(
     }
 
     internal companion object {
-      private const val ENVELOPED_DATA_VERSION: Int = 0
+      internal const val ENVELOPED_DATA_VERSION: Int = 0
 
       fun deserialize(bytes: ByteArray): EnvelopedData {
         val envelopedDataProto = EnvelopedDataProto.ADAPTER.decode(bytes)

@@ -1,6 +1,8 @@
 package app.cash.trifle.delegate
 
+import app.cash.trifle.Certificate
 import app.cash.trifle.CertificateRequest
+import app.cash.trifle.SignedData
 
 interface EndEntityDelegate {
   /**
@@ -11,4 +13,15 @@ interface EndEntityDelegate {
   fun createCertRequest(
     entityName: String,
   ): CertificateRequest
+
+  /**
+   * Create a signed data with a Trifle Content Signer.
+   *
+   * @param data raw data to be signed.
+   * @param certificates certificate chain to be included in the SignedData message.
+   */
+  fun createSignedData(
+    data: ByteArray,
+    certificates: List<Certificate>
+  ): SignedData
 }
