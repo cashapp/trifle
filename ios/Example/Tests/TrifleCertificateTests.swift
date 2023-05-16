@@ -5,9 +5,31 @@
 
 import Foundation
 import XCTest
-import Trifle
+@testable import Trifle
 
 final class TrifleCertificateTests: XCTestCase {
+    
+    func testVerifyTrifleCertificate_succeeds() throws {
+        let trifle = try Trifle(reverseDomain: TestFixtures.reverseDomain)                
+        let deviceCertificate = try TrifleCertificate(data: TestFixtures.deviceTrifleCertEncoded!)
+        let rootCertificate = try TrifleCertificate(data: TestFixtures.rootTrifleCertEncoded!)
+
+        var isVerified = try deviceCertificate.verify(
+            certificateRequest: nil,
+            intermediateTrifleChain: [rootCertificate],
+            rootTrifleCertificate: nil
+        )
+        
+        XCTAssertTrue(isVerified)
+
+        isVerified = try deviceCertificate.verify(
+            certificateRequest: nil,
+            intermediateTrifleChain: [],
+            rootTrifleCertificate: rootCertificate
+        )
+        
+        XCTAssertTrue(isVerified)
+    }
     
     func testVerifyCertificate_succeeds() throws {
         let trifle = try Trifle(reverseDomain: TestFixtures.reverseDomain)

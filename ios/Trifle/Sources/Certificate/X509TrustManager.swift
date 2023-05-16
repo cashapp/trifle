@@ -26,7 +26,7 @@ internal struct X509TrustManager {
 
         // sets the root certificate (tail of the array as the trust anchor
         SecTrustSetAnchorCertificates(trust, [secCerts.last!] as CFArray)
-        // disables trusting any built-in anchors
+        // only trust built-in anchors
         SecTrustSetAnchorCertificatesOnly(trust, true)
         // disables fetching from the network if missing intermediate chain(s)
         SecTrustSetNetworkFetchAllowed(trust, false)

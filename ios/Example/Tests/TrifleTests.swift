@@ -3,7 +3,7 @@
 //  Trifle_Tests
 //
 
-import Trifle
+@testable import Trifle
 import XCTest
 import Wire
 
@@ -63,14 +63,13 @@ final class TrifleTests: XCTestCase {
         let trifle = try Trifle(reverseDomain: TestFixtures.reverseDomain)
         let keyHandle = try trifle.generateKeyHandle()
 
-        let deviceCertificate = Certificate(version: 0, certificate: TestFixtures.deviceCertEncoded2)
-        let rootCertificate = Certificate(version: 0, certificate: TestFixtures.rootCertEncoded)
-
+        let deviceCertificate = try TrifleCertificate(from: Certificate(version: 0, certificate: TestFixtures.deviceCertEncoded2))
+        let rootCertificate = try TrifleCertificate(from: Certificate(version: 0, certificate: TestFixtures.rootCertEncoded))
         
         // cert chain of length 1
         let signDataWithoutRoot = try trifle.createSignedData(data: TestFixtures.data,
                                      keyHandle: keyHandle,
-                                     certificates: [deviceCertificate] )
+                                     trifleCertificates: [deviceCertificate] )
         XCTAssertNotNil(signDataWithoutRoot, "This is TODO - once this is validated, this test should FAIL")
 
         
@@ -82,7 +81,7 @@ final class TrifleTests: XCTestCase {
         // cert chain of length 2
         let signDataWithRoot = try trifle.createSignedData(data: TestFixtures.data,
                                     keyHandle: keyHandle,
-                                    certificates: [deviceCertificate, rootCertificate])
+                                    trifleCertificates: [deviceCertificate, rootCertificate])
         XCTAssertNotNil(signDataWithRoot, "This is TODO - once this is validated, this test should FAIL")
     }
     
@@ -95,18 +94,18 @@ final class TrifleTests: XCTestCase {
         let keyHandle1 = try trifle.generateKeyHandle()
         let keyHandle2 = try trifle.generateKeyHandle()
 
-        let deviceCertificate = Certificate(version: 0, certificate: TestFixtures.deviceCertEncoded)
+        let deviceCertificate = try TrifleCertificate(from: Certificate(version: 0, certificate: TestFixtures.deviceCertEncoded))
 
         // Key 1
         let signData1 = try trifle.createSignedData(data: TestFixtures.data,
                                     keyHandle: keyHandle1,
-                                    certificates: [deviceCertificate] )
+                                    trifleCertificates: [deviceCertificate] )
         XCTAssertNotNil(signData1, "This is TODO - once this is validated, this test should FAIL")
         
         // Key 2
         let signData2 = try trifle.createSignedData(data: TestFixtures.data,
                                      keyHandle: keyHandle2,
-                                     certificates: [deviceCertificate] )
+                                     trifleCertificates: [deviceCertificate] )
         XCTAssertNotNil(signData2, "This is TODO - once this is validated, this test should FAIL")
     }
     
@@ -118,18 +117,18 @@ final class TrifleTests: XCTestCase {
         let trifle2 = try Trifle(reverseDomain: "app.square.trifle.keys")
         let keyHandle2 = try trifle2.generateKeyHandle()
 
-        let deviceCertificate = Certificate(version: 0, certificate: TestFixtures.deviceCertEncoded)
+        let deviceCertificate = try TrifleCertificate(from: Certificate(version: 0, certificate: TestFixtures.deviceCertEncoded))
 
         // Trifle 1, Key 1
         let signData1 = try trifle1.createSignedData(data: TestFixtures.data,
                                     keyHandle: keyHandle1,
-                                    certificates: [deviceCertificate] )
+                                    trifleCertificates: [deviceCertificate] )
         XCTAssertNotNil(signData1)
         
         // Trifle 1, Key 2
         let signData2 = try trifle1.createSignedData(data: TestFixtures.data,
                                      keyHandle: keyHandle2,
-                                     certificates: [deviceCertificate] )
+                                     trifleCertificates: [deviceCertificate] )
         // TODO: This test should ideally fail
         // Right now this is passing because we are not cross validating the domains
         // of our SDK instance and the key handle
@@ -140,11 +139,11 @@ final class TrifleTests: XCTestCase {
         let trifle = try Trifle(reverseDomain: TestFixtures.reverseDomain)
         let keyHandle = try trifle.generateKeyHandle()
 
-        let deviceCertificate = Certificate(version: 0, certificate: TestFixtures.deviceCertEncoded)
+        let deviceCertificate = try TrifleCertificate(from: Certificate(version: 0, certificate: TestFixtures.deviceCertEncoded))
 
         XCTAssertThrowsError(try trifle.createSignedData(data: Data.init(),
                                                          keyHandle: keyHandle,
-                                                         certificates: [deviceCertificate]),
+                                                         trifleCertificates: [deviceCertificate]),
                              "Data or Certifcate should not be empty.")
     }
 
@@ -154,7 +153,7 @@ final class TrifleTests: XCTestCase {
 
         XCTAssertThrowsError(try trifle.createSignedData(data: TestFixtures.data,
                                                          keyHandle: keyHandle,
-                                                         certificates: []),
+                                                         trifleCertificates: []),
                              "Data or Certifcate should not be empty.")
     }
 
@@ -162,12 +161,12 @@ final class TrifleTests: XCTestCase {
         let trifle = try Trifle(reverseDomain: TestFixtures.reverseDomain)
         let keyHandle = try trifle.generateKeyHandle()
 
-        let deviceCertificate = Certificate(version: 0, certificate: TestFixtures.deviceCertEncoded)
-        let otherRootCertificate = Certificate(version: 0, certificate: TestFixtures.otherRootCertEncoded)
+        let deviceCertificate = try TrifleCertificate(from: Certificate(version: 0, certificate: TestFixtures.deviceCertEncoded))
+        let otherRootCertificate = try TrifleCertificate(from: Certificate(version: 0, certificate: TestFixtures.otherRootCertEncoded))
 
         XCTAssertThrowsError(try trifle.createSignedData(data: TestFixtures.data,
                                                          keyHandle: keyHandle,
-                                                         certificates: [deviceCertificate]+[otherRootCertificate]),
+                                                         trifleCertificates: [deviceCertificate]+[otherRootCertificate]),
                              "Invalid certificate chain.")
     }
 }

@@ -17,9 +17,9 @@ public class Trifle {
     private let contentSigner: ContentSigner
 
     /**
-      Initialize the SDK with the key tag that is passed in.
+     Initialize the SDK with the key tag that is passed in.
      
-      Create a new mobile Trifle keypair for which can be used to create a
+     Create a new mobile Trifle keypair for which can be used to create a
      certificate request and to sign messages. The library (Trifle) will
      automatically try to choose the best algorithm and key type available on
      this device.
@@ -30,14 +30,14 @@ public class Trifle {
     }
     
     /**
-      Create a new mobile Trifle keypair for which can be used to create a
-      certificate request and to sign messages. The library (Trifle) will
-      automatically try to choose the best algorithm and key type available on
-      this device.
+     Create a new mobile Trifle keypair for which can be used to create a
+     certificate request and to sign messages. The library (Trifle) will
+     automatically try to choose the best algorithm and key type available on
+     this device.
      
-      - returns: KeyHandle An opaque Trifle representation of the key-pair,
-         which the client will need to store.
-    */
+     - returns: KeyHandle An opaque Trifle representation of the key-pair,
+     which the client will need to store.
+     */
     public func generateKeyHandle() throws -> KeyHandle {
         // currently we support only (Secure Enclave, EC-P256)
         return KeyHandle(tag: try contentSigner.generateTag())
@@ -51,7 +51,7 @@ public class Trifle {
      - parameters: keyHandle - key handle used for the signing.
 
      - returns: An opaque Trifle representation
-        `MobileCertificateRequest` of the certificate request.
+     `MobileCertificateRequest` of the certificate request.
      */
     public func generateMobileCertificateRequest(keyHandle: KeyHandle) throws
     -> MobileCertificateRequest {
@@ -71,10 +71,11 @@ public class Trifle {
      - parameters: data - raw data to be signed.
      - parameters: keyHandle - key handle used for the signing.
      - parameters: certificate list - certificate chain to be included in the SignedData message.
-        Must match the key in keyHandle.
+     Must match the key in keyHandle.
 
      - returns:`SignedData` - signed data message in the Trifle format.
-    */
+     */
+    @available(*, deprecated)
     public func createSignedData(
         data: Data,
         keyHandle: KeyHandle,
@@ -84,10 +85,69 @@ public class Trifle {
         guard let leafCert = certificates.first, !data.isEmpty else {
             throw TrifleError.invalidInput("Data or Certificate should not be empty.")
         }
+
+        // TODO: (gelareh) check key handle domain matches the one in trifle
+
+        // TODO: (gelareh) check leaf cert matches the public key that will be used for signing
+
+        // check cert chain validates
+        guard try leafCert.verify(intermediateChain: Array(certificates.dropFirst(1))) else {
+            throw TrifleError.invalidCertificateChain
+        }
+
+        let signingDataAlgorithm: SignedData.Algorithm
+        switch contentSigner.signingAlgorithm {
+        case .ecdsaSha256:
+            signingDataAlgorithm = SignedData.Algorithm.ECDSA_SHA256
+        }
+
+        // create serialized data
+        let serializedData = try ProtoEncoder().encode(
+            SignedData.EnvelopedData(
+                version: envelopeDataVersion,
+                signing_algorithm: signingDataAlgorithm,
+                data: data
+            )
+        )
+
+        // sign data
+        // if key handle is invalid, an error is thrown
+        return SignedData(
+            enveloped_data: serializedData,
+            signature: try contentSigner.sign(for: keyHandle.tag, with: serializedData).data,
+            certificates: certificates
+        )
+    }
+    
+    /**
+     Sign the provided data with the provided key, including appropriate Trifle
+     metadata, such as the accompanying Trifle certificate.
+     
+     - parameters: data - raw data to be signed.
+     - parameters: keyHandle - key handle used for the signing.
+     - parameters: certificate list - Trifle certificate chain to be included in the SignedData message.
+     Must match the key in keyHandle.
+     
+     - returns:`SignedData` - signed data message in the Trifle format.
+     */
+    public func createSignedData(
+        data: Data,
+        keyHandle: KeyHandle,
+        trifleCertificates: Array<TrifleCertificate>
+    ) throws -> SignedData {
+        
+        // convert from TrifleCertificate to Certificate
+        let certificates = trifleCertificates.map({ trifleCert in
+            return trifleCert.getCertificate()
+        })
+        
+        guard let leafCert = certificates.first, !data.isEmpty else {
+            throw TrifleError.invalidInput("Data or Certificate should not be empty.")
+        }
         
         // TODO: (gelareh) check key handle domain matches the one in trifle
         
-        // TODO: (gelareh) check leaf cert mactches the public key that will be used for signing
+        // TODO: (gelareh) check leaf cert matches the public key that will be used for signing
         
         // check cert chain validates
         guard try leafCert.verify(intermediateChain: Array(certificates.dropFirst(1))) else {
