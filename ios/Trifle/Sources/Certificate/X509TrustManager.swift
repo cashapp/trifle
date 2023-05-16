@@ -24,6 +24,9 @@ internal struct X509TrustManager {
             return false
         }
 
+        // Disable network access for SecTrustEvaluateWithError
+        SecTrustSetNetworkFetchAllowed(trust, false);
+
         // sets the root certificate (tail of the array as the trust anchor
         SecTrustSetAnchorCertificates(trust, [secCerts.last!] as CFArray)
         // disables trusting any built-in anchors
