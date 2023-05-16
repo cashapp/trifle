@@ -1,6 +1,7 @@
 package app.cash.trifle.internal
 
 import app.cash.trifle.protos.api.alpha.SignedData
+import com.google.common.annotations.VisibleForTesting
 import org.bouncycastle.asn1.ASN1ObjectIdentifier
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier
 
@@ -8,6 +9,10 @@ sealed class TrifleAlgorithmIdentifier(
   oid: String,
   params: ASN1ObjectIdentifier? = null
 ) : AlgorithmIdentifier(ASN1ObjectIdentifier(oid), params) {
+  // Registry http://oid-info.com/cgi-bin/display?oid=1.2.840.10040.4.3&a=display
+  @VisibleForTesting
+  object DSAAlgorithmIdentifier: TrifleAlgorithmIdentifier("1.2.840.10040.4.3")
+
   // Defined in https://www.rfc-editor.org/rfc/rfc8420
   // Registry http://oid-info.com/cgi-bin/display?oid=1.3.101.112&a=display
   object EdDSAAlgorithmIdentifier: TrifleAlgorithmIdentifier(oid = "1.3.101.112")

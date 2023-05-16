@@ -1,5 +1,6 @@
 package app.cash.trifle.internal.signers
 
+import app.cash.trifle.internal.TrifleAlgorithmIdentifier
 import app.cash.trifle.internal.TrifleAlgorithmIdentifier.ECDSASha256AlgorithmIdentifier
 import app.cash.trifle.internal.TrifleAlgorithmIdentifier.ECPublicKeyAlgorithmIdentifier
 import app.cash.trifle.internal.TrifleAlgorithmIdentifier.P256v1AlgorithmIdentifier
@@ -28,7 +29,7 @@ internal class JCAContentSigner(
     )
   }
 
-  override fun getAlgorithmIdentifier(): AlgorithmIdentifier {
+  override fun getAlgorithmIdentifier(): TrifleAlgorithmIdentifier {
     when (val algorithm = subjectPublicKeyInfo().algorithm) {
       ECPublicKeyAlgorithmIdentifier(P256v1AlgorithmIdentifier) ->
         return ECDSASha256AlgorithmIdentifier

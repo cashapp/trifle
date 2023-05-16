@@ -36,6 +36,9 @@ data class SignedData internal constructor(
     return isVerified
   }
 
+  fun verifyAndExtract(certAnchor: Certificate): VerifiedData? =
+    if (verify(certAnchor)) VerifiedData(envelopedData.data, certificates) else null
+
   fun serialize(): ByteArray = SignedDataProto(
     enveloped_data = envelopedData.serialize().toByteString(),
     signature = signature.toByteString(),
@@ -117,7 +120,7 @@ data class SignedData internal constructor(
     }
 
     internal companion object {
-      private const val ENVELOPED_DATA_VERSION: Int = 0
+      internal const val ENVELOPED_DATA_VERSION: Int = 0
 
       fun deserialize(bytes: ByteArray): EnvelopedData {
         val envelopedDataProto = EnvelopedDataProto.ADAPTER.decode(bytes)
@@ -126,7 +129,7 @@ data class SignedData internal constructor(
         return EnvelopedData(
           version = envelopedDataProto.version,
           signingAlgorithm = TrifleAlgorithmIdentifier.decode(
-              checkNotNull(envelopedDataProto.signing_algorithm)
+            checkNotNull(envelopedDataProto.signing_algorithm)
           ),
           data = checkNotNull(envelopedDataProto.data_).toByteArray()
         )
