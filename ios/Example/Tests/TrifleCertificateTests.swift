@@ -11,8 +11,8 @@ final class TrifleCertificateTests: XCTestCase {
     
     func testVerifyTrifleCertificate_succeeds() throws {
         let trifle = try Trifle(reverseDomain: TestFixtures.reverseDomain)                
-        let deviceCertificate = try TrifleCertificate(data: TestFixtures.deviceTrifleCertEncoded!)
-        let rootCertificate = try TrifleCertificate(data: TestFixtures.rootTrifleCertEncoded!)
+        let deviceCertificate = try TrifleCertificate(data: TestFixtures.deviceTrifleCertEncoded3!)
+        let rootCertificate = try TrifleCertificate(data: TestFixtures.rootTrifleCertEncoded3!)
 
         var isVerified = try deviceCertificate.verify(
             certificateRequest: nil,

@@ -94,7 +94,7 @@ internal class TrifleTest {
   inner class SignCertificateTests {
     // Create local copy of issuingCert for use in verifying signature.
     private val issuingCert = certificateAuthority.createRootSigningCertificate(
-      "issuingEntity", Period.ofDays(365)
+      "issuingEntity", Period.ofDays(1)
     )
 
     // Extract the x.509 certificate from our object.

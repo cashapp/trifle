@@ -1,5 +1,5 @@
 //
-//  KeyHandle.swift
+//  TrifleCertificate.swift
 //  Trifle
 //
 
@@ -11,10 +11,6 @@ public class TrifleCertificate : Codable {
     
     public init(data: Data) throws {
         self.proto = try ProtoDecoder().decode(Certificate.self, from: data)
-    }
-    
-    internal init(from cert: Certificate) throws {
-        self.proto = cert
     }
     
     internal func getCertificate() -> Certificate {
