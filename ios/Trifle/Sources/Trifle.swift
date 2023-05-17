@@ -73,13 +73,13 @@ public class Trifle {
      - parameters: certificate list - certificate chain to be included in the SignedData message.
         Must match the key in keyHandle.
 
-     - returns:`SignedData` - signed data message in the Trifle format.
+     - returns:`TrifleSignedData` - signed data message in the Trifle format.
     */
     public func createSignedData(
         data: Data,
         keyHandle: KeyHandle,
         certificates: Array<Certificate>
-    ) throws -> SignedData {
+    ) throws -> TrifleSignedData {
 
         guard let leafCert = certificates.first, !data.isEmpty else {
             throw TrifleError.invalidInput("Data or Certificate should not be empty.")
@@ -111,11 +111,13 @@ public class Trifle {
         
         // sign data
         // if key handle is invalid, an error is thrown
-        return SignedData(
-            enveloped_data: serializedData,
-            signature: try contentSigner.sign(for: keyHandle.tag, with: serializedData).data,
-            certificates: certificates
-        )
+        
+        let signedData = try ProtoEncoder().encode(SignedData(
+                enveloped_data: serializedData,
+                signature: try contentSigner.sign(for: keyHandle.tag, with: serializedData).data,
+                certificates: certificates))
+        
+        return try TrifleSignedData(data: signedData)
     }
 }
 
