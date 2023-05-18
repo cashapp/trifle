@@ -7,14 +7,42 @@
 import Foundation
 import Wire
 
-public class TrifleSignedData : Codable {
+public class TrifleSignedData {
     private let proto: SignedData
     
-    public init(data: Data) throws {
-        self.proto = try ProtoDecoder().decode(SignedData.self, from: data)
+    /**
+     Constructor is private. This class can be constructed only via the deserialization
+     */
+    private init(proto: SignedData) {
+        self.proto = proto
+    }
+
+    /**
+     Deserializes the data and returns a TrifleSignedData object.
+     
+     This is a static method.
+
+     - parameters: data - the serialized TrifleSignedData object
+     
+     - returns: TrifleSignedData object
+     */
+    public static func deserialize(data: Data) throws -> TrifleSignedData {
+        return TrifleSignedData( proto: try ProtoDecoder().decode(SignedData.self, from: data))
     }
     
-    internal func getSignedData() -> SignedData {
-        return proto
-    }    
+    /**
+     Serializes the TrifleSignedData object into Data object.
+     
+     - returns: Data object
+     */
+    public func serialize() throws -> Data {
+        return try ProtoEncoder().encode(proto)
+    }
+    
+}
+
+extension TrifleSignedData: Equatable {
+    public static func ==(lhs: TrifleSignedData, rhs: TrifleSignedData) -> Bool {
+        return lhs.proto == rhs.proto
+    }
 }

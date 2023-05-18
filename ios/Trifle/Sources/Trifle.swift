@@ -17,9 +17,9 @@ public class Trifle {
     private let contentSigner: ContentSigner
 
     /**
-      Initialize the SDK with the key tag that is passed in.
+     Initialize the SDK with the key tag that is passed in.
      
-      Create a new mobile Trifle keypair for which can be used to create a
+     Create a new mobile Trifle keypair for which can be used to create a
      certificate request and to sign messages. The library (Trifle) will
      automatically try to choose the best algorithm and key type available on
      this device.
@@ -30,14 +30,14 @@ public class Trifle {
     }
     
     /**
-      Create a new mobile Trifle keypair for which can be used to create a
-      certificate request and to sign messages. The library (Trifle) will
-      automatically try to choose the best algorithm and key type available on
-      this device.
+     Create a new mobile Trifle keypair for which can be used to create a
+     certificate request and to sign messages. The library (Trifle) will
+     automatically try to choose the best algorithm and key type available on
+     this device.
      
-      - returns: KeyHandle An opaque Trifle representation of the key-pair,
-         which the client will need to store.
-    */
+     - returns: KeyHandle An opaque Trifle representation of the key-pair,
+     which the client will need to store.
+     */
     public func generateKeyHandle() throws -> KeyHandle {
         // currently we support only (Secure Enclave, EC-P256)
         return KeyHandle(tag: try contentSigner.generateTag())
@@ -51,7 +51,7 @@ public class Trifle {
      - parameters: keyHandle - key handle used for the signing.
 
      - returns: An opaque Trifle representation
-        `MobileCertificateRequest` of the certificate request.
+     `MobileCertificateRequest` of the certificate request.
      */
     public func generateMobileCertificateRequest(keyHandle: KeyHandle) throws
     -> MobileCertificateRequest {
@@ -66,31 +66,31 @@ public class Trifle {
     
     /**
      Sign the provided data with the provided key, including appropriate Trifle
-     metadata, such as the accompanying certificate.
-
+     metadata, such as the accompanying Trifle certificate.
+     
      - parameters: data - raw data to be signed.
      - parameters: keyHandle - key handle used for the signing.
-     - parameters: certificate list - certificate chain to be included in the SignedData message.
-        Must match the key in keyHandle.
-
+     - parameters: certificate list - Trifle certificate chain to be included in the SignedData message.
+     Must match the key in keyHandle.
+     
      - returns:`TrifleSignedData` - signed data message in the Trifle format.
-    */
+     */
     public func createSignedData(
         data: Data,
         keyHandle: KeyHandle,
-        certificates: Array<Certificate>
+        certificates: Array<TrifleCertificate>
     ) throws -> TrifleSignedData {
-
+                
         guard let leafCert = certificates.first, !data.isEmpty else {
             throw TrifleError.invalidInput("Data or Certificate should not be empty.")
         }
         
         // TODO: (gelareh) check key handle domain matches the one in trifle
         
-        // TODO: (gelareh) check leaf cert mactches the public key that will be used for signing
+        // TODO: (gelareh) check leaf cert matches the public key that will be used for signing
         
         // check cert chain validates
-        guard try leafCert.verify(intermediateChain: Array(certificates.dropFirst(1))) else {
+        guard try leafCert.verify(intermediateTrifleChain: Array(certificates.dropFirst(1))) else {
             throw TrifleError.invalidCertificateChain
         }
         
@@ -111,61 +111,13 @@ public class Trifle {
         
         // sign data
         // if key handle is invalid, an error is thrown
-        
         let signedData = try ProtoEncoder().encode(SignedData(
                 enveloped_data: serializedData,
                 signature: try contentSigner.sign(for: keyHandle.tag, with: serializedData).data,
-                certificates: certificates))
-        
-        return try TrifleSignedData(data: signedData)
-    }
-}
+                // TODO: (gelareh) This conversion will be removed when we introduce TrifleSignedData
+                certificates: certificates.map({ trifleCert in return trifleCert.getCertificate() })))
 
-extension Certificate {
-    /**
-     Verify that the provided certificate matches what we expected.
-     It matches the CSR that we have and the root cert is what
-     we expect.
-
-     - parameters: certificateRequest request used to generate this certificate
-     - parameters: certificateChain - list of certificates between this cert and
-        the root certificate.
-     - parameters: rootCertificate - certificate to use as root of chain.
-        Defaults to the root certificate bundled with Trifle.
-     
-     - returns: true if validated, false otherwise
-     */
-    public func verify(
-        certificateRequest: MobileCertificateRequest? = nil,
-        intermediateChain: Array<Certificate>,
-        rootCertificate: Certificate? = nil
-    ) throws -> Bool {
-        
-        // TODO: validate PK in MobileCertificateRequest against certificate
-        
-        let chain : Array<Certificate>
-        if (rootCertificate != nil) {
-            chain = [self] + intermediateChain + [rootCertificate!]
-        } else {
-            chain = [self] + intermediateChain
-        }
-        
-        let result = X509TrustManager.evaluate(chain)
-        var error: NSError?
-        
-        if !result {
-            if let error = error {
-                if error.code == errSecCertificateExpired {
-                    throw TrifleError.expiredCertificate
-                } else {
-                    throw TrifleError.invalidCertificate
-                }
-            } else {
-                // There was an error, but error object is nil
-                throw TrifleError.invalidCertificate
-            }
-        }
-        return result
+        return try TrifleSignedData.deserialize(data: signedData)
     }
 }
 
