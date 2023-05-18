@@ -2,9 +2,6 @@
 //  CertificateTests.swift
 //  Trifle_Tests
 //
-//  Created by Gelareh Taban on 5/17/23.
-//  Copyright © 2023 CocoaPods. All rights reserved.
-//
 
 import Foundation
 import XCTest

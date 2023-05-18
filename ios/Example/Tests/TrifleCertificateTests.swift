@@ -5,7 +5,7 @@
 
 import Foundation
 import XCTest
-import Trifle
+@testable import Trifle
 
 final class TrifleCertificateTests: XCTestCase {
     
@@ -46,12 +46,7 @@ final class TrifleCertificateTests: XCTestCase {
         let decoder = JSONDecoder()
         let decoded = try decoder.decode(TrifleCertificate.self, from: jsonData)
         
-        // verify the decoded certificate
-        let isVerified = try decoded.verify(
-            certificateRequest: nil,
-            intermediateTrifleChain: [],
-            rootTrifleCertificate: nil
-        )
-        XCTAssertTrue(isVerified)
+        // verify equality of decoded certificate and initial deviceCertificate
+        XCTAssertTrue(deviceCertificate.getCertificate() == decoded.getCertificate())
     }
 }
