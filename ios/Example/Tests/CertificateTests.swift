@@ -19,8 +19,8 @@ final class CertificateTests: XCTestCase {
         
         let mobileCertReq = try trifle.generateMobileCertificateRequest(keyHandle: keyHandle)
         
-        let deviceCertificate = try Certificate(version: 0, certificate: ProtoEncoder().encode( TrifleCertificate(data: TestFixtures.deviceTrifleCertEncoded2!).getCertificate()))
-        let rootCertificate = try Certificate(version: 0, certificate: ProtoEncoder().encode( TrifleCertificate(data: TestFixtures.rootTrifleCertEncoded!).getCertificate()))
+        let deviceCertificate = try TrifleCertificate(data: TestFixtures.deviceTrifleCertEncoded2!).getCertificate()
+        let rootCertificate = try TrifleCertificate(data: TestFixtures.rootTrifleCertEncoded!).getCertificate()
         
         let isVerified = try deviceCertificate.verify(
             certificateRequest: mobileCertReq,
@@ -37,9 +37,8 @@ final class CertificateTests: XCTestCase {
         
         let mobileCertReq = try trifle.generateMobileCertificateRequest(keyHandle: keyHandle)
         
-        let deviceCertificate = try Certificate(version: 0, certificate: ProtoEncoder().encode( TrifleCertificate(data: TestFixtures.deviceTrifleCertEncoded!).getCertificate()))
-        let otherRootCertificate = try Certificate(version: 0, certificate: ProtoEncoder().encode( TrifleCertificate(data: TestFixtures.otherRootTrifleCertEncoded!).getCertificate()))
-        
+        let deviceCertificate = try TrifleCertificate(data: TestFixtures.deviceTrifleCertEncoded!).getCertificate()
+        let otherRootCertificate = try TrifleCertificate(data: TestFixtures.otherRootTrifleCertEncoded!).getCertificate()
         XCTAssertThrowsError(try deviceCertificate.verify(
             certificateRequest: mobileCertReq,
             intermediateChain: [],
