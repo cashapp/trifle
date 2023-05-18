@@ -5,24 +5,15 @@
 
 import Foundation
 import XCTest
-@testable import Trifle
+import Trifle
 
 final class TrifleCertificateTests: XCTestCase {
     
-    func testVerifyTrifleCertificate_succeeds() throws {
-        let trifle = try Trifle(reverseDomain: TestFixtures.reverseDomain)                
+    func testVerifyTrifleCertificateWithRoot_succeeds() throws {
         let deviceCertificate = try TrifleCertificate(data: TestFixtures.deviceTrifleCertEncoded3!)
         let rootCertificate = try TrifleCertificate(data: TestFixtures.rootTrifleCertEncoded3!)
 
-        var isVerified = try deviceCertificate.verify(
-            certificateRequest: nil,
-            intermediateTrifleChain: [rootCertificate],
-            rootTrifleCertificate: nil
-        )
-        
-        XCTAssertTrue(isVerified)
-
-        isVerified = try deviceCertificate.verify(
+        let isVerified = try deviceCertificate.verify(
             certificateRequest: nil,
             intermediateTrifleChain: [],
             rootTrifleCertificate: rootCertificate
@@ -31,49 +22,36 @@ final class TrifleCertificateTests: XCTestCase {
         XCTAssertTrue(isVerified)
     }
     
-    func testVerifyCertificate_succeeds() throws {
-        let trifle = try Trifle(reverseDomain: TestFixtures.reverseDomain)
-        let keyHandle = try trifle.generateKeyHandle()
-        
-        let mobileCertReq = try trifle.generateMobileCertificateRequest(keyHandle: keyHandle)
-        
-        let deviceCertificate = Certificate(version: 0, certificate: TestFixtures.deviceCertEncoded2)
-        let rootCertificate = Certificate(version: 0, certificate: TestFixtures.rootCertEncoded)
-        
+    func testVerifyTrifleCertificateWithIntermediate_succeeds() throws {
+        let deviceCertificate = try TrifleCertificate(data: TestFixtures.deviceTrifleCertEncoded3!)
+        let rootCertificate = try TrifleCertificate(data: TestFixtures.rootTrifleCertEncoded3!)
+
         let isVerified = try deviceCertificate.verify(
-            certificateRequest: mobileCertReq,
-            intermediateChain: [],
-            rootCertificate: rootCertificate
+            certificateRequest: nil,
+            intermediateTrifleChain: [rootCertificate],
+            rootTrifleCertificate: nil
         )
         
         XCTAssertTrue(isVerified)
     }
     
-    func testVerifyCertificate_fails() throws {
-        let trifle = try Trifle(reverseDomain: TestFixtures.reverseDomain)
-        let keyHandle = try trifle.generateKeyHandle()
-        
-        let mobileCertReq = try trifle.generateMobileCertificateRequest(keyHandle: keyHandle)
-        
-        let deviceCertificate = Certificate(version: 0, certificate: TestFixtures.deviceCertEncoded)
-        let otherRootCertificate = Certificate(version: 0, certificate: TestFixtures.otherRootCertEncoded)
-        
-        XCTAssertThrowsError(try deviceCertificate.verify(
-            certificateRequest: mobileCertReq,
-            intermediateChain: [],
-            rootCertificate: otherRootCertificate ),
-                             "Certificate is invalid.")
-    }
-    
-    func testExpiredCertificate() throws {
-                
-        let validCertificate = Certificate(version: 0, certificate: TestFixtures.validCertEncoded)
-        let expiredCertificate = Certificate(version: 0, certificate: TestFixtures.expiredCertEncoded)
+    func testSerializeTrifleCertificate_succeeds() throws {
+        let deviceCertificate = try TrifleCertificate(data: TestFixtures.deviceTrifleCertEncoded3!)
 
-        XCTAssertTrue(try validCertificate.verify(intermediateChain: Array<Certificate>()))
-    
-        XCTAssertThrowsError(try expiredCertificate.verify(intermediateChain: Array<Certificate>()),
-                             "Certificate is expired.")
+        // serialize
+        let encoder = JSONEncoder()
+        let jsonData = try encoder.encode(deviceCertificate)
+
+        // de-serialized
+        let decoder = JSONDecoder()
+        let decoded = try decoder.decode(TrifleCertificate.self, from: jsonData)
+        
+        // verify the decoded certificate
+        let isVerified = try decoded.verify(
+            certificateRequest: nil,
+            intermediateTrifleChain: [],
+            rootTrifleCertificate: nil
+        )
+        XCTAssertTrue(isVerified)
     }
-    
 }

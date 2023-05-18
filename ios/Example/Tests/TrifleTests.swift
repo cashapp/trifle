@@ -3,7 +3,7 @@
 //  Trifle_Tests
 //
 
-@testable import Trifle
+import Trifle
 import XCTest
 import Wire
 
