@@ -9,9 +9,22 @@ import XCTest
 
 final class TrifleCertificateTests: XCTestCase {
     
+    func testVerifyTrifleCertificateWithRedundantChain_succeeds() throws {
+        let deviceCertificate = try TrifleCertificate.deserialize(data: TestFixtures.deviceTrifleCertEncoded3!)
+        let rootCertificate = try TrifleCertificate.deserialize(data: TestFixtures.rootTrifleCertEncoded3!)
+
+        let isVerified = try deviceCertificate.verify(
+            certificateRequest: nil,
+            intermediateTrifleChain: [deviceCertificate],
+            rootTrifleCertificate: rootCertificate
+        )
+        
+        XCTAssertTrue(isVerified)
+    }
+    
     func testVerifyTrifleCertificateWithRoot_succeeds() throws {
-        let deviceCertificate = try TrifleCertificate(data: TestFixtures.deviceTrifleCertEncoded3!)
-        let rootCertificate = try TrifleCertificate(data: TestFixtures.rootTrifleCertEncoded3!)
+        let deviceCertificate = try TrifleCertificate.deserialize(data: TestFixtures.deviceTrifleCertEncoded3!)
+        let rootCertificate = try TrifleCertificate.deserialize(data: TestFixtures.rootTrifleCertEncoded3!)
 
         let isVerified = try deviceCertificate.verify(
             certificateRequest: nil,
@@ -23,8 +36,8 @@ final class TrifleCertificateTests: XCTestCase {
     }
     
     func testVerifyTrifleCertificateWithIntermediate_succeeds() throws {
-        let deviceCertificate = try TrifleCertificate(data: TestFixtures.deviceTrifleCertEncoded3!)
-        let rootCertificate = try TrifleCertificate(data: TestFixtures.rootTrifleCertEncoded3!)
+        let deviceCertificate = try TrifleCertificate.deserialize(data: TestFixtures.deviceTrifleCertEncoded3!)
+        let rootCertificate = try TrifleCertificate.deserialize(data: TestFixtures.rootTrifleCertEncoded3!)
 
         let isVerified = try deviceCertificate.verify(
             certificateRequest: nil,
@@ -36,17 +49,13 @@ final class TrifleCertificateTests: XCTestCase {
     }
     
     func testSerializeTrifleCertificate_succeeds() throws {
-        let deviceCertificate = try TrifleCertificate(data: TestFixtures.deviceTrifleCertEncoded3!)
+        let cert = try TrifleCertificate.deserialize(data: TestFixtures.deviceTrifleCertEncoded3!)
 
-        // serialize
-        let encoder = JSONEncoder()
-        let jsonData = try encoder.encode(deviceCertificate)
-
-        // de-serialized
-        let decoder = JSONDecoder()
-        let decoded = try decoder.decode(TrifleCertificate.self, from: jsonData)
+        let certData = try cert.serialize()
+        
+        let decoded_cert = try TrifleCertificate.deserialize(data: certData)
         
         // verify equality of decoded certificate and initial deviceCertificate
-        XCTAssertTrue(deviceCertificate.getCertificate() == decoded.getCertificate())
+        XCTAssertTrue(cert == decoded_cert)
     }
 }

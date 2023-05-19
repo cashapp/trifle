@@ -44,24 +44,25 @@ public class Trifle {
     }
         
     /**
-     Generate a Trifle MobileCertificateRequest, signed by the provided
+     Generate a TrifleCertificateRequest object, signed by the provided
      keyHandle, that can be presented to the Certificate Authority (CA) for
      verification.
 
      - parameters: keyHandle - key handle used for the signing.
 
      - returns: An opaque Trifle representation
-     `MobileCertificateRequest` of the certificate request.
+     `TrifleCertificateRequest` of the certificate request.
      */
     public func generateMobileCertificateRequest(keyHandle: KeyHandle) throws
-    -> MobileCertificateRequest {
+    -> TrifleCertificateRequest {
         let csr = try PKCS10CertificationRequest.Builder()
             .sign(for: keyHandle.tag, with: contentSigner)
             
-        return MobileCertificateRequest(
+        let csrData =  try ProtoEncoder().encode(MobileCertificateRequest(
             version: Self.mobileCertificateRequestVersion,
             pkcs10_request: Data(csr.octets)
-        )
+        ))
+        return try TrifleCertificateRequest.deserialize(data: csrData)
     }
     
     /**
@@ -73,13 +74,13 @@ public class Trifle {
      - parameters: certificate list - Trifle certificate chain to be included in the SignedData message.
      Must match the key in keyHandle.
      
-     - returns:`SignedData` - signed data message in the Trifle format.
+     - returns:`TrifleSignedData` - signed data message in the Trifle format.
      */
     public func createSignedData(
         data: Data,
         keyHandle: KeyHandle,
         certificates: Array<TrifleCertificate>
-    ) throws -> SignedData {
+    ) throws -> TrifleSignedData {
                 
         guard let leafCert = certificates.first, !data.isEmpty else {
             throw TrifleError.invalidInput("Data or Certificate should not be empty.")
@@ -111,12 +112,12 @@ public class Trifle {
         
         // sign data
         // if key handle is invalid, an error is thrown
-        return SignedData(
-            enveloped_data: serializedData,
-            signature: try contentSigner.sign(for: keyHandle.tag, with: serializedData).data,
-            // TODO: (gelareh) This conversion will be removed when we introduce TrifleSignedData
-            certificates: certificates.map({ trifleCert in return trifleCert.getCertificate() })
-        )
+        let signedData = try ProtoEncoder().encode(SignedData(
+                enveloped_data: serializedData,
+                signature: try contentSigner.sign(for: keyHandle.tag, with: serializedData).data,
+                certificates: certificates.map({ trifleCert in return trifleCert.getCertificate() })))
+
+        return try TrifleSignedData.deserialize(data: signedData)
     }
 }
 

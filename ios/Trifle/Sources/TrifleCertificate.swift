@@ -6,11 +6,36 @@
 import Foundation
 import Wire
 
-public class TrifleCertificate : Codable {
+public class TrifleCertificate: Equatable {
     private let proto: Certificate
     
-    public init(data: Data) throws {
-        self.proto = try ProtoDecoder().decode(Certificate.self, from: data)
+    /**
+     Constructor is private. This class can be constructed only via the deserialization
+     */
+    private init(proto: Certificate) {
+        self.proto = proto
+    }
+    
+    /**
+     Deserializes the data and returns a TrifleCertificate object.
+     
+     This is a static method.
+
+     - parameters: data - the serialized TrifleCertificate object
+     
+     - returns: TrifleCertificate object
+     */
+    public static func deserialize(data: Data) throws -> TrifleCertificate {
+        return TrifleCertificate(proto: try ProtoDecoder().decode(Certificate.self, from: data))
+    }
+    
+    /**
+     Serializes the TrifleCertificate object into Data object.
+     
+     - returns: Data object
+     */
+    public func serialize() throws -> Data {
+        return try ProtoEncoder().encode(proto)
     }
     
     internal func getCertificate() -> Certificate {
@@ -31,7 +56,7 @@ public class TrifleCertificate : Codable {
      - returns: true if validated, false otherwise
      */
     public func verify(
-        certificateRequest: MobileCertificateRequest? = nil,
+        certificateRequest: TrifleCertificateRequest? = nil,
         intermediateTrifleChain: Array<TrifleCertificate>,
         rootTrifleCertificate: TrifleCertificate? = nil
     ) throws -> Bool {
@@ -41,12 +66,19 @@ public class TrifleCertificate : Codable {
             return trifleCert.getCertificate()
         })
         
-        return try self.proto.verify(certificateRequest: certificateRequest,
+        var csr: MobileCertificateRequest? = nil
+        if let tcsr = certificateRequest {
+            csr = try ProtoDecoder().decode(MobileCertificateRequest.self, from: tcsr.serialize())
+        } 
+        return try self.proto.verify(certificateRequest: csr,
                                      intermediateChain: intermediateChain,
                                      rootCertificate: rootTrifleCertificate?.getCertificate())
     }
+    
+    public static func ==(lhs: TrifleCertificate, rhs: TrifleCertificate) -> Bool {
+        return lhs.proto == rhs.proto
+    }
 }
-
 
 extension Certificate {
     /**
