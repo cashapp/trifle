@@ -5,6 +5,6 @@
 
 import Foundation
 
-public struct KeyHandle : Codable {
-    public let tag: String
+public protocol KeyHandle: Codable {
+    var tag: String { get }
 }
