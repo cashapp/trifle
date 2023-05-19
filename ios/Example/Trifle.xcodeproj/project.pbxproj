@@ -170,9 +170,9 @@
 				E17B12F129882D6100063394 /* SecureEnclaveDigitalSignatureKeyManagerTests.swift */,
 				721DB4222A1547AC007D0CD7 /* CertificateTests.swift */,
 				72C4797929F74D5600D40102 /* TrifleCertificateTests.swift */,
+				721DB42C2A16A213007D0CD7 /* TrifleSignedDataTests.swift */,
 				7218700929B7A2EF001CC552 /* TrifleTests.swift */,
 				607FACE91AFB9204008FA782 /* Supporting Files */,
-				721DB42C2A16A213007D0CD7 /* TrifleSignedDataTests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";

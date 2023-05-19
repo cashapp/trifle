@@ -9,7 +9,6 @@ import Wire
 
 final class TrifleTests: XCTestCase {
 
-
     func testInit() throws {
         let trifle = try Trifle(reverseDomain: TestFixtures.reverseDomain)
         XCTAssertNotNil(trifle)

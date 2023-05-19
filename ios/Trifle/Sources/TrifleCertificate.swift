@@ -6,7 +6,7 @@
 import Foundation
 import Wire
 
-public class TrifleCertificate {
+public class TrifleCertificate: Equatable {
     private let proto: Certificate
     
     /**
@@ -26,7 +26,7 @@ public class TrifleCertificate {
      - returns: TrifleCertificate object
      */
     public static func deserialize(data: Data) throws -> TrifleCertificate {
-        return TrifleCertificate( proto: try ProtoDecoder().decode(Certificate.self, from: data))
+        return TrifleCertificate(proto: try ProtoDecoder().decode(Certificate.self, from: data))
     }
     
     /**
@@ -74,9 +74,7 @@ public class TrifleCertificate {
                                      intermediateChain: intermediateChain,
                                      rootCertificate: rootTrifleCertificate?.getCertificate())
     }
-}
-
-extension TrifleCertificate: Equatable {
+    
     public static func ==(lhs: TrifleCertificate, rhs: TrifleCertificate) -> Bool {
         return lhs.proto == rhs.proto
     }

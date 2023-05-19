@@ -2,12 +2,11 @@
 //  TrifleSignedData.swift
 //  Trifle
 //
-//
 
 import Foundation
 import Wire
 
-public class TrifleSignedData {
+public class TrifleSignedData: Equatable {
     private let proto: SignedData
     
     /**
@@ -27,7 +26,7 @@ public class TrifleSignedData {
      - returns: TrifleSignedData object
      */
     public static func deserialize(data: Data) throws -> TrifleSignedData {
-        return TrifleSignedData( proto: try ProtoDecoder().decode(SignedData.self, from: data))
+        return TrifleSignedData(proto: try ProtoDecoder().decode(SignedData.self, from: data))
     }
     
     /**
@@ -39,9 +38,6 @@ public class TrifleSignedData {
         return try ProtoEncoder().encode(proto)
     }
     
-}
-
-extension TrifleSignedData: Equatable {
     public static func ==(lhs: TrifleSignedData, rhs: TrifleSignedData) -> Bool {
         return lhs.proto == rhs.proto
     }
