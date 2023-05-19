@@ -9,6 +9,19 @@ import XCTest
 
 final class TrifleCertificateTests: XCTestCase {
     
+    func testVerifyTrifleCertificateWithRedundantChain_succeeds() throws {
+        let deviceCertificate = try TrifleCertificate.deserialize(data: TestFixtures.deviceTrifleCertEncoded3!)
+        let rootCertificate = try TrifleCertificate.deserialize(data: TestFixtures.rootTrifleCertEncoded3!)
+
+        let isVerified = try deviceCertificate.verify(
+            certificateRequest: nil,
+            intermediateTrifleChain: [deviceCertificate],
+            rootTrifleCertificate: rootCertificate
+        )
+        
+        XCTAssertTrue(isVerified)
+    }
+    
     func testVerifyTrifleCertificateWithRoot_succeeds() throws {
         let deviceCertificate = try TrifleCertificate.deserialize(data: TestFixtures.deviceTrifleCertEncoded3!)
         let rootCertificate = try TrifleCertificate.deserialize(data: TestFixtures.rootTrifleCertEncoded3!)

@@ -44,24 +44,25 @@ public class Trifle {
     }
         
     /**
-     Generate a Trifle MobileCertificateRequest, signed by the provided
+     Generate a TrifleCertificateRequest object, signed by the provided
      keyHandle, that can be presented to the Certificate Authority (CA) for
      verification.
 
      - parameters: keyHandle - key handle used for the signing.
 
      - returns: An opaque Trifle representation
-     `MobileCertificateRequest` of the certificate request.
+     `TrifleCertificateRequest` of the certificate request.
      */
     public func generateMobileCertificateRequest(keyHandle: KeyHandle) throws
-    -> MobileCertificateRequest {
+    -> TrifleCertificateRequest {
         let csr = try PKCS10CertificationRequest.Builder()
             .sign(for: keyHandle.tag, with: contentSigner)
             
-        return MobileCertificateRequest(
+        let csrData =  try ProtoEncoder().encode(MobileCertificateRequest(
             version: Self.mobileCertificateRequestVersion,
             pkcs10_request: Data(csr.octets)
-        )
+        ))
+        return try TrifleCertificateRequest.deserialize(data: csrData)
     }
     
     /**
@@ -114,7 +115,6 @@ public class Trifle {
         let signedData = try ProtoEncoder().encode(SignedData(
                 enveloped_data: serializedData,
                 signature: try contentSigner.sign(for: keyHandle.tag, with: serializedData).data,
-                // TODO: (gelareh) This conversion will be removed when we introduce TrifleSignedData
                 certificates: certificates.map({ trifleCert in return trifleCert.getCertificate() })))
 
         return try TrifleSignedData.deserialize(data: signedData)

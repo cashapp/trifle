@@ -20,7 +20,7 @@ final class CertificateTests: XCTestCase {
         let rootCertificate = try TrifleCertificate.deserialize(data: TestFixtures.rootTrifleCertEncoded!).getCertificate()
         
         let isVerified = try deviceCertificate.verify(
-            certificateRequest: mobileCertReq,
+            certificateRequest: try ProtoDecoder().decode(MobileCertificateRequest.self, from: mobileCertReq.serialize()),
             intermediateChain: [],
             rootCertificate: rootCertificate
         )
@@ -37,10 +37,9 @@ final class CertificateTests: XCTestCase {
         let deviceCertificate = try TrifleCertificate.deserialize(data: TestFixtures.deviceTrifleCertEncoded!).getCertificate()
         let otherRootCertificate = try TrifleCertificate.deserialize(data: TestFixtures.otherRootTrifleCertEncoded!).getCertificate()
         XCTAssertThrowsError(try deviceCertificate.verify(
-            certificateRequest: mobileCertReq,
+            certificateRequest: try ProtoDecoder().decode(MobileCertificateRequest.self, from: mobileCertReq.serialize()),
             intermediateChain: [],
-            rootCertificate: otherRootCertificate ),
-                             "Certificate is invalid.")
+            rootCertificate: otherRootCertificate ), "Certificate is invalid.")
     }
     
     func testExpiredCertificate() throws {

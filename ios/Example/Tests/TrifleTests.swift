@@ -39,20 +39,13 @@ final class TrifleTests: XCTestCase {
         let keyHandle = try trifle.generateKeyHandle()
         let mobileCertReq = try trifle.generateMobileCertificateRequest(keyHandle: keyHandle)
         
-        XCTAssertEqual(mobileCertReq.version, 0)
-        XCTAssertNotNil(mobileCertReq.pkcs10_request)
-
         // serialize
-        let encoder = JSONEncoder()
-        let jsonData = try encoder.encode(mobileCertReq)
+        let encoded = try mobileCertReq.serialize()
 
-        // de-serialized
-        let decoder = JSONDecoder()
-        let decodedmobileCertReq = try decoder.decode(MobileCertificateRequest.self, from: jsonData)
+        // deserialized
+        let decodedmobileCertReq = try TrifleCertificateRequest.deserialize(data: encoded)
 
-
-        XCTAssertEqual(decodedmobileCertReq.version, 0)
-        XCTAssertNotNil(decodedmobileCertReq.pkcs10_request)
+        XCTAssert(mobileCertReq == decodedmobileCertReq)
     }
     
     func testSign_succeeds() throws {

@@ -56,7 +56,7 @@ public class TrifleCertificate {
      - returns: true if validated, false otherwise
      */
     public func verify(
-        certificateRequest: MobileCertificateRequest? = nil,
+        certificateRequest: TrifleCertificateRequest? = nil,
         intermediateTrifleChain: Array<TrifleCertificate>,
         rootTrifleCertificate: TrifleCertificate? = nil
     ) throws -> Bool {
@@ -66,7 +66,11 @@ public class TrifleCertificate {
             return trifleCert.getCertificate()
         })
         
-        return try self.proto.verify(certificateRequest: certificateRequest,
+        var csr: MobileCertificateRequest? = nil
+        if let tcsr = certificateRequest {
+            csr = try ProtoDecoder().decode(MobileCertificateRequest.self, from: tcsr.serialize())
+        } 
+        return try self.proto.verify(certificateRequest: csr,
                                      intermediateChain: intermediateChain,
                                      rootCertificate: rootTrifleCertificate?.getCertificate())
     }
