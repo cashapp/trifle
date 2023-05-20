@@ -29,7 +29,7 @@ final class TrifleTests: XCTestCase {
 
         // de-serialized
         let decoder = JSONDecoder()
-        let decoded = try decoder.decode(KeyHandle.self, from: jsonData)
+        let decoded = try decoder.decode(TrifleKeyHandle.self, from: jsonData)
         XCTAssert(type(of: decoded) == type(of: keyHandle))
     }
     

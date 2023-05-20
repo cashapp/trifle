@@ -40,7 +40,7 @@ public class Trifle {
      */
     public func generateKeyHandle() throws -> KeyHandle {
         // currently we support only (Secure Enclave, EC-P256)
-        return KeyHandle(tag: try contentSigner.generateTag())
+        return TrifleKeyHandle(tag: try contentSigner.generateTag())
     }
         
     /**
