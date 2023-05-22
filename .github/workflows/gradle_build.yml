@@ -15,7 +15,7 @@ jobs:
       run: ./gradlew build
 
   publish:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     if: ${{ github.repository == 'cashapp/trifle' && github.ref == 'refs/heads/main' }}
     steps:
     - name: Checkout project sources
