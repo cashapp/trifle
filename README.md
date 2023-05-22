@@ -1,5 +1,6 @@
 # Trifle
-Security functionality for interoperability/interaction with core services.
+
+Trifle is a library that facilitates secure messaging from mobile clients.
 
 ## Usage
 
@@ -26,7 +27,6 @@ let decoded = try decoder.decode(TrifleKeyHandle.self, from: jsonKeyHandle)
 
 // Destroy key that is no longer in use or is invalid
 // TODO: keyHandle.destroy()
-
         
 // Check if loaded key already has a cert. If yes, skip to checking for cert validity
 // Else if key does not have a cert OR if a new cert must be generated (eg because of existing
