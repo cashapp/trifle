@@ -54,7 +54,7 @@ final class TrifleTests: XCTestCase {
         XCTAssertFalse(try trifle.isValid(keyHandle: keyHandle))
 
         // Deleting a non existent key should fail
-        XCTAssertThrowsError(try trifle.delete(keyHandle: keyHandle), "KeychainAccessError")
+        XCTAssertThrowsError(try trifle.delete(keyHandle: keyHandle), "errSecItemNotFound")
     }
 
     func testGenerateMobileCertificateRequest() throws {

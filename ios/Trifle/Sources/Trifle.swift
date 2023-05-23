@@ -62,7 +62,10 @@ public class Trifle {
           
      - returns: True for successful deletion of keyHandle from Key Chain. If
         keyHandle is not found or the keyHandle did not successfully delete, a
-        `KeychainAccessError` exception is thrown.
+        `KeychainAccessError` exception is thrown with OSStatus error code
+        from Security/SecBase.h
+     
+        errSecItemNotFound - The specified item could not be found in the keychain
      */
     public func delete(keyHandle: KeyHandle) throws -> Bool {
         
