@@ -33,6 +33,30 @@ final class TrifleTests: XCTestCase {
         XCTAssert(type(of: decoded) == type(of: keyHandle))
     }
     
+    func testKeyHandleIsValid() throws {
+        let trifle = try Trifle(reverseDomain: TestFixtures.reverseDomain)
+        let keyHandle = try trifle.generateKeyHandle()
+
+        XCTAssertTrue(try trifle.isValid(keyHandle: keyHandle))
+    }
+
+    func testDeleteKeyHandle() throws {
+        let trifle = try Trifle(reverseDomain: TestFixtures.reverseDomain)
+        let keyHandle = try trifle.generateKeyHandle()
+        
+        // Key should exist on the key chain
+        XCTAssertTrue(try trifle.isValid(keyHandle: keyHandle))
+        
+        // Delete key from key chain
+        XCTAssertTrue(try trifle.delete(keyHandle: keyHandle))
+
+        // Key should no longer exist on the key chain
+        XCTAssertFalse(try trifle.isValid(keyHandle: keyHandle))
+
+        // Deleting a non existent key should fail
+        XCTAssertThrowsError(try trifle.delete(keyHandle: keyHandle), "errSecItemNotFound")
+    }
+
     func testGenerateMobileCertificateRequest() throws {
         let trifle = try Trifle(reverseDomain: TestFixtures.reverseDomain)
         let keyHandle = try trifle.generateKeyHandle()

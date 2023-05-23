@@ -108,7 +108,19 @@ public class SecureEnclaveDigitalSignatureKeyManager
         }
     }
     
-    private static func keyExists(_ tag: String) throws -> Bool {
+    internal static func deleteKeypair(_ tag: String) throws -> Bool {
+        let preparedQuery = SecureEnclaveKeychainQueries.getQuery(with: tag)
+
+        let status = SecItemDelete(preparedQuery)
+        switch status {
+        case errSecSuccess:
+            return true
+        default:
+            throw KeychainAccessError.unhandled(with: status, and: tag)
+        }
+    }
+
+    internal static func keyExists(_ tag: String) throws -> Bool {
         let preparedQuery = SecureEnclaveKeychainQueries.getQuery(with: tag)
         let status = SecItemCopyMatching(preparedQuery, nil)
         switch status {

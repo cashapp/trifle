@@ -37,12 +37,43 @@ public class Trifle {
      
      - returns: KeyHandle An opaque Trifle representation of the key-pair,
      which the client will need to store.
+     If a new key handle could not be generated, a `KeychainAccessError`
+     exception is thrown.
      */
     public func generateKeyHandle() throws -> KeyHandle {
         // currently we support only (Secure Enclave, EC-P256)
         return TrifleKeyHandle(tag: try contentSigner.generateTag())
     }
         
+    /**
+     Check if the TrifleKeyHandle exists and is valid.
+          
+     - returns: Bool value for validity
+     */
+    public func isValid(keyHandle: KeyHandle) throws -> Bool {
+        
+        // Other types of validity check to be added later eg type of key
+        // right now we only check if key exists in key chain
+        return try SecureEnclaveDigitalSignatureKeyManager.keyExists(keyHandle.tag)
+    }
+    
+    /**
+     Delete the TrifleKeyHandle.
+          
+     - returns: True for successful deletion of keyHandle from Key Chain. If
+        keyHandle is not found or the keyHandle did not successfully delete, a
+        `KeychainAccessError` exception is thrown with OSStatus error code
+        from Security/SecBase.h
+     
+        errSecItemNotFound - The specified item could not be found in the keychain
+     */
+    public func delete(keyHandle: KeyHandle) throws -> Bool {
+        
+        // Other types of validity check to be added later eg type of key
+        // right now we only check if key exists in key chain
+        return try SecureEnclaveDigitalSignatureKeyManager.deleteKeypair(keyHandle.tag)
+    }
+    
     /**
      Generate a TrifleCertificateRequest object, signed by the provided
      keyHandle, that can be presented to the Certificate Authority (CA) for
