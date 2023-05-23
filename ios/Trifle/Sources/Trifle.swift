@@ -37,6 +37,8 @@ public class Trifle {
      
      - returns: KeyHandle An opaque Trifle representation of the key-pair,
      which the client will need to store.
+     If a new key handle could not be generated, a `KeychainAccessError`
+     exception is thrown.
      */
     public func generateKeyHandle() throws -> KeyHandle {
         // currently we support only (Secure Enclave, EC-P256)
@@ -58,7 +60,9 @@ public class Trifle {
     /**
      Delete the TrifleKeyHandle.
           
-     - returns: Bool value for validity
+     - returns: True for successful deletion of keyHandle from Key Chain. If
+        keyHandle is not found or the keyHandle did not successfully delete, a
+        `KeychainAccessError` exception is thrown.
      */
     public func delete(keyHandle: KeyHandle) throws -> Bool {
         

@@ -115,8 +115,6 @@ public class SecureEnclaveDigitalSignatureKeyManager
         switch status {
         case errSecSuccess:
             return true
-        case errSecItemNotFound:
-            return false
         default:
             throw KeychainAccessError.unhandled(with: status, and: tag)
         }
