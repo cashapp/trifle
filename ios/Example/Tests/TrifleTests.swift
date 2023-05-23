@@ -46,7 +46,7 @@ final class TrifleTests: XCTestCase {
         
         XCTAssertTrue(try trifle.isValid(keyHandle: keyHandle))
 
-        _ = try trifle.deleteKeyHandle(keyHandle: keyHandle)
+        _ = try trifle.delete(keyHandle: keyHandle)
 
         XCTAssertFalse(try trifle.isValid(keyHandle: keyHandle))
     }

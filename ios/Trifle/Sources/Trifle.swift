@@ -60,7 +60,7 @@ public class Trifle {
           
      - returns: Bool value for validity
      */
-    public func deleteKeyHandle(keyHandle: KeyHandle) throws -> Bool {
+    public func delete(keyHandle: KeyHandle) throws -> Bool {
         
         // Other types of validity check to be added later eg type of key
         // right now we only check if key exists in key chain
