@@ -33,6 +33,24 @@ final class TrifleTests: XCTestCase {
         XCTAssert(type(of: decoded) == type(of: keyHandle))
     }
     
+    func testKeyHandleIsValid() throws {
+        let trifle = try Trifle(reverseDomain: TestFixtures.reverseDomain)
+        let keyHandle = try trifle.generateKeyHandle()
+
+        XCTAssertTrue(try trifle.isValid(keyHandle: keyHandle))
+    }
+
+    func testDeleteKeyHandle() throws {
+        let trifle = try Trifle(reverseDomain: TestFixtures.reverseDomain)
+        let keyHandle = try trifle.generateKeyHandle()
+        
+        XCTAssertTrue(try trifle.isValid(keyHandle: keyHandle))
+
+        _ = try trifle.deleteKeyHandle(keyHandle: keyHandle)
+
+        XCTAssertFalse(try trifle.isValid(keyHandle: keyHandle))
+    }
+
     func testGenerateMobileCertificateRequest() throws {
         let trifle = try Trifle(reverseDomain: TestFixtures.reverseDomain)
         let keyHandle = try trifle.generateKeyHandle()

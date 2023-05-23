@@ -44,6 +44,30 @@ public class Trifle {
     }
         
     /**
+     Check if the TrifleKeyHandle exists and is valid.
+          
+     - returns: Bool value for validity
+     */
+    public func isValid(keyHandle: KeyHandle) throws -> Bool {
+        
+        // Other types of validity check to be added later eg type of key
+        // right now we only check if key exists in key chain
+        return try SecureEnclaveDigitalSignatureKeyManager.keyExists(keyHandle.tag)
+    }
+    
+    /**
+     Delete the TrifleKeyHandle.
+          
+     - returns: Bool value for validity
+     */
+    public func deleteKeyHandle(keyHandle: KeyHandle) throws -> Bool {
+        
+        // Other types of validity check to be added later eg type of key
+        // right now we only check if key exists in key chain
+        return try SecureEnclaveDigitalSignatureKeyManager.deleteKeypair(keyHandle.tag)
+    }
+    
+    /**
      Generate a TrifleCertificateRequest object, signed by the provided
      keyHandle, that can be presented to the Certificate Authority (CA) for
      verification.
