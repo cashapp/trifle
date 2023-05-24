@@ -6,9 +6,6 @@ plugins {
 }
 
 dependencies {
-    // This dependency is used internally, and not exposed to consumers on their own compile classpath.
-    implementation("com.google.guava:guava:31.0.1-jre")
-
     // https://mvnrepository.com/artifact/com.squareup.wire/wire-runtime
     implementation("com.squareup.wire:wire-runtime:4.4.3")
 

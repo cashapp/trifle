@@ -63,6 +63,9 @@ internal class CertificateRequestTests {
     private lateinit var mismatchedTrifleContentSigner: TrifleContentSigner
     private lateinit var unsupportedTrifleContentSigner: TrifleContentSigner
 
+    // Registry http://oid-info.com/cgi-bin/display?oid=1.2.840.10040.4.3&a=display
+    object DSAAlgorithmIdentifier: TrifleAlgorithmIdentifier("1.2.840.10040.4.3")
+
     @JvmStatic
     @BeforeAll
     fun setUp() {
@@ -111,8 +114,7 @@ internal class CertificateRequestTests {
         override fun subjectPublicKeyInfo(): SubjectPublicKeyInfo =
           SubjectPublicKeyInfo.getInstance(keyPair.public.encoded)
 
-        override fun getAlgorithmIdentifier(): TrifleAlgorithmIdentifier =
-          TrifleAlgorithmIdentifier.DSAAlgorithmIdentifier
+        override fun getAlgorithmIdentifier(): TrifleAlgorithmIdentifier = DSAAlgorithmIdentifier
 
         override fun getOutputStream(): OutputStream = outputStream
 
