@@ -42,7 +42,7 @@ internal struct SecureEnclaveKeychainQueries: KeychainQueries {
                 kSecAttrIsPermanent: true,
                 kSecAttrApplicationTag: applicationTag.data(using: .utf8)!,
                 kSecAttrAccessControl: try Self.access,
-            ],
+            ] as [CFString: Any],
         ]
         
         #if !targetEnvironment(simulator)
