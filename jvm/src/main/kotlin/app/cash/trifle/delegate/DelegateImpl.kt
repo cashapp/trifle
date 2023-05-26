@@ -12,6 +12,7 @@ import org.bouncycastle.asn1.x500.X500Name
 import org.bouncycastle.asn1.x509.BasicConstraints
 import org.bouncycastle.asn1.x509.Extension
 import org.bouncycastle.asn1.x509.KeyUsage
+import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo
 import org.bouncycastle.cert.X509CertificateHolder
 import org.bouncycastle.cert.X509v3CertificateBuilder
 import org.bouncycastle.pkcs.PKCS10CertificationRequestBuilder
@@ -40,6 +41,14 @@ internal open class DelegateImpl(
         Date.from(creationTime.plus(Period.ofDays(CertificateRequest.MOBILE_CERTIFICATE_VALIDITY_PERIOD_DAYS))),
         certificateRequest.pkcs10Req.subject,
         certificateRequest.pkcs10Req.subjectPublicKeyInfo
+      ).addExtension(
+        Extension.authorityKeyIdentifier,
+        false,
+        contentSigner.subjectPublicKeyInfo().toKeyIdentifier()
+      ).addExtension(
+        Extension.subjectKeyIdentifier,
+        false,
+        certificateRequest.pkcs10Req.subjectPublicKeyInfo.toKeyIdentifier()
       ).build(contentSigner)
 
       Certificate(signedCert.encoded)
@@ -54,6 +63,7 @@ internal open class DelegateImpl(
     // given name.
     val subjectName = X500Name("CN=$entityName")
     val creationTime = Instant.now()
+    val keyIdentifier = contentSigner.subjectPublicKeyInfo().toKeyIdentifier()
     val signedCert = X509v3CertificateBuilder(
       subjectName,
       BigInteger.ONE,
@@ -66,9 +76,9 @@ internal open class DelegateImpl(
     ).addExtension(
       Extension.keyUsage, true, KeyUsage(KeyUsage.keyCertSign)
     ).addExtension(
-      Extension.subjectKeyIdentifier, true, DEROctetString(
-        contentSigner.subjectPublicKeyInfo().publicKeyData.bytes.toByteString().sha1().toByteArray()
-      )
+      Extension.authorityKeyIdentifier, false, keyIdentifier
+    ).addExtension(
+      Extension.subjectKeyIdentifier, false, keyIdentifier
     ).build(contentSigner)
 
     return Certificate(signedCert.encoded)
@@ -112,4 +122,7 @@ internal open class DelegateImpl(
       }
     }
   }
+
+  private fun SubjectPublicKeyInfo.toKeyIdentifier(): DEROctetString =
+    DEROctetString(publicKeyData.bytes.toByteString().sha1().toByteArray())
 }
