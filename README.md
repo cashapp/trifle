@@ -1,8 +1,22 @@
 # Trifle
 
-Trifle is a library that facilitates secure messaging from mobile clients.
+The Trifle SDK is designed to facilitate app-level secure communication between client apps and backend services even across TLS termination points. The SDK establishes a standardized framework that ensures:
+- Backend services can verify the authenticity and integrity of the client data
+- Availability of authentic client app signals to the backend services
 
-## Usage
+These security guarantees apply on top of transport level security such as TLS and allow application of data safety policies at a finer granularity.
+
+The Trifle SDK integrates with a provided Certificate Authority that provisions a Trifle-formatted certificate to the client app. This certificate captures curently only client app identity. 
+ 
+There are two main components to Trifle SDK:
+- Standardized convenience APIs that provide recommended established security measures on given native platforms, abstracting away implementation complexities.
+- Standardize message formatting for security artifacts including certificates, ciphertexts and signatures.
+
+Trifle SDK is implemented on client side in iOS and Android and on server side in Kotlin. 
+
+
+
+## Swift SDK Usage 
 
 ```
 // App start up
@@ -84,3 +98,9 @@ TBD
 ## Cert Lifecycle
 
 TBD
+
+## Roadmap
+The Trifle roadmap includes some of the following features:
+- Backend services are able to exchange private messages with the client app
+- Inclusion of client provided attributes and/or user information in the certificate
+- Extending client SDK to Web
