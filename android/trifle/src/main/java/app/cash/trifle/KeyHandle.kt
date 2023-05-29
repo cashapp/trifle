@@ -37,6 +37,13 @@ class KeyHandle internal constructor(private val alias: String) {
 
   fun serialize(): ByteArray = alias.toByteArray(Charsets.UTF_8)
 
+  override fun equals(other: Any?): Boolean {
+    val other = other as? KeyHandle ?: return false
+    return alias == other.alias
+  }
+
+  override fun hashCode(): Int = alias.hashCode()
+
   companion object {
     private const val ANDROID_KEYSTORE_TYPE: String = "AndroidKeyStore"
 
