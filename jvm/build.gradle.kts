@@ -19,9 +19,6 @@ dependencies {
     // Add legacy junit dependencies to ensure existing junit4 tests still compile.
     testCompileOnly("junit:junit:4.13")
     testRuntimeOnly("org.junit.vintage:junit-vintage-engine")
-
-    // This dependency is exported to consumers, that is to say found on their compile classpath.
-    api("org.apache.commons:commons-math3:3.6.1")
 }
 
 repositories {

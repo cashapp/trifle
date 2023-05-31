@@ -8,7 +8,7 @@ android {
 
   defaultConfig {
     applicationId = "app.cash.trifle"
-    minSdk = 26
+    minSdk = 24
     targetSdk = 33
     versionCode = 1
     versionName = "1.0"
