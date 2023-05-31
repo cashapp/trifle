@@ -10,7 +10,7 @@ android {
   buildToolsVersion = "30.0.3"
 
   defaultConfig {
-    minSdk = 26
+    minSdk = 24
 
     buildConfigField("String", "VERSION_CODE", "\"${project.property("VERSION_CODE")}\"")
     buildConfigField("String", "VERSION_NAME", "\"${project.property("VERSION_NAME")}\"")
