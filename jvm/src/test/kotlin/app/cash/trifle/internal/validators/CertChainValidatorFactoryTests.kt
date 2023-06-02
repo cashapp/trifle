@@ -1,6 +1,6 @@
 package app.cash.trifle.internal.validators
 
-import app.cash.trifle.internal.util.TestFixtures.CERT_ANCHOR
+import app.cash.trifle.testing.TestCertificateAuthority
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -12,7 +12,7 @@ internal class CertChainValidatorFactoryTests {
   @Test
   fun `test get() returns X509 Certificate Chain Validator for version 0`() {
     val validator = assertDoesNotThrow {
-      CertChainValidatorFactory.get(CERT_ANCHOR)
+      CertChainValidatorFactory.get(certAnchor)
     }
     assertTrue(validator is X509CertChainValidator)
   }
@@ -21,6 +21,10 @@ internal class CertChainValidatorFactoryTests {
   fun `test get() throws for unsupported version`() {
     assertThrows<UnsupportedOperationException>(
       "Unsupported version of Trifle Certificate"
-    ) { CertChainValidatorFactory.get(CERT_ANCHOR.copy(version = 1)) }
+    ) { CertChainValidatorFactory.get(certAnchor.copy(version = 1)) }
+  }
+
+  private companion object {
+    private val certAnchor = TestCertificateAuthority().rootCertificate
   }
 }

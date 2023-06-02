@@ -3,8 +3,8 @@ package app.cash.trifle.internal.providers
 import app.cash.trifle.CertificateRequest
 import app.cash.trifle.internal.TrifleAlgorithmIdentifier.ECDSASha256AlgorithmIdentifier
 import app.cash.trifle.internal.TrifleAlgorithmIdentifier.Ed25519AlgorithmIdentifier
-import app.cash.trifle.internal.util.TestFixtures
-import app.cash.trifle.internal.util.TestFixtures.EC_KEYPAIR
+import app.cash.trifle.testing.Fixtures.GENERATOR
+import app.cash.trifle.testing.TestCertificateAuthority
 import com.google.crypto.tink.signature.SignatureConfig
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
+import java.security.KeyPair
 import java.security.KeyPairGenerator
 import java.security.SecureRandom
 import java.security.Signature
@@ -60,7 +61,7 @@ internal class TrifleContentVerifierProviderTests {
       contentVerifier.outputStream.write(data)
 
       val signature = Signature.getInstance("SHA256withECDSA")
-      signature.initSign(EC_KEYPAIR.private)
+      signature.initSign(keyPair.private)
       signature.update(data)
 
       assertTrue(contentVerifier.verify(signature.sign()))
@@ -87,8 +88,8 @@ internal class TrifleContentVerifierProviderTests {
     }
 
     @Test
-    fun `test isSignatureValid() with iOS PKCS10 Certificate Request`() {
-      val certificateRequest = TestFixtures.CERT_REQUEST
+    fun `test isSignatureValid() with Certificate Request`() {
+      val certificateRequest = endEntity.certRequest
       check(certificateRequest is CertificateRequest.PKCS10Request)
       val pkcs10CertificateRequest = certificateRequest.pkcs10Req
 
@@ -105,14 +106,18 @@ internal class TrifleContentVerifierProviderTests {
 
   companion object {
     private lateinit var contentVerifierProvider: JCAContentVerifierProvider
+    private lateinit var keyPair: KeyPair
+
+    private val endEntity = TestCertificateAuthority().createTestEndEntity()
 
     @JvmStatic
     @BeforeAll
     fun setUp() {
       SignatureConfig.register()
+      keyPair = GENERATOR.genKeyPair()
 
       contentVerifierProvider = JCAContentVerifierProvider(
-        SubjectPublicKeyInfo.getInstance(EC_KEYPAIR.public.encoded)
+        SubjectPublicKeyInfo.getInstance(keyPair.public.encoded)
       )
     }
   }

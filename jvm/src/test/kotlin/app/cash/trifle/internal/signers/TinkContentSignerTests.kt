@@ -3,8 +3,8 @@ package app.cash.trifle.internal.signers
 import app.cash.trifle.internal.TrifleAlgorithmIdentifier
 import app.cash.trifle.internal.TrifleAlgorithmIdentifier.ECDSASha256AlgorithmIdentifier
 import app.cash.trifle.internal.TrifleAlgorithmIdentifier.EdDSAAlgorithmIdentifier
-import app.cash.trifle.internal.util.TestFixtures.RAW_ECDSA_P256_KEY_TEMPLATE
-import app.cash.trifle.internal.util.TestFixtures.RAW_EDDSA_ED25519_KEY_TEMPLATE
+import app.cash.trifle.testing.Fixtures.RAW_ECDSA_P256_KEY_TEMPLATE
+import app.cash.trifle.testing.Fixtures.RAW_EDDSA_ED25519_KEY_TEMPLATE
 import com.google.crypto.tink.KeysetHandle
 import com.google.crypto.tink.PublicKeySign
 import com.google.crypto.tink.PublicKeyVerify
