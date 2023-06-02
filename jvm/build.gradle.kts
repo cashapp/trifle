@@ -16,6 +16,8 @@ dependencies {
     // https://docs.gradle.org/current/userguide/java_testing.html#using_junit5
     testImplementation("org.junit.jupiter:junit-jupiter:5.7.1")
 
+    testImplementation(project(":jvm-testing"))
+
     // Add legacy junit dependencies to ensure existing junit4 tests still compile.
     testCompileOnly("junit:junit:4.13")
     testRuntimeOnly("org.junit.vintage:junit-vintage-engine")

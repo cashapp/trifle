@@ -1,14 +1,8 @@
 package app.cash.trifle
 
-import app.cash.trifle.delegate.TinkDelegate
 import app.cash.trifle.internal.providers.JCAContentVerifierProvider
-import app.cash.trifle.internal.util.TestFixtures.CERT_ANCHOR
-import app.cash.trifle.internal.util.TestFixtures.CERT_REQUEST
-import app.cash.trifle.internal.util.TestFixtures.RAW_ECDSA_P256_KEY_TEMPLATE
-import app.cash.trifle.internal.util.TestFixtures.SIGNED_DATA
 import app.cash.trifle.protos.api.alpha.MobileCertificateRequest
-import com.google.crypto.tink.KeysetHandle
-import com.google.crypto.tink.signature.SignatureConfig
+import app.cash.trifle.testing.TestCertificateAuthority
 import okio.ByteString.Companion.encodeUtf8
 import org.bouncycastle.asn1.x500.X500Name
 import org.bouncycastle.cert.X509CertificateHolder
@@ -17,21 +11,14 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
-import java.lang.IllegalStateException
-import java.security.KeyPairGenerator
-import java.security.SecureRandom
-import java.security.spec.ECGenParameterSpec
 import java.time.Duration
-import java.time.Period
 
 internal class TrifleTest {
   @Nested
   @DisplayName("Certificate Authority#createRootSigningCertificate() Tests")
   inner class CreateRootSigningCertificateTests {
     private val certHolder = X509CertificateHolder(
-      certificateAuthority.createRootSigningCertificate(
-        "entity", Period.ofDays(1)
-      ).certificate
+      certificateAuthority.rootCertificate.certificate
     )
 
     @Test
@@ -47,12 +34,12 @@ internal class TrifleTest {
 
     @Test
     fun `test certificate entity`() {
-      assertEquals("CN=entity", certHolder.subject.toString())
+      assertEquals("CN=issuingEntity", certHolder.subject.toString())
     }
 
     @Test
     fun `test certificate issuer`() {
-      assertEquals("CN=entity", certHolder.issuer.toString())
+      assertEquals("CN=issuingEntity", certHolder.issuer.toString())
     }
 
     @Test
@@ -68,20 +55,12 @@ internal class TrifleTest {
     @Test
     fun `test isSignatureValid() returns false due to a different issuer`() {
       // Different key should not verify
-      val otherCertificateAuthority = Trifle.CertificateAuthority(
-        TinkDelegate(
-          KeysetHandle.generateNew(RAW_ECDSA_P256_KEY_TEMPLATE)
-        )
-      )
-      val otherCert = otherCertificateAuthority.createRootSigningCertificate(
-        "entity", Period.ofDays(1),
-      )
-
       assertFalse(
         certHolder.isSignatureValid(
           JCAContentVerifierProvider(
             X509CertificateHolder(
-              otherCert.certificate
+              TestCertificateAuthority()
+                .rootCertificate.certificate
             ).subjectPublicKeyInfo
           )
         )
@@ -92,15 +71,11 @@ internal class TrifleTest {
   @Nested
   @DisplayName("Certificate Authority#signCertificate() Tests")
   inner class SignCertificateTests {
-    // Create local copy of issuingCert for use in verifying signature.
-    private val issuingCert = certificateAuthority.createRootSigningCertificate(
-      "issuingEntity", Period.ofDays(1)
+    private val issuingCertHolder = X509CertificateHolder(
+      certificateAuthority.rootCertificate.certificate
     )
-
     // Extract the x.509 certificate from our object.
-    private val certHolder = X509CertificateHolder(
-      certificateAuthority.signCertificate(issuingCert, CERT_REQUEST).certificate
-    )
+    private val certHolder = X509CertificateHolder(endEntity.certificate.certificate)
 
     @Test
     fun `test validity period`() {
@@ -125,8 +100,6 @@ internal class TrifleTest {
 
     @Test
     fun `test isSignatureValid() returns true for properly signed certificate`() {
-      val issuingCertHolder = X509CertificateHolder(issuingCert.certificate)
-
       // Cert should verify when presented with issuing cert
       assertTrue(
         certHolder.isSignatureValid(
@@ -147,10 +120,12 @@ internal class TrifleTest {
   @Nested
   @DisplayName("End Entity#createCertRequest() Tests")
   inner class CreateCertificateRequestTests {
-    // Create mobile signing certificate, which represents the request which would come from a
-    // mobile client.
-    private val certRequest = mobileClient.createCertRequest("entity")
-    private val mobileCertRequest = MobileCertificateRequest.ADAPTER.decode(certRequest.serialize())
+    // Create mobile signing certificate, which represents the request which would come from an
+    // end entity.
+    private val certRequest = endEntity.certRequest
+    private val mobileCertRequest = MobileCertificateRequest.ADAPTER.decode(
+      certRequest.serialize()
+    )
 
     @Test
     fun `test createMobileCertRequest version`() {
@@ -174,33 +149,17 @@ internal class TrifleTest {
   @Nested
   @DisplayName("End Entity#createSignedData() Tests")
   inner class CreateSignedDataTests {
-    // Create mobile signing certificate, which represents the request which would come from a
-    // mobile client.
-    private val certRequest = mobileClient.createCertRequest("entity")
-
-    // Create local copy of issuingCert for use in verifying signature.
-    private val issuingCert = certificateAuthority.createRootSigningCertificate(
-      "issuingEntity", Period.ofDays(1)
-    )
-    private val mobileCert = certificateAuthority.signCertificate(issuingCert, certRequest)
-
     private val rawData = "hello world".encodeUtf8().toByteArray()
 
     @Test
     fun `test createSignedData succeeds`() {
-      val signedData = assertDoesNotThrow {
-        mobileClient.createSignedData(rawData, listOf(mobileCert, issuingCert))
-      }
-
-      assertEquals(signedData.envelopedData.data, rawData)
+      assertEquals(endEntity.createSignedData(rawData).envelopedData.data, rawData)
     }
 
     @Test
     fun `test createSignedData fails`() {
-      val otherClientCert = certificateAuthority.signCertificate(issuingCert, CERT_REQUEST)
-
       assertThrows<IllegalStateException> {
-        mobileClient.createSignedData(rawData, listOf(otherClientCert, issuingCert))
+        endEntity.createSignedData(rawData, certificateAuthority.createTestEndEntity().certChain)
       }
     }
   }
@@ -208,59 +167,34 @@ internal class TrifleTest {
   @Nested
   @DisplayName("SignedData#verify() Tests")
   inner class SignedDataTests {
+    private val signedData = endEntity.createSignedData(
+      "hello world".encodeUtf8().toByteArray()
+    )
+
     @Test
     fun `test verifies signed data`() {
-      assertTrue(SIGNED_DATA.verify(CERT_ANCHOR))
+      assertTrue(signedData.verify(certificateAuthority.rootCertificate))
     }
 
     @Test
     fun `test verifies signed data fails with wrong anchor`() {
-      assertFalse(
-        SIGNED_DATA.verify(
-          certificateAuthority.createRootSigningCertificate(
-            "issuingEntity", Period.ofDays(1)
-          )
-        )
-      )
+      assertFalse(signedData.verify(TestCertificateAuthority().rootCertificate))
     }
 
     @Test
     fun `test verifies and extracts appropriate data`() {
-      val expected = VerifiedData(SIGNED_DATA.envelopedData.data, SIGNED_DATA.certificates)
-      assertEquals(expected, SIGNED_DATA.verifyAndExtract(CERT_ANCHOR))
+      val expected = VerifiedData(signedData.envelopedData.data, signedData.certificates)
+      assertEquals(expected, signedData.verifyAndExtract(certificateAuthority.rootCertificate))
     }
 
     @Test
     fun `test no data extracted with bad verification`() {
-      val expected = VerifiedData(SIGNED_DATA.envelopedData.data, SIGNED_DATA.certificates)
-      assertNull(
-        SIGNED_DATA.verifyAndExtract(
-          certificateAuthority.createRootSigningCertificate(
-            "issuingEntity", Period.ofDays(1)
-          )
-        )
-      )
+      assertNull(signedData.verifyAndExtract(TestCertificateAuthority().rootCertificate))
     }
   }
 
   companion object {
-    private lateinit var certificateAuthority: Trifle.CertificateAuthority
-    private lateinit var mobileClient: Trifle.EndEntity
-
-    @JvmStatic
-    @BeforeAll
-    fun setUp() {
-      SignatureConfig.register()
-      val ecSpec = ECGenParameterSpec("secp256r1")
-      val generator = KeyPairGenerator.getInstance("EC")
-      generator.initialize(ecSpec, SecureRandom())
-
-      certificateAuthority = Trifle.CertificateAuthority(
-        KeysetHandle.generateNew(RAW_ECDSA_P256_KEY_TEMPLATE)
-      )
-      mobileClient = Trifle.EndEntity(
-        generator.genKeyPair()
-      )
-    }
+    private val certificateAuthority = TestCertificateAuthority("issuingEntity")
+    private val endEntity = certificateAuthority.createTestEndEntity("entity")
   }
 }

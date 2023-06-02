@@ -3,8 +3,8 @@ package app.cash.trifle
 import app.cash.trifle.internal.TrifleAlgorithmIdentifier
 import app.cash.trifle.internal.providers.JCAContentVerifierProvider
 import app.cash.trifle.internal.signers.TrifleContentSigner
-import app.cash.trifle.internal.util.TestFixtures
-import app.cash.trifle.internal.util.TestFixtures.CERT_REQUEST
+import app.cash.trifle.testing.Fixtures.GENERATOR
+import app.cash.trifle.testing.TestCertificateAuthority
 import okio.ByteString.Companion.toByteString
 import org.bouncycastle.asn1.x500.X500Name
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo
@@ -25,7 +25,7 @@ internal class CertificateRequestTests {
   inner class CertificateRequestVerifyTests {
     @Test
     fun `test verify() returns true for a properly signed request`() {
-      assertTrue(CERT_REQUEST.verify())
+      assertTrue(endEntity.certRequest.verify())
     }
 
     @Test
@@ -62,6 +62,8 @@ internal class CertificateRequestTests {
     private lateinit var contentVerifierProvider: JCAContentVerifierProvider
     private lateinit var mismatchedTrifleContentSigner: TrifleContentSigner
     private lateinit var unsupportedTrifleContentSigner: TrifleContentSigner
+
+    private val endEntity = TestCertificateAuthority().createTestEndEntity()
 
     // Registry http://oid-info.com/cgi-bin/display?oid=1.2.840.10040.4.3&a=display
     object DSAAlgorithmIdentifier: TrifleAlgorithmIdentifier("1.2.840.10040.4.3")
@@ -132,7 +134,7 @@ internal class CertificateRequestTests {
       }
 
       contentVerifierProvider = JCAContentVerifierProvider(
-        SubjectPublicKeyInfo.getInstance(TestFixtures.EC_KEYPAIR.public.encoded)
+        SubjectPublicKeyInfo.getInstance(GENERATOR.genKeyPair().public.encoded)
       )
     }
   }
