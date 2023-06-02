@@ -34,7 +34,6 @@ internal class CertificateTests {
 
     @Test
     fun `test verify() fails for a different root certificate`() {
-      val otherEndEntity = certificateAuthority.createTestEndEntity("other_entity")
       assertFalse(
         endEntity.certificate.verify(
           endEntity.certRequest,

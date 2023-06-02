@@ -4,8 +4,6 @@ import app.cash.trifle.CertificateRequest.PKCS10Request
 import app.cash.trifle.internal.validators.CertChainValidatorFactory
 import okio.ByteString.Companion.toByteString
 import org.bouncycastle.cert.X509CertificateHolder
-import org.bouncycastle.cert.X509v3CertificateBuilder
-import java.security.cert.X509Certificate
 import app.cash.trifle.protos.api.alpha.Certificate as CertificateProto
 
 /**
@@ -33,29 +31,33 @@ data class Certificate internal constructor(
    * we expect.
    *
    * @param certificateRequest -  request used to generate this certificate
-   * @param certificateChain - list of certificates with each subsequent certificate signing the one
-   *   before it, starting with the parent of this certificate.
+   * @param ancestorCertificateChain - list of certificates preceding *this* one.  Namely, the first
+   *   entry should be the certificate corresponding to the issuer of this certificate, and each
+   *   thereafter should be the issuer of the one before it.
+   * @param anchorCertificate - the trust anchor against which we would like to verify the
+   *   ancestorCertificateChain. This may be the terminal (root) certificate of the chain or may be
+   *   an intermediate certificate in the chain which is already trusted.
+   *
    * @return - false if certificate is not signed by the given root certificate, or if the
    *   information present doesn't match that of the certificateRequest.
    *   //TODO(dcashman): Return errors specific to each type of failure so clients can remediate.
    */
   fun verify(
     certificateRequest: CertificateRequest,
-    certificateChain: List<Certificate>,
-    rootCertificate: Certificate
+    ancestorCertificateChain: List<Certificate>,
+    anchorCertificate: Certificate
   ): Boolean {
     // First check to see if the certificate chain matches
-    val validator = CertChainValidatorFactory.get(rootCertificate)
-    if (!validator.validate(listOf(this) + certificateChain)) return false
+    val validator = CertChainValidatorFactory.get(anchorCertificate)
+    if (!validator.validate(listOf(this) + ancestorCertificateChain)) return false
 
     // Certificate chain matches, check with certificate request.
     // TODO(dcashman): Check other attributes as well.
     val x509Certificate = X509CertificateHolder(certificate)
     return when (certificateRequest) {
       is PKCS10Request -> {
-        certificateRequest.pkcs10Req.subject.equals(x509Certificate.subject) && certificateRequest.pkcs10Req.subjectPublicKeyInfo.equals(
-          x509Certificate.subjectPublicKeyInfo
-        )
+        certificateRequest.pkcs10Req.subject == x509Certificate.subject
+          && certificateRequest.pkcs10Req.subjectPublicKeyInfo == x509Certificate.subjectPublicKeyInfo
       }
       else -> false
     }
