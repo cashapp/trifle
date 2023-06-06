@@ -5,16 +5,17 @@ import app.cash.trifle.CertificateRequest
 import app.cash.trifle.SignedData
 import app.cash.trifle.SignedData.EnvelopedData.Companion.ENVELOPED_DATA_VERSION
 import app.cash.trifle.internal.signers.TrifleContentSigner
-import okio.ByteString
 import okio.ByteString.Companion.toByteString
-import org.bouncycastle.asn1.DEROctetString
 import org.bouncycastle.asn1.x500.X500Name
+import org.bouncycastle.asn1.x509.AuthorityKeyIdentifier
 import org.bouncycastle.asn1.x509.BasicConstraints
 import org.bouncycastle.asn1.x509.Extension
 import org.bouncycastle.asn1.x509.KeyUsage
+import org.bouncycastle.asn1.x509.SubjectKeyIdentifier
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo
 import org.bouncycastle.cert.X509CertificateHolder
 import org.bouncycastle.cert.X509v3CertificateBuilder
+import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils
 import org.bouncycastle.pkcs.PKCS10CertificationRequestBuilder
 import java.math.BigInteger
 import java.time.Instant
@@ -27,6 +28,8 @@ import java.util.Date
 internal open class DelegateImpl(
   private val contentSigner: TrifleContentSigner
 ) : CertificateAuthorityDelegate, EndEntityDelegate {
+  private val x509BCUtils = JcaX509ExtensionUtils()
+
   override fun signCertificate(
     issuerCertificate: Certificate,
     certificateRequest: CertificateRequest
@@ -44,11 +47,11 @@ internal open class DelegateImpl(
       ).addExtension(
         Extension.authorityKeyIdentifier,
         false,
-        contentSigner.subjectPublicKeyInfo().toKeyIdentifier()
+        contentSigner.subjectPublicKeyInfo().toAuthorityKeyIdentifier()
       ).addExtension(
         Extension.subjectKeyIdentifier,
         false,
-        certificateRequest.pkcs10Req.subjectPublicKeyInfo.toKeyIdentifier()
+        certificateRequest.pkcs10Req.subjectPublicKeyInfo.toSubjectKeyIdentifier()
       ).build(contentSigner)
 
       Certificate(signedCert.encoded)
@@ -63,7 +66,7 @@ internal open class DelegateImpl(
     // given name.
     val subjectName = X500Name("CN=$entityName")
     val creationTime = Instant.now()
-    val keyIdentifier = contentSigner.subjectPublicKeyInfo().toKeyIdentifier()
+    val subjectPublicKeyInfo = contentSigner.subjectPublicKeyInfo()
     val signedCert = X509v3CertificateBuilder(
       subjectName,
       BigInteger.ONE,
@@ -76,9 +79,13 @@ internal open class DelegateImpl(
     ).addExtension(
       Extension.keyUsage, true, KeyUsage(KeyUsage.keyCertSign)
     ).addExtension(
-      Extension.authorityKeyIdentifier, false, keyIdentifier
+      Extension.authorityKeyIdentifier,
+      false,
+      subjectPublicKeyInfo.toAuthorityKeyIdentifier()
     ).addExtension(
-      Extension.subjectKeyIdentifier, false, keyIdentifier
+      Extension.subjectKeyIdentifier,
+      false,
+      subjectPublicKeyInfo.toSubjectKeyIdentifier()
     ).build(contentSigner)
 
     return Certificate(signedCert.encoded)
@@ -123,6 +130,9 @@ internal open class DelegateImpl(
     }
   }
 
-  private fun SubjectPublicKeyInfo.toKeyIdentifier(): DEROctetString =
-    DEROctetString(publicKeyData.bytes.toByteString().sha1().toByteArray())
+  private fun SubjectPublicKeyInfo.toAuthorityKeyIdentifier(): AuthorityKeyIdentifier =
+    x509BCUtils.createAuthorityKeyIdentifier(this)
+
+  private fun SubjectPublicKeyInfo.toSubjectKeyIdentifier(): SubjectKeyIdentifier =
+    x509BCUtils.createSubjectKeyIdentifier(this)
 }
