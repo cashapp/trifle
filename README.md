@@ -48,7 +48,7 @@ let decoded = try decoder.decode(TrifleKeyHandle.self, from: jsonKeyHandle)
 // from backup, ... etc)
 
 // Create cert request
-let certReq = try trifle.generateMobileCertificateRequest(keyHandle: keyHandle)
+let certReq = try trifle.generateMobileCertificateRequest(entity: entity, keyHandle: keyHandle)
 
 // Serialize to proto to be sent over wire
 let encoded = try certReq.serialize()

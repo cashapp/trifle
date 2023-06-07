@@ -14,7 +14,7 @@ final class CertificateTests: XCTestCase {
         let trifle = try Trifle(reverseDomain: TestFixtures.reverseDomain)
         let keyHandle = try trifle.generateKeyHandle()
         
-        let mobileCertReq = try trifle.generateMobileCertificateRequest(keyHandle: keyHandle)
+        let mobileCertReq = try trifle.generateMobileCertificateRequest(entity: "trifleEntity", keyHandle: keyHandle)
         
         let deviceCertificate = try TrifleCertificate.deserialize(data: TestFixtures.deviceTrifleCertEncoded2!).getCertificate()
         let rootCertificate = try TrifleCertificate.deserialize(data: TestFixtures.rootTrifleCertEncoded!).getCertificate()
@@ -32,7 +32,7 @@ final class CertificateTests: XCTestCase {
         let trifle = try Trifle(reverseDomain: TestFixtures.reverseDomain)
         let keyHandle = try trifle.generateKeyHandle()
         
-        let mobileCertReq = try trifle.generateMobileCertificateRequest(keyHandle: keyHandle)
+        let mobileCertReq = try trifle.generateMobileCertificateRequest(entity: "trifleEntity", keyHandle: keyHandle)
         
         let deviceCertificate = try TrifleCertificate.deserialize(data: TestFixtures.deviceTrifleCertEncoded!).getCertificate()
         let otherRootCertificate = try TrifleCertificate.deserialize(data: TestFixtures.otherRootTrifleCertEncoded!).getCertificate()

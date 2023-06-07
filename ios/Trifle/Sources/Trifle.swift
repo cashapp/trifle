@@ -79,14 +79,18 @@ public class Trifle {
      keyHandle, that can be presented to the Certificate Authority (CA) for
      verification.
 
+     - parameters: entity - the name associated with the public key.
      - parameters: keyHandle - key handle used for the signing.
 
      - returns: An opaque Trifle representation
      `TrifleCertificateRequest` of the certificate request.
      */
-    public func generateMobileCertificateRequest(keyHandle: KeyHandle) throws
-    -> TrifleCertificateRequest {
+    public func generateMobileCertificateRequest(
+        entity: String,
+        keyHandle: KeyHandle
+    ) throws -> TrifleCertificateRequest {
         let csr = try PKCS10CertificationRequest.Builder()
+            .addName(.commonName(entity))
             .sign(for: keyHandle.tag, with: contentSigner)
             
         let csrData =  try ProtoEncoder().encode(MobileCertificateRequest(

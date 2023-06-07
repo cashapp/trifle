@@ -60,7 +60,7 @@ final class TrifleTests: XCTestCase {
     func testGenerateMobileCertificateRequest() throws {
         let trifle = try Trifle(reverseDomain: TestFixtures.reverseDomain)
         let keyHandle = try trifle.generateKeyHandle()
-        let mobileCertReq = try trifle.generateMobileCertificateRequest(keyHandle: keyHandle)
+        let mobileCertReq = try trifle.generateMobileCertificateRequest(entity: "trifleEntity", keyHandle: keyHandle)
         
         // serialize
         let encoded = try mobileCertReq.serialize()
