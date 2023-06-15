@@ -56,7 +56,7 @@ data class Certificate internal constructor(
     certificateRequest: CertificateRequest,
     ancestorCertificateChain: List<Certificate>,
     anchorCertificate: Certificate,
-    date: Date?
+    date: Date? = null
   ): VerifyResult {
     // First check to see if the certificate chain matches
     val validator = CertChainValidatorFactory.get(anchorCertificate, date)
@@ -68,14 +68,14 @@ data class Certificate internal constructor(
       val reason = e.reason
       if (reason is BasicReason) {
         return when (reason) {
-          BasicReason.EXPIRED -> VerifyResult(EXPIRED, e.message ?: "")
-          BasicReason.INVALID_SIGNATURE -> VerifyResult(INCORRECT_SIGNATURE, e.message ?: "")
-          else -> VerifyResult(UNSPECIFIED_FAILURE, e.message ?: "")
+          BasicReason.EXPIRED -> VerifyResult(EXPIRED, e.message)
+          BasicReason.INVALID_SIGNATURE -> VerifyResult(INCORRECT_SIGNATURE, e.message)
+          else -> VerifyResult(UNSPECIFIED_FAILURE, e.message)
         }
       }
-      return VerifyResult(UNSPECIFIED_FAILURE, e.message ?: "")
+      return VerifyResult(UNSPECIFIED_FAILURE, e.message)
     } catch (e: Exception) {
-      return VerifyResult(UNSPECIFIED_FAILURE, e.message ?: "")
+      return VerifyResult(UNSPECIFIED_FAILURE, e.message)
     }
 
     // Certificate chain matches, check with certificate request.
@@ -93,14 +93,6 @@ data class Certificate internal constructor(
       }
     }
     return VerifyResult(UNSPECIFIED_FAILURE)
-  }
-
-  fun verify(
-    certificateRequest: CertificateRequest,
-    ancestorCertificateChain: List<Certificate>,
-    anchorCertificate: Certificate,
-  ): VerifyResult {
-    return verify(certificateRequest, ancestorCertificateChain, anchorCertificate, null)
   }
 
   override fun equals(other: Any?): Boolean {
@@ -124,8 +116,7 @@ data class Certificate internal constructor(
   companion object {
     internal const val CERTIFICATE_VERSION: Int = 0
 
-    class VerifyResult constructor(val reason: Reason, val msg: String) {
-      constructor(reason: Reason) : this(reason, "")
+    class VerifyResult constructor(val reason: Reason, val msg: String? = "") {
 
       override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -143,7 +134,7 @@ data class Certificate internal constructor(
       }
 
       override fun toString(): String {
-        return "$reason $msg"
+        return "$reason ${msg.orEmpty()}"
       }
 
       enum class Reason {
