@@ -116,22 +116,7 @@ data class Certificate internal constructor(
   companion object {
     internal const val CERTIFICATE_VERSION: Int = 0
 
-    class VerifyResult constructor(val reason: Reason, val msg: String? = "") {
-
-      override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as VerifyResult
-
-        return reason == other.reason && msg.equals(other.msg)
-      }
-
-      override fun hashCode(): Int {
-        var result = msg.hashCode()
-        result = 31 * result + reason.ordinal
-        return result
-      }
+    data class VerifyResult constructor(val reason: Reason, val msg: String? = "") {
 
       override fun toString(): String {
         return "$reason ${msg.orEmpty()}"
