@@ -1,17 +1,21 @@
 package app.cash.trifle.internal.validators
 
 import app.cash.trifle.Certificate
+import java.security.cert.CertPathValidatorException
+import java.security.cert.CertPathValidatorException.BasicReason
 import java.security.cert.CertificateFactory
 import java.security.cert.PKIXParameters
 import java.security.cert.TrustAnchor
 import java.security.cert.X509Certificate
+import java.util.Date
 import java.security.cert.CertPathValidator as JCACertPathValidator
 
 /**
  * X.509 specific implementation for validating certificate chains (certificate paths) with
  * a specific set of PKIX parameters.
  */
-internal class X509CertChainValidator(certAnchor: Certificate) : CertChainValidator {
+internal class X509CertChainValidator(certAnchor: Certificate, date: Date? = null) : CertChainValidator {
+
   private val pkixParams: PKIXParameters = PKIXParameters(
     setOf(
       TrustAnchor(
@@ -25,6 +29,7 @@ internal class X509CertChainValidator(certAnchor: Certificate) : CertChainValida
 
   init {
     pkixParams.isRevocationEnabled = false
+    pkixParams.date = date
   }
 
   override fun validate(certChain: List<Certificate>): Boolean {
@@ -38,12 +43,8 @@ internal class X509CertChainValidator(certAnchor: Certificate) : CertChainValida
       return false
     }
 
-    return try {
-      PATH_VALIDATOR.validate(X509FACTORY.generateCertPath(x509Certs), pkixParams)
-      true
-    } catch (e: Exception) {
-      false
-    }
+    PATH_VALIDATOR.validate(X509FACTORY.generateCertPath(x509Certs), pkixParams)
+    return true
   }
 
   private fun List<X509Certificate>.maybeDropRoot(): List<X509Certificate> {

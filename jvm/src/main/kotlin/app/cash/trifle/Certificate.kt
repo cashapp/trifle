@@ -1,9 +1,17 @@
 package app.cash.trifle
 
+import app.cash.trifle.Certificate.Companion.VerifyResult.Reason.CSR_MISMATCH
+import app.cash.trifle.Certificate.Companion.VerifyResult.Reason.EXPIRED
+import app.cash.trifle.Certificate.Companion.VerifyResult.Reason.INCORRECT_SIGNATURE
+import app.cash.trifle.Certificate.Companion.VerifyResult.Reason.SUCCESS
+import app.cash.trifle.Certificate.Companion.VerifyResult.Reason.UNSPECIFIED_FAILURE
 import app.cash.trifle.CertificateRequest.PKCS10Request
 import app.cash.trifle.internal.validators.CertChainValidatorFactory
 import okio.ByteString.Companion.toByteString
 import org.bouncycastle.cert.X509CertificateHolder
+import java.security.cert.CertPathValidatorException
+import java.security.cert.CertPathValidatorException.BasicReason
+import java.util.Date
 import app.cash.trifle.protos.api.alpha.Certificate as CertificateProto
 
 /**
@@ -37,30 +45,54 @@ data class Certificate internal constructor(
    * @param anchorCertificate - the trust anchor against which we would like to verify the
    *   ancestorCertificateChain. This may be the terminal (root) certificate of the chain or may be
    *   an intermediate certificate in the chain which is already trusted.
+   * @param date - The date to use for verification against certificates' validity windows. If null,
+   *   the current time is used.
    *
-   * @return - false if certificate is not signed by the given root certificate, or if the
-   *   information present doesn't match that of the certificateRequest.
-   *   //TODO(dcashman): Return errors specific to each type of failure so clients can remediate.
+   * @return - VerifyResult status indicating issue if certificate is not signed by the given root
+   *   certificate, or if the information present doesn't match that of the certificateRequest.
+   *   SUCCESS otherwise.
    */
   fun verify(
     certificateRequest: CertificateRequest,
     ancestorCertificateChain: List<Certificate>,
-    anchorCertificate: Certificate
-  ): Boolean {
+    anchorCertificate: Certificate,
+    date: Date? = null
+  ): VerifyResult {
     // First check to see if the certificate chain matches
-    val validator = CertChainValidatorFactory.get(anchorCertificate)
-    if (!validator.validate(listOf(this) + ancestorCertificateChain)) return false
+    val validator = CertChainValidatorFactory.get(anchorCertificate, date)
+    try {
+      if (!validator.validate(listOf(this) + ancestorCertificateChain)) return VerifyResult(
+        UNSPECIFIED_FAILURE
+      )
+    } catch (e: CertPathValidatorException) {
+      val reason = e.reason
+      if (reason is BasicReason) {
+        return when (reason) {
+          BasicReason.EXPIRED -> VerifyResult(EXPIRED, e.message)
+          BasicReason.INVALID_SIGNATURE -> VerifyResult(INCORRECT_SIGNATURE, e.message)
+          else -> VerifyResult(UNSPECIFIED_FAILURE, e.message)
+        }
+      }
+      return VerifyResult(UNSPECIFIED_FAILURE, e.message)
+    } catch (e: Exception) {
+      return VerifyResult(UNSPECIFIED_FAILURE, e.message)
+    }
 
     // Certificate chain matches, check with certificate request.
     // TODO(dcashman): Check other attributes as well.
     val x509Certificate = X509CertificateHolder(certificate)
     return when (certificateRequest) {
       is PKCS10Request -> {
-        certificateRequest.pkcs10Req.subject == x509Certificate.subject
+        if (certificateRequest.pkcs10Req.subject == x509Certificate.subject
           && certificateRequest.pkcs10Req.subjectPublicKeyInfo == x509Certificate.subjectPublicKeyInfo
+        ) {
+          VerifyResult(SUCCESS)
+        } else {
+          VerifyResult(CSR_MISMATCH)
+        }
       }
-      else -> false
     }
+    return VerifyResult(UNSPECIFIED_FAILURE)
   }
 
   override fun equals(other: Any?): Boolean {
@@ -83,6 +115,21 @@ data class Certificate internal constructor(
 
   companion object {
     internal const val CERTIFICATE_VERSION: Int = 0
+
+    data class VerifyResult constructor(val reason: Reason, val msg: String? = "") {
+
+      override fun toString(): String {
+        return "$reason ${msg.orEmpty()}"
+      }
+
+      enum class Reason {
+        SUCCESS,
+        UNSPECIFIED_FAILURE,
+        EXPIRED,
+        INCORRECT_SIGNATURE,
+        CSR_MISMATCH
+      }
+    }
 
     /**
      * Create a Trifle Certificate from its binary representation, which is a serialized proto for

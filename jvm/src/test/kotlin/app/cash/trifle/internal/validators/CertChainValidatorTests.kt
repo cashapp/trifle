@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+import java.security.cert.CertPathValidatorException
 
 internal class CertChainValidatorTests {
   @Nested
@@ -17,8 +19,10 @@ internal class CertChainValidatorTests {
     }
 
     @Test
-    fun `test validate() returns false for invalid certificate chain`() {
-      assertFalse(validator.validate(TestCertificateAuthority().createTestEndEntity().certChain))
+    fun `test validate() throws CertPathValidatorException for invalid certificate chain`() {
+      assertThrows<CertPathValidatorException> {
+        validator.validate(TestCertificateAuthority().createTestEndEntity().certChain)
+      }
     }
 
     @Test

@@ -22,7 +22,11 @@ data class SignedData internal constructor(
 ) {
   fun verify(certAnchor: Certificate): Boolean {
     val validator = CertChainValidatorFactory.get(certAnchor)
-    if (!validator.validate(certificates)) return false
+    try {
+      if (!validator.validate(certificates)) return false
+    } catch (e: Exception) {
+      return false
+    }
 
     val contentVerifier = JCAContentVerifierProvider(certificates.first())
       .get(envelopedData.signingAlgorithm)
