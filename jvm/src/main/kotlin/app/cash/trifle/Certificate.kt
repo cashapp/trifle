@@ -81,14 +81,14 @@ data class Certificate internal constructor(
     // Certificate chain matches, check with certificate request.
     // TODO(dcashman): Check other attributes as well.
     val x509Certificate = X509CertificateHolder(certificate)
-    when (certificateRequest) {
+    return when (certificateRequest) {
       is PKCS10Request -> {
         if (certificateRequest.pkcs10Req.subject == x509Certificate.subject
           && certificateRequest.pkcs10Req.subjectPublicKeyInfo == x509Certificate.subjectPublicKeyInfo
         ) {
-          return VerifyResult(SUCCESS)
+          VerifyResult(SUCCESS)
         } else {
-          return VerifyResult(CSR_MISMATCH)
+          VerifyResult(CSR_MISMATCH)
         }
       }
     }

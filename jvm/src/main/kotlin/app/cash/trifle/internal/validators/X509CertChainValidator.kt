@@ -43,12 +43,8 @@ internal class X509CertChainValidator(certAnchor: Certificate, date: Date? = nul
       return false
     }
 
-    return try {
-      PATH_VALIDATOR.validate(X509FACTORY.generateCertPath(x509Certs), pkixParams)
-      true
-    } catch (e: Exception) {
-      throw e
-    }
+    PATH_VALIDATOR.validate(X509FACTORY.generateCertPath(x509Certs), pkixParams)
+    return true
   }
 
   private fun List<X509Certificate>.maybeDropRoot(): List<X509Certificate> {
