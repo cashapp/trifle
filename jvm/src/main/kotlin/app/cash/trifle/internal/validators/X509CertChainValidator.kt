@@ -14,8 +14,7 @@ import java.security.cert.CertPathValidator as JCACertPathValidator
  * X.509 specific implementation for validating certificate chains (certificate paths) with
  * a specific set of PKIX parameters.
  */
-internal class X509CertChainValidator(certAnchor: Certificate, date: Date?) : CertChainValidator {
-  constructor(certAnchor: Certificate) : this(certAnchor, null)
+internal class X509CertChainValidator(certAnchor: Certificate, date: Date? = null) : CertChainValidator {
 
   private val pkixParams: PKIXParameters = PKIXParameters(
     setOf(
@@ -47,10 +46,8 @@ internal class X509CertChainValidator(certAnchor: Certificate, date: Date?) : Ce
     return try {
       PATH_VALIDATOR.validate(X509FACTORY.generateCertPath(x509Certs), pkixParams)
       true
-    } catch (e: CertPathValidatorException) {
-      throw e
     } catch (e: Exception) {
-      false
+      throw e
     }
   }
 

@@ -19,7 +19,7 @@ internal class CertChainValidatorTests {
     }
 
     @Test
-    fun `test validate() returns false for invalid certificate chain`() {
+    fun `test validate() throws CertPathValidatorException for invalid certificate chain`() {
       assertThrows<CertPathValidatorException> {
         validator.validate(TestCertificateAuthority().createTestEndEntity().certChain)
       }

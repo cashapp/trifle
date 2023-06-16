@@ -17,14 +17,10 @@ object CertChainValidatorFactory {
    * @param date - The date to use for verification against certificates' validity windows. If null,
    *   the current time is used.
    */
-  fun get(certAnchor: Certificate, date: Date?): CertChainValidator {
+  fun get(certAnchor: Certificate, date: Date? = null): CertChainValidator {
     return when (certAnchor.version) {
       CERTIFICATE_VERSION -> X509CertChainValidator(certAnchor, date)
       else -> throw UnsupportedOperationException("Unsupported version of Trifle Certificate")
     }
-  }
-
-  fun get(certAnchor: Certificate): CertChainValidator {
-    return get(certAnchor, null)
   }
 }
