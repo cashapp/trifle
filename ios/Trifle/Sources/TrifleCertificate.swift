@@ -109,21 +109,15 @@ extension Certificate {
             chain = [self] + intermediateChain
         }
         
-        let result = X509TrustManager.evaluate(chain)
-        var error: NSError?
-        
-        if !result {
-            if let error = error {
-                if error.code == errSecCertificateExpired {
-                    throw TrifleError.expiredCertificate
-                } else {
-                    throw TrifleError.invalidCertificate
-                }
+        do {
+            let result = try X509TrustManager.evaluate(chain)
+            return result
+        } catch let error as NSError {
+            if error.code == errSecCertificateExpired {
+                throw TrifleError.expiredCertificate
             } else {
-                // There was an error, but error object is nil
                 throw TrifleError.invalidCertificate
             }
         }
-        return result
     }
 }
