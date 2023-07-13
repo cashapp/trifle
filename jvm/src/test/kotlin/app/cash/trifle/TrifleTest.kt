@@ -85,7 +85,7 @@ internal class TrifleTest {
             .minusMillis(certHolder.notBefore.toInstant().toEpochMilli())
             .toEpochMilli()
         )
-      assertEquals(180, duration.toDays())
+      assertEquals(30, duration.toDays())
     }
 
     @Test
