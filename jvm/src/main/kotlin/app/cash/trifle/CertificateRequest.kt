@@ -33,7 +33,7 @@ sealed interface CertificateRequest {
     // Validity time for device-certificate, currently scoped to 180 days, based entirely on
     // intuition. This is not currently used, and should be configurable by the client when usage is
     // desired.
-    internal const val MOBILE_CERTIFICATE_VALIDITY_PERIOD_DAYS: Int = 180
+    internal const val MOBILE_CERTIFICATE_VALIDITY_PERIOD_DAYS: Int = 30
 
     /**
      * Converts the given serialized MobileCertRequest into a CertificateRequest. This enables clients
