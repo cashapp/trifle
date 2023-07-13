@@ -30,9 +30,7 @@ sealed interface CertificateRequest {
   companion object {
     internal const val MOBILE_CERTIFICATE_REQUEST_VERSION: Int = 0
 
-    // Validity time for device-certificate, currently scoped to 180 days, based entirely on
-    // intuition. This is not currently used, and should be configurable by the client when usage is
-    // desired.
+    // Validity time for device-certificate, currently scoped to 30 days
     internal const val MOBILE_CERTIFICATE_VALIDITY_PERIOD_DAYS: Int = 30
 
     /**
