@@ -9,7 +9,7 @@ internal struct X509TrustManager {
     
     // MARK: - Internal Methods
     
-    internal static func evaluate(_ certificates: Array<Certificate>) -> Bool {
+    internal static func evaluate(_ certificates: Array<Certificate>) throws -> Bool {
         let secCerts = certificates.map {
             SecCertificateCreateWithData(nil, $0.certificate! as CFData)!
         }
@@ -31,6 +31,12 @@ internal struct X509TrustManager {
         // disables fetching from the network if missing intermediate chain(s)
         SecTrustSetNetworkFetchAllowed(trust, false)
         
-        return SecTrustEvaluateWithError(trust, nil)
+        var error: CFError?
+        let result = SecTrustEvaluateWithError(trust, &error)
+        if let e = error as Error? as NSError? {
+            throw e
+        }
+        
+        return result
     }
 }
