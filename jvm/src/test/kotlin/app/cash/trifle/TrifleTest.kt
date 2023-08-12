@@ -85,6 +85,20 @@ internal class TrifleTest {
             .minusMillis(certHolder.notBefore.toInstant().toEpochMilli())
             .toEpochMilli()
         )
+      assertEquals(certTTL.toLong(), duration.toDays())
+    }
+
+    @Test
+    fun `test default validity period`() {
+      val endEntityDefault = certificateAuthority.createTestEndEntity("entity")
+      val certHolderDefault = X509CertificateHolder(endEntityDefault.certificate.certificate)
+
+      val duration =
+        Duration.ofMillis(
+          certHolderDefault.notAfter.toInstant()
+            .minusMillis(certHolderDefault.notBefore.toInstant().toEpochMilli())
+            .toEpochMilli()
+        )
       assertEquals(30, duration.toDays())
     }
 
@@ -194,7 +208,8 @@ internal class TrifleTest {
   }
 
   companion object {
+    private val certTTL: Int = 2
     private val certificateAuthority = TestCertificateAuthority("issuingEntity")
-    private val endEntity = certificateAuthority.createTestEndEntity("entity")
+    private val endEntity = certificateAuthority.createTestEndEntity("entity", certTTL)
   }
 }

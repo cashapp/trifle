@@ -22,9 +22,11 @@ interface CertificateAuthorityDelegate {
    *
    * @param issuerCertificate trifle certificate associated with the signer of this cert.
    * @param certificateRequest certificate request used to generate a new certificate
+   * @param validity of the certificate before it expires (days)
    */
   fun signCertificate(
     issuerCertificate: Certificate,
     certificateRequest: CertificateRequest,
+    validity: Int  = CertificateRequest.MOBILE_CERTIFICATE_VALIDITY_PERIOD_DAYS,
   ): Certificate
 }
