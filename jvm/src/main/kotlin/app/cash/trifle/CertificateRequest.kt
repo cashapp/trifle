@@ -30,9 +30,6 @@ sealed interface CertificateRequest {
   companion object {
     internal const val MOBILE_CERTIFICATE_REQUEST_VERSION: Int = 0
 
-    // Validity time for device-certificate, currently scoped to 30 days
-    internal const val MOBILE_CERTIFICATE_VALIDITY_PERIOD_DAYS: Int = 30
-
     /**
      * Converts the given serialized MobileCertRequest into a CertificateRequest. This enables clients
      * to issue certificate requests from devices using the Mobile SDK and have those requests be

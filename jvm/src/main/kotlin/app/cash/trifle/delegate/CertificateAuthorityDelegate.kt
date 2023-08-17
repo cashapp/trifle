@@ -27,6 +27,11 @@ interface CertificateAuthorityDelegate {
   fun signCertificate(
     issuerCertificate: Certificate,
     certificateRequest: CertificateRequest,
-    validity: Int  = CertificateRequest.MOBILE_CERTIFICATE_VALIDITY_PERIOD_DAYS,
+    validity: Period = Period.ofDays(MOBILE_CERTIFICATE_VALIDITY_PERIOD_DAYS),
   ): Certificate
+
+  companion object {
+    // Validity time for device-certificate, currently scoped to 1 day
+    internal const val  MOBILE_CERTIFICATE_VALIDITY_PERIOD_DAYS: Int = 1
+  }
 }

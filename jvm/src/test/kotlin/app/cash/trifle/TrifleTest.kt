@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import java.time.Duration
+import java.time.Period
 
 internal class TrifleTest {
   @Nested
@@ -79,10 +80,14 @@ internal class TrifleTest {
 
     @Test
     fun `test validity period`() {
+      val certTTL = 30
+      val endEntity30 = certificateAuthority.createTestEndEntity("entity", Period.ofDays(certTTL))
+      val certHolder30 = X509CertificateHolder(endEntity30.certificate.certificate)
+
       val duration =
         Duration.ofMillis(
-          certHolder.notAfter.toInstant()
-            .minusMillis(certHolder.notBefore.toInstant().toEpochMilli())
+          certHolder30.notAfter.toInstant()
+            .minusMillis(certHolder30.notBefore.toInstant().toEpochMilli())
             .toEpochMilli()
         )
       assertEquals(certTTL.toLong(), duration.toDays())
@@ -90,16 +95,13 @@ internal class TrifleTest {
 
     @Test
     fun `test default validity period`() {
-      val endEntityDefault = certificateAuthority.createTestEndEntity("entity")
-      val certHolderDefault = X509CertificateHolder(endEntityDefault.certificate.certificate)
-
       val duration =
         Duration.ofMillis(
-          certHolderDefault.notAfter.toInstant()
-            .minusMillis(certHolderDefault.notBefore.toInstant().toEpochMilli())
+          certHolder.notAfter.toInstant()
+            .minusMillis(certHolder.notBefore.toInstant().toEpochMilli())
             .toEpochMilli()
         )
-      assertEquals(30, duration.toDays())
+      assertEquals(1, duration.toDays())
     }
 
     @Test
@@ -208,8 +210,7 @@ internal class TrifleTest {
   }
 
   companion object {
-    private val certTTL: Int = 2
     private val certificateAuthority = TestCertificateAuthority("issuingEntity")
-    private val endEntity = certificateAuthority.createTestEndEntity("entity", certTTL)
+    private val endEntity = certificateAuthority.createTestEndEntity("entity")
   }
 }

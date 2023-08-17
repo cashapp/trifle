@@ -32,14 +32,16 @@ data class TestCertificateAuthority(
     )
   }
 
-  fun createTestEndEntity(entityName: String = Random.nextInt().toString(),
-        validity: Int = -1): TestEndEntity {
+  fun createTestEndEntity(
+    entityName: String = Random.nextInt().toString(),
+    validity: Period? = null
+  ): TestEndEntity {
     val endEntity = Trifle.EndEntity(GENERATOR.genKeyPair())
     val certRequest = endEntity.createCertRequest(entityName)
-    val certificate: Certificate
-    when (validity) {
-      -1 -> certificate = certificateAuthority.signCertificate(rootCertificate, certRequest)
-      else -> certificate = certificateAuthority.signCertificate(rootCertificate, certRequest, validity)
+    val certificate: Certificate = if (validity == null) {
+      certificateAuthority.signCertificate(rootCertificate, certRequest)
+    } else {
+      certificateAuthority.signCertificate(rootCertificate, certRequest, validity)
     }
     return TestEndEntity(endEntity, listOf(certificate, rootCertificate), certRequest)
   }
