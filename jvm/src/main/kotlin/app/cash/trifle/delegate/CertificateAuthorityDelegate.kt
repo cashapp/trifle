@@ -2,7 +2,7 @@ package app.cash.trifle.delegate
 
 import app.cash.trifle.Certificate
 import app.cash.trifle.CertificateRequest
-import java.time.Period
+import java.time.Duration
 
 interface CertificateAuthorityDelegate {
   /**
@@ -14,7 +14,7 @@ interface CertificateAuthorityDelegate {
    */
   fun createRootSigningCertificate(
     entityName: String,
-    validityPeriod: Period,
+    validityPeriod: Duration,
   ): Certificate
 
   /**
@@ -27,11 +27,11 @@ interface CertificateAuthorityDelegate {
   fun signCertificate(
     issuerCertificate: Certificate,
     certificateRequest: CertificateRequest,
-    validity: Period = Period.ofDays(MOBILE_CERTIFICATE_VALIDITY_PERIOD_DAYS),
+    validity: Duration = Duration.ofDays(MOBILE_CERTIFICATE_VALIDITY_PERIOD_DAYS),
   ): Certificate
 
   companion object {
-    // Validity time for device-certificate, currently scoped to 30 day
-    internal const val  MOBILE_CERTIFICATE_VALIDITY_PERIOD_DAYS: Int = 30
+    // Validity time for device-certificate, currently scoped to 30 days
+    internal const val  MOBILE_CERTIFICATE_VALIDITY_PERIOD_DAYS: Long = 30
   }
 }

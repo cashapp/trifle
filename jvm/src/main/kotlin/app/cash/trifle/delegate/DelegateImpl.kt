@@ -19,8 +19,8 @@ import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils
 import org.bouncycastle.pkcs.PKCS10CertificationRequestBuilder
 import java.math.BigInteger
 import java.time.Instant
-import java.time.Period
 import java.util.Date
+import java.time.Duration
 
 /**
  * Shared implementation for certificate enrollment using Trifle Content Signer.
@@ -33,7 +33,7 @@ internal open class DelegateImpl(
   override fun signCertificate(
     issuerCertificate: Certificate,
     certificateRequest: CertificateRequest,
-    validity: Period,
+    validity: Duration,
   ): Certificate = when (certificateRequest) {
     is CertificateRequest.PKCS10Request -> {
       val creationTime = Instant.now()
@@ -61,7 +61,7 @@ internal open class DelegateImpl(
 
   override fun createRootSigningCertificate(
     entityName: String,
-    validityPeriod: Period,
+    validityPeriod: Duration,
   ): Certificate {
     // Trifle Certificates are just wrappers around X.509 certificates. Create one with the
     // given name.
