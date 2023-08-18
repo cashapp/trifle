@@ -39,6 +39,9 @@ let valid = trifle.isValid(keyHandle: keyHandle)
 
 // Destroy key that is no longer in use or is invalid
 let status = trifle.delete(keyHandle: keyHandle)
+
+// Destroy key that is no longer in use or is invalid
+let status = trifle.delete(keyHandle: keyHandle)
         
 // Check if loaded key already has a cert. If yes, skip to checking for cert validity
 // Else if key does not have a cert OR if a new cert must be generated (eg because of existing
@@ -56,7 +59,6 @@ let response: [Data]
 
 // Iterate over each Data to convert to TrifleCertificate
 let certs = try response.map({ try TrifleCertificate.deserialize(data: $0) })
-
 
 // certs is an array of certificates where [0] will be device certificate
 // and the rest of the elements will be intermediate chain.
