@@ -30,7 +30,7 @@ internal class TrifleTest {
             .minusMillis(certHolder.notBefore.toInstant().toEpochMilli())
             .toEpochMilli()
         )
-      assertEquals(30, duration.toDays())
+      assertEquals(1, duration.toDays())
     }
 
     @Test
@@ -80,14 +80,14 @@ internal class TrifleTest {
 
     @Test
     fun `test validity period`() {
-      val certTTL = 30
-      val endEntity30 = certificateAuthority.createTestEndEntity("entity", Period.ofDays(certTTL))
-      val certHolder30 = X509CertificateHolder(endEntity30.certificate.certificate)
+      val certTTL = 1
+      val endEntity1 = certificateAuthority.createTestEndEntity("entity", Period.ofDays(certTTL))
+      val certHolder1 = X509CertificateHolder(endEntity1.certificate.certificate)
 
       val duration =
         Duration.ofMillis(
-          certHolder30.notAfter.toInstant()
-            .minusMillis(certHolder30.notBefore.toInstant().toEpochMilli())
+          certHolder1.notAfter.toInstant()
+            .minusMillis(certHolder1.notBefore.toInstant().toEpochMilli())
             .toEpochMilli()
         )
       assertEquals(certTTL.toLong(), duration.toDays())
@@ -101,7 +101,7 @@ internal class TrifleTest {
             .minusMillis(certHolder.notBefore.toInstant().toEpochMilli())
             .toEpochMilli()
         )
-      assertEquals(1, duration.toDays())
+      assertEquals(30, duration.toDays())
     }
 
     @Test
