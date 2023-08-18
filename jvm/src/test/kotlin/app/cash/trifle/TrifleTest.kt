@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import java.time.Duration
+import java.time.Period
 
 internal class TrifleTest {
   @Nested
@@ -79,6 +80,21 @@ internal class TrifleTest {
 
     @Test
     fun `test validity period`() {
+      val certTTL = 1
+      val endEntity1 = certificateAuthority.createTestEndEntity("entity", Period.ofDays(certTTL))
+      val certHolder1 = X509CertificateHolder(endEntity1.certificate.certificate)
+
+      val duration =
+        Duration.ofMillis(
+          certHolder1.notAfter.toInstant()
+            .minusMillis(certHolder1.notBefore.toInstant().toEpochMilli())
+            .toEpochMilli()
+        )
+      assertEquals(certTTL.toLong(), duration.toDays())
+    }
+
+    @Test
+    fun `test default validity period`() {
       val duration =
         Duration.ofMillis(
           certHolder.notAfter.toInstant()

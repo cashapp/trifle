@@ -22,9 +22,16 @@ interface CertificateAuthorityDelegate {
    *
    * @param issuerCertificate trifle certificate associated with the signer of this cert.
    * @param certificateRequest certificate request used to generate a new certificate
+   * @param validity of the certificate before it expires (days)
    */
   fun signCertificate(
     issuerCertificate: Certificate,
     certificateRequest: CertificateRequest,
+    validity: Period = Period.ofDays(MOBILE_CERTIFICATE_VALIDITY_PERIOD_DAYS),
   ): Certificate
+
+  companion object {
+    // Validity time for device-certificate, currently scoped to 30 day
+    internal const val  MOBILE_CERTIFICATE_VALIDITY_PERIOD_DAYS: Int = 30
+  }
 }

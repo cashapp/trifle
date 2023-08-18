@@ -32,7 +32,8 @@ internal open class DelegateImpl(
 
   override fun signCertificate(
     issuerCertificate: Certificate,
-    certificateRequest: CertificateRequest
+    certificateRequest: CertificateRequest,
+    validity: Period,
   ): Certificate = when (certificateRequest) {
     is CertificateRequest.PKCS10Request -> {
       val creationTime = Instant.now()
@@ -41,7 +42,7 @@ internal open class DelegateImpl(
         issuerCertHolder.subject,
         BigInteger.valueOf(creationTime.toEpochMilli()),
         Date.from(creationTime),
-        Date.from(creationTime.plus(Period.ofDays(CertificateRequest.MOBILE_CERTIFICATE_VALIDITY_PERIOD_DAYS))),
+        Date.from(creationTime.plus(validity)),
         certificateRequest.pkcs10Req.subject,
         certificateRequest.pkcs10Req.subjectPublicKeyInfo
       ).addExtension(
