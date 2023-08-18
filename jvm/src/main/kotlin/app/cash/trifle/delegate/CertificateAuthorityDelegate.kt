@@ -31,7 +31,7 @@ interface CertificateAuthorityDelegate {
   ): Certificate
 
   companion object {
-    // Validity time for device-certificate, currently scoped to 1 day
-    internal const val  MOBILE_CERTIFICATE_VALIDITY_PERIOD_DAYS: Int = 1
+    // Validity time for device-certificate, currently scoped to 30 day
+    internal const val  MOBILE_CERTIFICATE_VALIDITY_PERIOD_DAYS: Int = 30
   }
 }
