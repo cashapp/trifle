@@ -45,7 +45,7 @@ internal class CertificateTests {
     @Test
     fun `test verify() fails for a different root certificate`() {
       assertEquals(
-        VerifyResult(UNSPECIFIED_FAILURE, "Path does not chain with any of the trust anchors"),
+        VerifyResult(UNSPECIFIED_FAILURE, "No acceptable Trifle trust anchor found"),
         endEntity.certificate.verify(
           endEntity.certRequest,
           otherEndEntity.certChain.drop(1),
@@ -57,7 +57,7 @@ internal class CertificateTests {
     @Test
     fun `test verify() fails for an expired certificate`() {
       assertEquals(
-        VerifyResult(EXPIRED ,"validity check failed"),
+        VerifyResult(UNSPECIFIED_FAILURE ,"Expired Trifle certificate"),
         endEntity.certificate.verify(
           endEntity.certRequest,
           endEntity.certChain.drop(1),
