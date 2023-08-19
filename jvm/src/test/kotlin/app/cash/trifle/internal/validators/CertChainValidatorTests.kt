@@ -1,5 +1,6 @@
 package app.cash.trifle.internal.validators
 
+import app.cash.trifle.NoTrustAnchorException
 import app.cash.trifle.testing.TestCertificateAuthority
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -20,7 +21,7 @@ internal class CertChainValidatorTests {
 
     @Test
     fun `test validate() throws CertPathValidatorException for invalid certificate chain`() {
-      assertThrows<CertPathValidatorException> {
+      assertThrows<NoTrustAnchorException> {
         validator.validate(TestCertificateAuthority().createTestEndEntity().certChain)
       }
     }

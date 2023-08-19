@@ -194,7 +194,9 @@ internal class TrifleTest {
 
     @Test
     fun `test verifies signed data fails with wrong anchor`() {
-      assertFalse(signedData.verify(TestCertificateAuthority().rootCertificate))
+      assertThrows<NoTrustAnchorException>{
+        signedData.verify(TestCertificateAuthority().rootCertificate)
+      }
     }
 
     @Test
