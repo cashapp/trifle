@@ -48,35 +48,20 @@ data class Certificate internal constructor(
    * @param date - The date to use for verification against certificates' validity windows. If null,
    *   the current time is used.
    *
-   * @return - VerifyResult status indicating issue if certificate is not signed by the given root
-   *   certificate, or if the information present doesn't match that of the certificateRequest.
-   *   SUCCESS otherwise.
+   * @return - Boolean status indicating error in validation or success.
+   *   Exception thrown if certificate is not signed by the given root certificate, or
+   *   certificate is expired or invalid or
+   *   if the information present doesn't match that of the certificateRequest.
    */
   fun verify(
     certificateRequest: CertificateRequest,
     ancestorCertificateChain: List<Certificate>,
     anchorCertificate: Certificate,
     date: Date? = null
-  ): VerifyResult {
+  ): Boolean {
     // First check to see if the certificate chain matches
     val validator = CertChainValidatorFactory.get(anchorCertificate, date)
-    try {
-      if (!validator.validate(listOf(this) + ancestorCertificateChain)) return VerifyResult(
-        UNSPECIFIED_FAILURE
-      )
-    } catch (e: CertPathValidatorException) {
-      val reason = e.reason
-      if (reason is BasicReason) {
-        return when (reason) {
-          BasicReason.EXPIRED -> VerifyResult(EXPIRED, e.message)
-          BasicReason.INVALID_SIGNATURE -> VerifyResult(INCORRECT_SIGNATURE, e.message)
-          else -> VerifyResult(UNSPECIFIED_FAILURE, e.message)
-        }
-      }
-      return VerifyResult(UNSPECIFIED_FAILURE, e.message)
-    } catch (e: Exception) {
-      return VerifyResult(UNSPECIFIED_FAILURE, e.message)
-    }
+    validator.validate(listOf(this) + ancestorCertificateChain)
 
     // Certificate chain matches, check with certificate request.
     // TODO(dcashman): Check other attributes as well.
@@ -86,13 +71,13 @@ data class Certificate internal constructor(
         if (certificateRequest.pkcs10Req.subject == x509Certificate.subject
           && certificateRequest.pkcs10Req.subjectPublicKeyInfo == x509Certificate.subjectPublicKeyInfo
         ) {
-          VerifyResult(SUCCESS)
+          return true
         } else {
-          VerifyResult(CSR_MISMATCH)
+          throw CSRMismatchException("Trifle certificate does not match CSR")
         }
       }
     }
-    return VerifyResult(UNSPECIFIED_FAILURE)
+    throw UnSpecifiedFailureException("Unspecified Trifle verification failure")
   }
 
   override fun equals(other: Any?): Boolean {
