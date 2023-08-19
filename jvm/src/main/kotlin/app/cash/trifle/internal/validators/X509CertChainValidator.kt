@@ -1,10 +1,11 @@
 package app.cash.trifle.internal.validators
 
-import app.cash.trifle.Certificate
+import app.cash.trifle.*
 import java.security.cert.CertPathValidatorException
 import java.security.cert.CertPathValidatorException.BasicReason
 import java.security.cert.CertificateFactory
 import java.security.cert.PKIXParameters
+import java.security.cert.PKIXReason
 import java.security.cert.TrustAnchor
 import java.security.cert.X509Certificate
 import java.util.Date
@@ -43,7 +44,21 @@ internal class X509CertChainValidator(certAnchor: Certificate, date: Date? = nul
       return false
     }
 
-    PATH_VALIDATOR.validate(X509FACTORY.generateCertPath(x509Certs), pkixParams)
+    try {
+      PATH_VALIDATOR.validate(X509FACTORY.generateCertPath(x509Certs), pkixParams)
+    } catch (e: CertPathValidatorException) {
+      val reason = e.reason
+      // https://docs.oracle.com/javase/8/docs/api/java/security/cert/PKIXReason.html
+      // https://docs.oracle.com/javase/8/docs/api/java/security/cert/CertPathValidatorException.BasicReason.html
+      when (reason) {
+          BasicReason.EXPIRED -> throw ExpiredCertificateException("Expired Trifle certificate", e)
+          BasicReason.INVALID_SIGNATURE -> throw IncorrectSignatureException("Invalid Trifle signature", e)
+          PKIXReason.NO_TRUST_ANCHOR -> throw NoTrustAnchorException("No acceptable Trifle trust anchor found", e)
+          else -> throw UnSpecifiedFailureException("Unspecified Trifle verification failure", e)
+      }
+    } catch (e: Exception) {
+      throw UnSpecifiedFailureException("Unspecified Trifle verification failure", e)
+    }
     return true
   }
 

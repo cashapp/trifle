@@ -205,7 +205,9 @@ internal class TrifleTest {
 
     @Test
     fun `test no data extracted with bad verification`() {
-      assertNull(signedData.verifyAndExtract(TestCertificateAuthority().rootCertificate))
+      assertThrows<NoTrustAnchorException> {
+        signedData.verifyAndExtract(TestCertificateAuthority().rootCertificate)
+      }
     }
   }
 
