@@ -1,16 +1,9 @@
 package app.cash.trifle
 
-import app.cash.trifle.Certificate.Companion.VerifyResult.Reason.CSR_MISMATCH
-import app.cash.trifle.Certificate.Companion.VerifyResult.Reason.EXPIRED
-import app.cash.trifle.Certificate.Companion.VerifyResult.Reason.INCORRECT_SIGNATURE
-import app.cash.trifle.Certificate.Companion.VerifyResult.Reason.SUCCESS
-import app.cash.trifle.Certificate.Companion.VerifyResult.Reason.UNSPECIFIED_FAILURE
 import app.cash.trifle.CertificateRequest.PKCS10Request
 import app.cash.trifle.internal.validators.CertChainValidatorFactory
 import okio.ByteString.Companion.toByteString
 import org.bouncycastle.cert.X509CertificateHolder
-import java.security.cert.CertPathValidatorException
-import java.security.cert.CertPathValidatorException.BasicReason
 import java.util.Date
 import app.cash.trifle.protos.api.alpha.Certificate as CertificateProto
 
@@ -71,13 +64,12 @@ data class Certificate internal constructor(
         if (certificateRequest.pkcs10Req.subject == x509Certificate.subject
           && certificateRequest.pkcs10Req.subjectPublicKeyInfo == x509Certificate.subjectPublicKeyInfo
         ) {
-          return true
+          true
         } else {
           throw CSRMismatchException("Trifle certificate does not match CSR")
         }
       }
     }
-    throw UnSpecifiedFailureException("Unspecified Trifle verification failure")
   }
 
   override fun equals(other: Any?): Boolean {
@@ -100,21 +92,6 @@ data class Certificate internal constructor(
 
   companion object {
     internal const val CERTIFICATE_VERSION: Int = 0
-
-    data class VerifyResult constructor(val reason: Reason, val msg: String? = "") {
-
-      override fun toString(): String {
-        return "$reason ${msg.orEmpty()}"
-      }
-
-      enum class Reason {
-        SUCCESS,
-        UNSPECIFIED_FAILURE,
-        EXPIRED,
-        INCORRECT_SIGNATURE,
-        CSR_MISMATCH
-      }
-    }
 
     /**
      * Create a Trifle Certificate from its binary representation, which is a serialized proto for
