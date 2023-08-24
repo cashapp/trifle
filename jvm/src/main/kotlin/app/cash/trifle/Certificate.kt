@@ -1,6 +1,7 @@
 package app.cash.trifle
 
 import app.cash.trifle.CertificateRequest.PKCS10Request
+import app.cash.trifle.TrifleErrors.CSRMismatch
 import app.cash.trifle.internal.validators.CertChainValidatorFactory
 import okio.ByteString.Companion.toByteString
 import org.bouncycastle.cert.X509CertificateHolder
@@ -41,32 +42,31 @@ data class Certificate internal constructor(
    * @param date - The date to use for verification against certificates' validity windows. If null,
    *   the current time is used.
    *
-   * @return - Boolean status indicating error in validation or success.
-   *   Exception thrown if certificate is not signed by the given root certificate, or
-   *   certificate is expired or invalid or
-   *   if the information present doesn't match that of the certificateRequest.
+   * @return - [Result] indicating [Result.isSuccess] or [Result.isFailure]:
+   * - success value is expressed as a [Unit] (Nothing)
+   * - failure value is expressed as a [TrifleErrors]
    */
   fun verify(
     certificateRequest: CertificateRequest,
     ancestorCertificateChain: List<Certificate>,
     anchorCertificate: Certificate,
     date: Date? = null
-  ): Boolean {
-    // First check to see if the certificate chain matches
-    val validator = CertChainValidatorFactory.get(anchorCertificate, date)
-    validator.validate(listOf(this) + ancestorCertificateChain)
+  ): Result<Unit> {
+    // First check to see if the certificate chain validates
+    val certChainResult = CertChainValidatorFactory.get(anchorCertificate, date)
+      .validate(listOf(this) + ancestorCertificateChain)
 
-    // Certificate chain matches, check with certificate request.
-    // TODO(dcashman): Check other attributes as well.
-    val x509Certificate = X509CertificateHolder(certificate)
-    return when (certificateRequest) {
-      is PKCS10Request -> {
-        if (certificateRequest.pkcs10Req.subject == x509Certificate.subject
-          && certificateRequest.pkcs10Req.subjectPublicKeyInfo == x509Certificate.subjectPublicKeyInfo
-        ) {
-          true
-        } else {
-          throw CSRMismatchException("Trifle certificate does not match CSR")
+    return certChainResult.mapCatching {
+      val x509Certificate = X509CertificateHolder(certificate)
+      when (certificateRequest) {
+        is PKCS10Request -> {
+          // Certificate chain matches, check with certificate request.
+          // TODO(dcashman): Check other attributes as well.
+          if (certificateRequest.pkcs10Req.subject != x509Certificate.subject ||
+            certificateRequest.pkcs10Req.subjectPublicKeyInfo != x509Certificate.subjectPublicKeyInfo
+          ) {
+            throw CSRMismatch
+          }
         }
       }
     }

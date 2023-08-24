@@ -9,5 +9,5 @@ sealed interface CertChainValidator {
    *
    * @param certChain the list of certificates.
    */
-  fun validate(certChain: List<Certificate>): Boolean
+  fun validate(certChain: List<Certificate>): Result<Unit>
 }
