@@ -1,5 +1,6 @@
 package app.cash.trifle
 
+import app.cash.trifle.TrifleErrors.NoTrustAnchor
 import app.cash.trifle.internal.providers.JCAContentVerifierProvider
 import app.cash.trifle.protos.api.alpha.MobileCertificateRequest
 import app.cash.trifle.testing.TestCertificateAuthority
@@ -9,10 +10,8 @@ import org.bouncycastle.cert.X509CertificateHolder
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import java.time.Duration
-import java.time.Period
 
 internal class TrifleTest {
   @Nested
@@ -189,23 +188,30 @@ internal class TrifleTest {
 
     @Test
     fun `test verifies signed data`() {
-      assertTrue(signedData.verify(certificateAuthority.rootCertificate))
+      assertTrue(signedData.verify(certificateAuthority.rootCertificate).isSuccess)
     }
 
     @Test
     fun `test verifies signed data fails with wrong anchor`() {
-      assertFalse(signedData.verify(TestCertificateAuthority().rootCertificate))
+      val result = signedData.verify(TestCertificateAuthority().rootCertificate)
+      assertTrue(result.isFailure)
+      assertTrue(result.exceptionOrNull() is NoTrustAnchor)
     }
 
     @Test
     fun `test verifies and extracts appropriate data`() {
       val expected = VerifiedData(signedData.envelopedData.data, signedData.certificates)
-      assertEquals(expected, signedData.verifyAndExtract(certificateAuthority.rootCertificate))
+      assertEquals(
+        expected,
+        signedData.verifyAndExtract(certificateAuthority.rootCertificate).getOrNull()
+      )
     }
 
     @Test
     fun `test no data extracted with bad verification`() {
-      assertNull(signedData.verifyAndExtract(TestCertificateAuthority().rootCertificate))
+      val result = signedData.verifyAndExtract(TestCertificateAuthority().rootCertificate)
+      assertTrue(result.isFailure)
+      assertTrue(result.exceptionOrNull() is NoTrustAnchor)
     }
   }
 

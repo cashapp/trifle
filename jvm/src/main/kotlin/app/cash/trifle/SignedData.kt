@@ -1,5 +1,6 @@
 package app.cash.trifle
 
+import app.cash.trifle.TrifleErrors.InvalidSignature
 import app.cash.trifle.internal.TrifleAlgorithmIdentifier
 import app.cash.trifle.internal.providers.JCAContentVerifierProvider
 import app.cash.trifle.internal.validators.CertChainValidatorFactory
@@ -20,28 +21,55 @@ data class SignedData internal constructor(
   internal val signature: ByteArray,
   internal val certificates: List<Certificate>
 ) {
-  fun verify(certAnchor: Certificate): Boolean {
-    val validator = CertChainValidatorFactory.get(certAnchor)
-    try {
-      if (!validator.validate(certificates)) return false
-    } catch (e: Exception) {
-      return false
+  /**
+   * Verify that the signed data is valid by checking over the certificate chain and verifying the
+   * signature.
+   *
+   * @param certAnchor - the trust anchor against which we would like to verify the certificates.
+   *   This may be the terminal (root) certificate of the chain or may be an intermediate
+   *   certificate in the chain which is already trusted.
+   *
+   * @return - [Result] indicating [Result.isSuccess] or [Result.isFailure]:
+   * - success value is expressed as a [Unit] (Nothing)
+   * - failure value is expressed as a [TrifleErrors]
+   */
+  fun verify(certAnchor: Certificate): Result<Unit> {
+    // First check to see if the certificate chain validates
+    val certChainResult = CertChainValidatorFactory.get(certAnchor).validate(certificates)
+
+    // Next check to see if the signature matches
+    return certChainResult.mapCatching {
+      val contentVerifier = JCAContentVerifierProvider(certificates.first())
+        .get(envelopedData.signingAlgorithm)
+
+      // Verify the signature
+      val sigOut = contentVerifier.outputStream
+      sigOut.write(envelopedData.serialize())
+      val isVerified = contentVerifier.verify(signature)
+      sigOut.close()
+
+      if (!isVerified) {
+        throw InvalidSignature
+      }
     }
-
-    val contentVerifier = JCAContentVerifierProvider(certificates.first())
-      .get(envelopedData.signingAlgorithm)
-
-    // Verify the signature
-    val sigOut = contentVerifier.outputStream
-    sigOut.write(envelopedData.serialize())
-    val isVerified = contentVerifier.verify(signature)
-    sigOut.close()
-
-    return isVerified
   }
 
-  fun verifyAndExtract(certAnchor: Certificate): VerifiedData? =
-    if (verify(certAnchor)) VerifiedData(envelopedData.data, certificates) else null
+  /**
+   * VerifyAndExtract performs [SignedData.verify] and extracts the underlying result
+   * as a [VerifiedData].
+   *
+   * @param certAnchor - the trust anchor against which we would like to verify the certificates.
+   *   This may be the terminal (root) certificate of the chain or may be an intermediate
+   *   certificate in the chain which is already trusted.
+   *
+   * @return - [Result] indicating [Result.isSuccess] or [Result.isFailure]:
+   * - success value is expressed as a [VerifiedData]
+   * - failure value is expressed as a [TrifleErrors]
+   */
+  fun verifyAndExtract(certAnchor: Certificate): Result<VerifiedData> =
+    verify(certAnchor).map {
+      VerifiedData(envelopedData.data, certificates)
+    }
 
   fun serialize(): ByteArray = SignedDataProto(
     enveloped_data = envelopedData.serialize().toByteString(),

@@ -1,10 +1,16 @@
 package app.cash.trifle.internal.validators
 
 import app.cash.trifle.Certificate
+import app.cash.trifle.TrifleErrors.ExpiredCertificate
+import app.cash.trifle.TrifleErrors.InvalidCertPath
+import app.cash.trifle.TrifleErrors.InvalidSignature
+import app.cash.trifle.TrifleErrors.NoTrustAnchor
+import app.cash.trifle.TrifleErrors.UnspecifiedFailure
 import java.security.cert.CertPathValidatorException
 import java.security.cert.CertPathValidatorException.BasicReason
 import java.security.cert.CertificateFactory
 import java.security.cert.PKIXParameters
+import java.security.cert.PKIXReason
 import java.security.cert.TrustAnchor
 import java.security.cert.X509Certificate
 import java.util.Date
@@ -14,8 +20,10 @@ import java.security.cert.CertPathValidator as JCACertPathValidator
  * X.509 specific implementation for validating certificate chains (certificate paths) with
  * a specific set of PKIX parameters.
  */
-internal class X509CertChainValidator(certAnchor: Certificate, date: Date? = null) : CertChainValidator {
-
+internal class X509CertChainValidator(
+  certAnchor: Certificate,
+  date: Date? = null
+) : CertChainValidator {
   private val pkixParams: PKIXParameters = PKIXParameters(
     setOf(
       TrustAnchor(
@@ -32,20 +40,34 @@ internal class X509CertChainValidator(certAnchor: Certificate, date: Date? = nul
     pkixParams.date = date
   }
 
-  override fun validate(certChain: List<Certificate>): Boolean {
-    val x509Certs = certChain.map { trifleCert ->
-      trifleCert.certificate.inputStream().use {
-        X509FACTORY.generateCertificate(it) as X509Certificate
+  override fun validate(certChain: List<Certificate>): Result<Unit> =
+    try {
+      val x509Certs = certChain.map { trifleCert ->
+        trifleCert.certificate.inputStream().use {
+          X509FACTORY.generateCertificate(it) as X509Certificate
+        }
+      }.maybeDropRoot()
+
+      if (x509Certs.isEmpty()) {
+        Result.failure(InvalidCertPath)
+      } else {
+        PATH_VALIDATOR.validate(X509FACTORY.generateCertPath(x509Certs), pkixParams)
+        Result.success(Unit)
       }
-    }.maybeDropRoot()
-
-    if (x509Certs.isEmpty()) {
-      return false
+    } catch (e: CertPathValidatorException) {
+      // https://docs.oracle.com/javase/8/docs/api/java/security/cert/PKIXReason.html
+      // https://docs.oracle.com/javase/8/docs/api/java/security/cert/CertPathValidatorException.BasicReason.html
+      when (e.reason) {
+        BasicReason.EXPIRED -> Result.failure(ExpiredCertificate)
+        BasicReason.INVALID_SIGNATURE -> Result.failure(InvalidSignature)
+        PKIXReason.NO_TRUST_ANCHOR -> Result.failure(NoTrustAnchor)
+        else -> Result.failure(
+          UnspecifiedFailure("Unspecified Trifle verification failure", e)
+        )
+      }
+    } catch (e: Exception) {
+      Result.failure(UnspecifiedFailure("Unspecified Trifle verification failure", e))
     }
-
-    PATH_VALIDATOR.validate(X509FACTORY.generateCertPath(x509Certs), pkixParams)
-    return true
-  }
 
   private fun List<X509Certificate>.maybeDropRoot(): List<X509Certificate> {
     // Remove root and all certs following it in the chain

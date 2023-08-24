@@ -125,7 +125,7 @@ internal open class DelegateImpl(
       signature = signature,
       certificates = certificates
     ).also {
-      if (!it.verify(certificates.last())) {
+      if (it.verify(certificates.last()).isFailure) {
         throw IllegalStateException("Signed data output is invalid.")
       }
     }
