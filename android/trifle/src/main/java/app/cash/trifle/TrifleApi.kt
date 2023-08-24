@@ -1,5 +1,8 @@
 package app.cash.trifle
 
+import app.cash.trifle.internal.validators.CertChainValidatorFactory
+import java.util.Date
+
 object TrifleApi {
   /**
    * Create a new mobile Trifle keypair for which can be used to create a
@@ -59,4 +62,37 @@ object TrifleApi {
     keyHandle: KeyHandle,
     certificates: List<Certificate>
   ): SignedData = Trifle.EndEntity(keyHandle.keyPair).createSignedData(data, certificates)
+
+  /**
+   * Verify that the provided certificate matches what we expected.
+   * It matches the CSR that we have and the root cert is what we expect.
+   *
+   * @param certificate - the certificate to verify
+   * @param certificateRequest - request used to generate this certificate
+   * @param ancestorCertificateChain - list of certificates preceding *this* one.  Namely, the first
+   *   entry should be the certificate corresponding to the issuer of this certificate, and each
+   *   thereafter should be the issuer of the one before it.
+   * @param anchorCertificate - the trust anchor against which we would like to verify the
+   *   ancestorCertificateChain. This may be the terminal (root) certificate of the chain or may be
+   *   an intermediate certificate in the chain which is already trusted.
+   * @param date - The date to use for verification against certificates' validity windows. If null,
+   *   the current time is used.
+   *
+   * @return - [Result] indicating [Result.isSuccess] or [Result.isFailure]:
+   * - success value is expressed as a [Unit] (Nothing)
+   * - failure value is expressed as a [TrifleErrors]
+   */
+  fun verify(
+    certificate: Certificate,
+    certificateRequest: CertificateRequest,
+    ancestorCertificateChain: List<Certificate>,
+    anchorCertificate: Certificate,
+    date: Date? = null
+  ): Result<Unit> {
+    // First check to see if the certificate chain validates
+    val certChainResult = CertChainValidatorFactory.get(anchorCertificate, date)
+      .validate(listOf(certificate) + ancestorCertificateChain)
+
+    return certChainResult.mapCatching { certificate.verify(certificateRequest) }
+  }
 }
