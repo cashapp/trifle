@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity() {
 
     //Example Trifle use.  Shouldn't typically be on the main UI thread, but that's the only reason
     // we're here so it's ok.
-    val keyHandle = KeyHandle.generateKeyHandle("alias")
+    val keyHandle = TrifleApi.generateKeyHandle("alias")
 
     setContentView(R.layout.activity_main)
   }

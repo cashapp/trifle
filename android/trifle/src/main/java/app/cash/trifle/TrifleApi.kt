@@ -14,6 +14,22 @@ object TrifleApi {
   fun generateKeyHandle(alias: String): KeyHandle = KeyHandle.generateKeyHandle(alias)
 
   /**
+   * [KeyHandle] is valid iff [KeyHandle.alias] exists in the Key Store.
+   *
+   * @param keyHandle - key handle that is to be validated.
+   *
+   * @returns - boolean value for validity
+   */
+  fun isValid(keyHandle: KeyHandle): Boolean = KeyHandle.containsAlias(keyHandle.alias)
+
+  /**
+   * Deletes the [KeyHandle] from the Key Store.
+   *
+   * @param keyHandle - key handle that is to be deleted.
+   */
+  fun delete(keyHandle: KeyHandle) = KeyHandle.deleteAlias(keyHandle.alias)
+
+  /**
    * Generate a Trifle [CertificateRequest], signed by the provided
    * keyHandle, that can be presented to the Certificate Authority (CA) for
    * verification.

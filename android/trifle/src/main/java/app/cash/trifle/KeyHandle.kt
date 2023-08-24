@@ -8,18 +8,9 @@ import java.security.KeyPairGenerator
 import java.security.KeyStore
 import java.security.spec.ECGenParameterSpec
 
-class KeyHandle internal constructor(private val alias: String) {
-  // Throw an illegal state exception if we can't get hold of the proper key material. This
-  // *should never happen* since the only way to obtain a KeyHandle is to deserialize one, which
-  // should have already checked for this, or to generate a new one.
-  private val exceptionMessage =
-    "Android KeyStore does not contain a keypair corresponding to the $alias alias"
-  private val keyStore = KeyStore.getInstance(ANDROID_KEYSTORE_TYPE).apply {
-    load(null)
-  }
-
+data class KeyHandle internal constructor(val alias: String) {
   init {
-    if (!keyStore.containsAlias(alias)) {
+    if (!containsAlias(alias)) {
       // Need to generate a new key for this key alias in the keystore.
       val kpg: KeyPairGenerator = KeyPairGenerator.getInstance(
         KeyProperties.KEY_ALGORITHM_EC,
@@ -36,15 +27,15 @@ class KeyHandle internal constructor(private val alias: String) {
       }
 
       kpg.initialize(parameterSpec)
-
-      val kp = kpg.generateKeyPair()
+      kpg.generateKeyPair()
       Log.i("TRIFLE", "Created KeyHandle with alias $alias")
     }
   }
 
   internal val keyPair: KeyPair by lazy {
+    val exceptionMessage = String.format(EXCEPTION_MSG, alias)
     try {
-      val entry: KeyStore.Entry = keyStore.getEntry(alias, null)
+      val entry: KeyStore.Entry = KEY_STORE.getEntry(alias, null)
       if (entry is KeyStore.PrivateKeyEntry) {
         return@lazy KeyPair(entry.certificate.publicKey, entry.privateKey)
       }
@@ -56,32 +47,32 @@ class KeyHandle internal constructor(private val alias: String) {
 
   fun serialize(): ByteArray = alias.toByteArray(Charsets.UTF_8)
 
-  override fun equals(other: Any?): Boolean {
-    val other = other as? KeyHandle ?: return false
-    return alias == other.alias
-  }
-
-  override fun hashCode(): Int = alias.hashCode()
-
   companion object {
+    // Throw an illegal state exception if we can't get hold of the proper key material. This
+    // *should never happen* since the only way to obtain a KeyHandle is to deserialize one, which
+    // should have already checked for this, or to generate a new one.
+    private const val EXCEPTION_MSG =
+      "Android KeyStore does not contain a keypair corresponding to the %s alias"
     private const val ANDROID_KEYSTORE_TYPE: String = "AndroidKeyStore"
+    private val KEY_STORE = KeyStore.getInstance(ANDROID_KEYSTORE_TYPE).apply {
+      load(null)
+    }
 
     fun deserialize(bytes: ByteArray): KeyHandle {
       val alias = bytes.toString(Charsets.UTF_8)
-      val ks = KeyStore.getInstance(ANDROID_KEYSTORE_TYPE).apply {
-        load(null)
-      }
-      if (!ks.containsAlias(alias)) {
-        throw IllegalArgumentException(
-          "Android KeyStore does not contain a keypair corresponding to the $alias alias"
-        )
+      if (!containsAlias(alias)) {
+        throw IllegalStateException(String.format(EXCEPTION_MSG, alias))
       }
       return KeyHandle(alias)
     }
 
     //TODO(dcashman): Consoidate API surface with iOS surface.
-    fun generateKeyHandle(alias: String): KeyHandle {
-      return KeyHandle(alias)
+    internal fun generateKeyHandle(alias: String): KeyHandle = KeyHandle(alias)
+
+    internal fun containsAlias(alias: String): Boolean = KEY_STORE.containsAlias(alias)
+
+    internal fun deleteAlias(alias: String) {
+      if (containsAlias(alias)) KEY_STORE.deleteEntry(alias)
     }
   }
 }
