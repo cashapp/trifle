@@ -1,8 +1,9 @@
-package app.cash.trifle.internal.validators
+package app.cash.trifle.validators
 
 import app.cash.trifle.TrifleErrors.InvalidCertPath
 import app.cash.trifle.TrifleErrors.NoTrustAnchor
 import app.cash.trifle.testing.TestCertificateAuthority
+import app.cash.trifle.validators.CertChainValidator.X509CertChainValidator
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
