@@ -4,12 +4,12 @@ plugins {
 }
 
 android {
-  compileSdk = 33
+  compileSdk = libs.versions.compileSdk.get().toInt()
 
   defaultConfig {
     applicationId = "app.cash.trifle"
-    minSdk = 24
-    targetSdk = 33
+    minSdk = libs.versions.minSdk.get().toInt()
+    targetSdk = libs.versions.compileSdk.get().toInt()
     versionCode = 1
     versionName = "1.0"
 
@@ -32,14 +32,11 @@ android {
 }
 
 dependencies {
-  implementation("androidx.core:core-ktx:1.9.0")
-  implementation("androidx.appcompat:appcompat:1.6.0")
-  implementation("com.google.android.material:material:1.8.0")
-  implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+  implementation(libs.androidMaterial)
+  implementation(libs.androidxCoreKtx)
+  implementation(libs.androidxAppcompat)
+  implementation(libs.androidxConstraintlayout)
   implementation(project(":android:trifle"))
-  testImplementation("junit:junit:4.+")
-  androidTestImplementation("androidx.test.ext:junit:1.1.5")
-  androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
   constraints {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0") {

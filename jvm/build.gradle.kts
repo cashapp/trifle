@@ -1,46 +1,28 @@
 plugins {
-    kotlin("jvm")
-    id("org.jetbrains.dokka")
-    id("com.squareup.wire") version "4.4.3"
-    id("com.vanniktech.maven.publish.base")
-}
-
-dependencies {
-    // https://mvnrepository.com/artifact/com.squareup.wire/wire-runtime
-    implementation("com.squareup.wire:wire-runtime:4.4.3")
-
-    // Use the Kotlin test library.
-    testImplementation("org.jetbrains.kotlin:kotlin-test")
-
-    // Add junit5 dependency as described in:
-    // https://docs.gradle.org/current/userguide/java_testing.html#using_junit5
-    testImplementation("org.junit.jupiter:junit-jupiter:5.7.1")
-
-    testImplementation(project(":jvm-testing"))
-
-    // Add legacy junit dependencies to ensure existing junit4 tests still compile.
-    testCompileOnly("junit:junit:4.13")
-    testRuntimeOnly("org.junit.vintage:junit-vintage-engine")
+  kotlin("jvm")
+  id("org.jetbrains.dokka")
+  id("com.squareup.wire")
+  id("com.vanniktech.maven.publish.base")
 }
 
 repositories {
-    // Use Maven Central for resolving dependencies.
-    mavenCentral()
+  // Use Maven Central for resolving dependencies.
+  mavenCentral()
 }
 
 tasks.jar {
-    manifest {
-        attributes(
-            mapOf(
-                "Implementation-Title" to project.name,
-                "Implementation-Version" to project.version
-            )
-        )
-    }
+  manifest {
+    attributes(
+      mapOf(
+        "Implementation-Title" to project.name,
+        "Implementation-Version" to project.version
+      )
+    )
+  }
 }
 
 tasks.test {
-    useJUnitPlatform()
+  useJUnitPlatform()
 }
 
 apply(plugin = "kotlin")
@@ -51,36 +33,40 @@ repositories {
 }
 
 dependencies {
-    implementation("org.bouncycastle:bcprov-jdk15to18:1.70")
-    implementation("org.bouncycastle:bcpkix-jdk15to18:1.70")
-    implementation("com.google.crypto.tink:tink:1.7.0")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.7.0")
+  implementation(libs.bcProv)
+  implementation(libs.bcPkix)
+  implementation(libs.tink)
+  implementation(libs.wire)
+  testImplementation(libs.junitApi)
+  testImplementation(libs.junitEngine)
+
+  testImplementation(project(":jvm-testing"))
 }
 
 // Manually add .proto files to the .jar.
 sourceSets {
-    main {
-        resources {
-            srcDir("../proto")
-        }
+  main {
+    resources {
+      srcDir("../proto")
     }
+  }
 }
 
 wire {
-    sourcePath {
-        srcDir(protosSrc)
-    }
-    protoPath {
-    }
-    kotlin {
-        javaInterop = true
-    }
+  sourcePath {
+    srcDir(protosSrc)
+  }
+  protoPath {
+  }
+  kotlin {
+    javaInterop = true
+  }
 }
 
 configure<com.vanniktech.maven.publish.MavenPublishBaseExtension> {
-    configure(
-        com.vanniktech.maven.publish.KotlinJvm(
-            javadocJar = com.vanniktech.maven.publish.JavadocJar.Dokka("dokkaHtml")
-        )
+  configure(
+    com.vanniktech.maven.publish.KotlinJvm(
+      javadocJar = com.vanniktech.maven.publish.JavadocJar.Dokka("dokkaHtml")
     )
+  )
 }

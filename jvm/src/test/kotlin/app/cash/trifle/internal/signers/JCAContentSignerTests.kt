@@ -2,6 +2,7 @@ package app.cash.trifle.internal.signers
 
 import app.cash.trifle.internal.TrifleAlgorithmIdentifier
 import org.bouncycastle.operator.DefaultSignatureNameFinder
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -9,7 +10,6 @@ import java.security.KeyPairGenerator
 import java.security.SecureRandom
 import java.security.Signature
 import java.security.spec.ECGenParameterSpec
-import kotlin.test.assertTrue
 
 internal class JCAContentSignerTests {
   private val contentSigner: JCAContentSigner

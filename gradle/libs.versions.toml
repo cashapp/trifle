@@ -1,6 +1,33 @@
-[libraries]
-android-gradle-plugin = { module = "com.android.tools.build:gradle", version = "7.4.1" }
-dokka-gradle-plugin = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version = "1.7.20" }
-mavenPublish-gradle-plugin = { module = "com.vanniktech:gradle-maven-publish-plugin", version = "0.23.2" }
-kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version = "1.7.10" }
+[versions]
+android-material = "1.9.0"
+androidx-appcompat = "1.6.1"
+androidx-constraintlayout = "2.1.4"
+androidx-core-ktx = "1.10.1"
+androidx-espresso-core = "3.5.1"
+androidx-junit = "1.1.5"
+bouncycastle = "1.72"
+compileSdk = "33"
+minSdk = "24"
+junit = "5.10.0"
+tink = "1.9.0"
+wire = "4.8.1"
 
+[libraries]
+android-gradle-plugin = { module = "com.android.tools.build:gradle", version = "7.4.2" }
+dokka-gradle-plugin = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version = "1.7.20" }
+mavenPublish-gradle-plugin = { module = "com.vanniktech:gradle-maven-publish-plugin", version = "0.24.0" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version = "1.7.10" }
+wire-gradle-plugin = { module = "com.squareup.wire:wire-gradle-plugin", version.ref = "wire" }
+
+androidMaterial = { module = "com.google.android.material:material", version.ref = "android-material" }
+androidxCoreKtx = { module = "androidx.core:core-ktx", version.ref = "androidx-core-ktx" }
+androidxAppcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
+androidxConstraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "androidx-constraintlayout" }
+androidxEspressoCore = { module = "androidx.test.espresso:espresso-core", version.ref = "androidx-espresso-core" }
+androidxJunit = { module = "androidx.test.ext:junit", version.ref = "androidx-junit" }
+bcProv = { module = "org.bouncycastle:bcprov-jdk15to18", version.ref = "bouncycastle" }
+bcPkix = { module = "org.bouncycastle:bcpkix-jdk15to18", version.ref = "bouncycastle" }
+junitApi = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
+junitEngine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
+tink = { module = "com.google.crypto.tink:tink", version.ref = "tink" }
+wire = { module = "com.squareup.wire:wire-runtime", version.ref = "wire" }
