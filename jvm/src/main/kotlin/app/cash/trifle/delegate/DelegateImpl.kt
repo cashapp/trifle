@@ -18,9 +18,9 @@ import org.bouncycastle.cert.X509v3CertificateBuilder
 import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils
 import org.bouncycastle.pkcs.PKCS10CertificationRequestBuilder
 import java.math.BigInteger
+import java.time.Duration
 import java.time.Instant
 import java.util.Date
-import java.time.Duration
 
 /**
  * Shared implementation for certificate enrollment using Trifle Content Signer.
@@ -116,15 +116,16 @@ internal open class DelegateImpl(
       signingAlgorithm = contentSigner.algorithmIdentifier,
       data = data
     )
-    val signature = contentSigner.outputStream.use {
+    contentSigner.outputStream.use {
       it.write(envelopedData.serialize())
-      contentSigner.signature
     }
     return SignedData(
       envelopedData = envelopedData,
-      signature = signature,
+      signature = contentSigner.signature,
       certificates = certificates
-    )
+    ).also {
+      it.verify(certificates.last()).getOrThrow()
+    }
   }
 
   private fun SubjectPublicKeyInfo.toAuthorityKeyIdentifier(): AuthorityKeyIdentifier =

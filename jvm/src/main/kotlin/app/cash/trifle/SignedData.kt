@@ -43,10 +43,10 @@ data class SignedData internal constructor(
         .get(envelopedData.signingAlgorithm)
 
       // Verify the signature
-      val sigOut = contentVerifier.outputStream
-      sigOut.write(envelopedData.serialize())
+      contentVerifier.outputStream.use {
+        it.write(envelopedData.serialize())
+      }
       val isVerified = contentVerifier.verify(signature)
-      sigOut.close()
 
       if (!isVerified) {
         throw InvalidSignature

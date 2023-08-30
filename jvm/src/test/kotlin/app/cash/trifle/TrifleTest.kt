@@ -1,5 +1,6 @@
 package app.cash.trifle
 
+import app.cash.trifle.TrifleErrors.InvalidSignature
 import app.cash.trifle.TrifleErrors.NoTrustAnchor
 import app.cash.trifle.internal.providers.JCAContentVerifierProvider
 import app.cash.trifle.protos.api.alpha.MobileCertificateRequest
@@ -7,10 +8,13 @@ import app.cash.trifle.testing.TestCertificateAuthority
 import okio.ByteString.Companion.encodeUtf8
 import org.bouncycastle.asn1.x500.X500Name
 import org.bouncycastle.cert.X509CertificateHolder
-import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import java.time.Duration
 
 internal class TrifleTest {
@@ -169,6 +173,27 @@ internal class TrifleTest {
     @Test
     fun `test createSignedData succeeds`() {
       assertEquals(endEntity.createSignedData(rawData).envelopedData.data, rawData)
+    }
+
+    @Test
+    fun `test createSignedData fails with InvalidSignature due to signature not matching on verify`() {
+      assertThrows<InvalidSignature> {
+        endEntity.createSignedData(rawData, certificateAuthority.createTestEndEntity().certChain)
+      }
+    }
+
+    @Test
+    fun `test createSignedData fails with NoTrustAnchor due to invalid chain on verify`() {
+      val otherCertificateAuthority = TestCertificateAuthority("otherIssuingEntity")
+        .createTestEndEntity()
+      val invalidCertChain = listOf(endEntity.certificate) +
+        otherCertificateAuthority.certChain.drop(1)
+      assertThrows<NoTrustAnchor> {
+        endEntity.createSignedData(
+          rawData,
+          invalidCertChain
+        )
+      }
     }
   }
 

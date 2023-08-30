@@ -1,5 +1,6 @@
 package app.cash.trifle.internal.signers
 
+import app.cash.trifle.internal.Buffer
 import app.cash.trifle.internal.TrifleAlgorithmIdentifier
 import app.cash.trifle.internal.TrifleAlgorithmIdentifier.ECDSASha256AlgorithmIdentifier
 import app.cash.trifle.internal.TrifleAlgorithmIdentifier.EdDSAAlgorithmIdentifier
@@ -17,7 +18,6 @@ import com.google.crypto.tink.tinkkey.internal.ProtoKey
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo
 import org.bouncycastle.jce.ECNamedCurveTable
 import org.bouncycastle.jce.spec.ECNamedCurveSpec
-import java.io.ByteArrayOutputStream
 import java.io.OutputStream
 import java.math.BigInteger
 import java.security.KeyFactory
@@ -32,7 +32,7 @@ import java.security.spec.ECPublicKeySpec
 internal class TinkContentSigner(
   private val privateKeysetHandle: KeysetHandle,
 ) : TrifleContentSigner {
-  private val outputStream: ByteArrayOutputStream = ByteArrayOutputStream()
+  private val outputStream = Buffer()
   private val publicKeySign: PublicKeySign by lazy {
     privateKeysetHandle.getPrimitive(PublicKeySign::class.java)
   }
@@ -76,7 +76,9 @@ internal class TinkContentSigner(
   }
 
   override fun getSignature(): ByteArray {
-    val signedBytes = publicKeySign.sign(outputStream.toByteArray())
+    val signedBytes = outputStream.use {
+      publicKeySign.sign(it.toByteArray())
+    }
     outputStream.reset()
     return signedBytes
   }
