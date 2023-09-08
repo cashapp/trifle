@@ -113,11 +113,7 @@ extension Certificate {
             let result = try X509TrustManager.evaluate(chain)
             return result
         } catch let error as NSError {
-            if error.code == errSecCertificateExpired {
-                throw TrifleError.expiredCertificate
-            } else {
-                throw TrifleError.invalidCertificate
-            }
+            throw TrifleError.securityFramework(error.code)
         }
     }
 }

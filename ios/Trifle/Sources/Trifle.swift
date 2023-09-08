@@ -117,19 +117,14 @@ public class Trifle {
         certificates: Array<TrifleCertificate>
     ) throws -> TrifleSignedData {
                 
-        guard let leafCert = certificates.first, !data.isEmpty else {
+        guard !certificates.isEmpty, !data.isEmpty else {
             throw TrifleError.invalidInput("Data or Certificate should not be empty.")
         }
         
         // TODO: (gelareh) check key handle domain matches the one in trifle
         
         // TODO: (gelareh) check leaf cert matches the public key that will be used for signing
-        
-        // check cert chain validates
-        guard try leafCert.verify(intermediateTrifleChain: Array(certificates.dropFirst(1))) else {
-            throw TrifleError.invalidCertificateChain
-        }
-        
+                
         let signingDataAlgorithm: SignedData.Algorithm
         switch contentSigner.signingAlgorithm {
         case .ecdsaSha256:
@@ -160,20 +155,18 @@ public enum TrifleError: LocalizedError {
     case invalidInput(String)
     case unhandled(Error)
     case invalidCertificateChain
-    case expiredCertificate
-    case invalidCertificate
+    case securityFramework(Int)
 
     public var errorDescription: String? {
         switch self {
         case .invalidCertificateChain:
             return "Invalid certificate chain."
-        case .expiredCertificate:
-            return "Certificate is expired."
-        case .invalidCertificate:
-            return "Certificate is invalid."
+        case let .securityFramework(errorCode):
+            // https://developer.apple.com/documentation/security/1542001-security_framework_result_codes
+            // check error code https://www.osstatus.com/
+            return "Security Framework error ( \(errorCode) )."
         case let .invalidInput(error):
             return error
-
         case let .unhandled(error):
             return error.localizedDescription
         }
