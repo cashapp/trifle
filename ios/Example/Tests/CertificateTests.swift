@@ -49,8 +49,10 @@ final class CertificateTests: XCTestCase {
 
         XCTAssertTrue(try validCertificate.verify(intermediateChain: Array<Certificate>()))
     
-        XCTAssertThrowsError(try expiredCertificate.verify(intermediateChain: Array<Certificate>()),
-                             "Certificate is expired.")
+        XCTAssertThrowsError(try expiredCertificate.verify(intermediateChain: Array<Certificate>())) { error in
+            XCTAssertTrue(( ((error as? TrifleError)?.errorDescription?.contains(
+                "Security Framework error ( -67818 )") == true ) ))
+        }
     }
     
 }
