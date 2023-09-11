@@ -63,6 +63,8 @@ let certs = try response.map({ try TrifleCertificate.deserialize(data: $0) })
 // certs is an array of certificates where [0] will be device certificate
 // and the rest of the elements will be intermediate chain.
 
+// For the following, verify API can throw a number of errors as defined by TrifleError
+
 // Check if app has the root cert of Certificate Authority (CA). 
 
 // Validate cert matches the certificate request (so generated key) 

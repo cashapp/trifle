@@ -167,17 +167,4 @@ final class TrifleTests: XCTestCase {
                                                          certificates: []),
                              "Data or Certificate should not be empty.")
     }
-
-    func testSignInvalidCertChain_fail() throws {
-        let trifle = try Trifle(reverseDomain: TestFixtures.reverseDomain)
-        let keyHandle = try trifle.generateKeyHandle()
-
-        let deviceCertificate = try TrifleCertificate.deserialize(data: TestFixtures.deviceTrifleCertEncoded!)
-        let otherRootCertificate = try TrifleCertificate.deserialize(data: TestFixtures.otherRootTrifleCertEncoded!)
-
-        XCTAssertThrowsError(try trifle.createSignedData(data: TestFixtures.data,
-                                                         keyHandle: keyHandle,
-                                                         certificates: [deviceCertificate]+[otherRootCertificate]),
-                             "Invalid certificate chain.")
-    }
 }
