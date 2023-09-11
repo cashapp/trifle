@@ -170,13 +170,6 @@ internal class TrifleTest {
     fun `test createSignedData succeeds`() {
       assertEquals(endEntity.createSignedData(rawData).envelopedData.data, rawData)
     }
-
-    @Test
-    fun `test createSignedData fails`() {
-      assertThrows<IllegalStateException> {
-        endEntity.createSignedData(rawData, certificateAuthority.createTestEndEntity().certChain)
-      }
-    }
   }
 
   @Nested

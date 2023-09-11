@@ -61,7 +61,7 @@ class TrifleApiTest {
 
   @Test
   fun testVerifyAttributes_succeeds() {
-    val result = TrifleApi.verifyAttributes(
+    val result = TrifleApi.verifyCertRequestResponse(
       endEntity.certificate,
       endEntity.certRequest
     )
@@ -109,7 +109,7 @@ class TrifleApiTest {
 
   @Test
   fun testVerifyAttributes_failsWithCSRMismatch() {
-    val result = TrifleApi.verifyAttributes(
+    val result = TrifleApi.verifyCertRequestResponse(
       endEntity.certificate,
       otherEndEntity.certRequest
     )

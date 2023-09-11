@@ -117,7 +117,7 @@ object TrifleApi {
    * - success value is expressed as a [Unit] (Nothing)
    * - failure value is expressed as a [TrifleErrors]
    */
-  fun verifyAttributes(
+  fun verifyCertRequestResponse(
     certificate: Certificate,
     certificateRequest: CertificateRequest
   ): Result<Unit> = CertificateValidatorFactory.get(certificate).validate(certificateRequest)
