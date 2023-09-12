@@ -1,7 +1,8 @@
-package app.cash.trifle.internal.validators
+package app.cash.trifle.validators
 
 import app.cash.trifle.Certificate
 import app.cash.trifle.Certificate.Companion.CERTIFICATE_VERSION
+import app.cash.trifle.validators.CertChainValidator.X509CertChainValidator
 import java.util.Date
 
 /**

@@ -124,11 +124,7 @@ internal open class DelegateImpl(
       envelopedData = envelopedData,
       signature = signature,
       certificates = certificates
-    ).also {
-      if (it.verify(certificates.last()).isFailure) {
-        throw IllegalStateException("Signed data output is invalid.")
-      }
-    }
+    )
   }
 
   private fun SubjectPublicKeyInfo.toAuthorityKeyIdentifier(): AuthorityKeyIdentifier =
