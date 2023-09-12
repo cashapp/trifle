@@ -16,8 +16,8 @@ final class CertificateTests: XCTestCase {
         
         let mobileCertReq = try trifle.generateMobileCertificateRequest(entity: "trifleEntity", keyHandle: keyHandle)
         
-        let deviceCertificate = try TrifleCertificate.deserialize(data: TestFixtures.deviceTrifleCertEncoded2!).getCertificate()
-        let rootCertificate = try TrifleCertificate.deserialize(data: TestFixtures.rootTrifleCertEncoded!).getCertificate()
+        let deviceCertificate = try TrifleCertificate.deserialize(data: TestFixtures.deviceTrifleCertEncoded3!).getCertificate()
+        let rootCertificate = try TrifleCertificate.deserialize(data: TestFixtures.rootTrifleCertEncoded3!).getCertificate()
         
         let isVerified = try deviceCertificate.verify(
             certificateRequest: try ProtoDecoder().decode(MobileCertificateRequest.self, from: mobileCertReq.serialize()),

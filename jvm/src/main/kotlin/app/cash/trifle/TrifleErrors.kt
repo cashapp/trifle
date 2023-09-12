@@ -4,6 +4,7 @@ sealed class TrifleErrors(message: String, cause: Throwable? = null) : Exception
   object NoTrustAnchor : TrifleErrors("No acceptable Trifle trust anchor found")
   object InvalidCertPath : TrifleErrors("Invalid Trifle certificate path found")
   object ExpiredCertificate : TrifleErrors("Expired Trifle certificate")
+  object NotValidYetCertificate : TrifleErrors("Trifle certificate is not valid yet")
   object InvalidSignature : TrifleErrors("Invalid Trifle signature")
   object CSRMismatch : TrifleErrors("Trifle certificate does not match CSR")
   class UnspecifiedFailure(message: String, cause: Throwable) : TrifleErrors(message, cause)
