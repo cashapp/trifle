@@ -6,7 +6,7 @@ plugins {
 
 dependencies {
     api(project(":jvm"))
-    implementation("com.google.crypto.tink:tink:1.9.0")
+    implementation("com.google.crypto.tink:tink:1.7.0")
 }
 
 configure<com.vanniktech.maven.publish.MavenPublishBaseExtension> {
