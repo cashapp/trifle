@@ -7,6 +7,7 @@ plugins {
 include("android")
 include("android:sample_app")
 include("android:trifle")
+include("common")
 include("jvm")
 include("jvm-testing")
 

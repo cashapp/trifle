@@ -1,8 +1,7 @@
 plugins {
-  kotlin("jvm")
-  id("org.jetbrains.dokka")
-  id("com.squareup.wire")
-  id("com.vanniktech.maven.publish.base")
+    kotlin("jvm")
+    id("org.jetbrains.dokka")
+    id("com.vanniktech.maven.publish.base")
 }
 
 repositories {
@@ -33,13 +32,14 @@ repositories {
 }
 
 dependencies {
+  api(project(":common"))
+
   implementation(libs.bcProv)
   implementation(libs.bcPkix)
   implementation(libs.tink)
-  implementation(libs.wire)
+
   testImplementation(libs.junitApi)
   testImplementation(libs.junitEngine)
-
   testImplementation(project(":jvm-testing"))
 }
 
@@ -49,17 +49,6 @@ sourceSets {
     resources {
       srcDir("../proto")
     }
-  }
-}
-
-wire {
-  sourcePath {
-    srcDir(protosSrc)
-  }
-  protoPath {
-  }
-  kotlin {
-    javaInterop = true
   }
 }
 

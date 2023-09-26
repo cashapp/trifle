@@ -1,7 +1,7 @@
 package app.cash.trifle
 
-import app.cash.trifle.validators.CertChainValidatorFactory
-import app.cash.trifle.validators.CertificateValidatorFactory
+import app.cash.trifle.CertificateUtil.validate
+import app.cash.trifle.delegates.EndEntity
 import java.util.Date
 
 class TrifleApi(private val reverseDomain: String) {
@@ -12,7 +12,8 @@ class TrifleApi(private val reverseDomain: String) {
    * automatically try to choose the best algorithm and key type available on
    * this device.
    *
-   * @return An opaque Trifle representation [KeyHandle] of the key-pair, which the client will need to store.
+   * @return An opaque Trifle representation [KeyHandle] of the key-pair,
+   * which the client will need to store.
    */
   fun generateKeyHandle(): KeyHandle = KeyHandle.generateKeyHandle(reverseDomain)
 
@@ -45,7 +46,7 @@ class TrifleApi(private val reverseDomain: String) {
   fun generateMobileCertificateRequest(
     entity: String,
     keyHandle: KeyHandle
-  ): CertificateRequest = Trifle.EndEntity(keyHandle.keyPair).createCertRequest(entity)
+  ): CertificateRequest = EndEntity.Factory.get(keyHandle.keyPair).createCertRequest(entity)
 
   /**
    * Sign the provided data with the provided key, including appropriate Trifle
@@ -61,8 +62,8 @@ class TrifleApi(private val reverseDomain: String) {
   fun createSignedData(
     data: ByteArray,
     keyHandle: KeyHandle,
-    certificates: List<Certificate>
-  ): SignedData = Trifle.EndEntity(keyHandle.keyPair).createSignedData(data, certificates)
+    certificates: CertificateChain
+  ): SignedData = EndEntity.Factory.get(keyHandle.keyPair).createSignedData(data, certificates)
 
   /**
    * Verify that the provided Trifle Certificate Chain is valid.
@@ -82,20 +83,20 @@ class TrifleApi(private val reverseDomain: String) {
    * - failure value is expressed as a [TrifleErrors]
    */
   fun verifyChain(
-    certificateChain: List<Certificate>,
+    certificateChain: CertificateChain,
     anchorCertificate: Certificate? = null,
     date: Date? = null
-  ): Result<Unit> = CertChainValidatorFactory.get(
-    certAnchor = anchorCertificate ?: certificateChain.last(),
-    date = date
-  ).validate(certificateChain)
+  ): Result<Unit> {
+    val certAnchor = anchorCertificate ?: certificateChain.last()
+    return certAnchor.validate(certificateChain, date)
+  }
 
   /**
    * Verify that the provided Trifle Certificate is valid.
    *
    * @param certificate - the certificate to verify
-   * @param date - The date to use for verification against certificate' validity windows. If null,
-   *   the current time is used.
+   * @param date - The date to use for verification against certificate' validity windows.
+   *   The current time is used if not set.
    *
    * @return - [Result] indicating [Result.isSuccess] or [Result.isFailure]:
    * - success value is expressed as a [Unit] (Nothing)
@@ -103,8 +104,8 @@ class TrifleApi(private val reverseDomain: String) {
    */
   fun verifyValidity(
     certificate: Certificate,
-    date: Date? = null
-  ): Result<Unit> = CertificateValidatorFactory.get(certificate).validate(date)
+    date: Date = Date()
+  ): Result<Unit> = certificate.validate(date)
 
   /**
    * Verify that the provided Trifle Certificate matches the Certificate Requests' attributes.
@@ -119,5 +120,5 @@ class TrifleApi(private val reverseDomain: String) {
   fun verifyCertRequestResponse(
     certificate: Certificate,
     certificateRequest: CertificateRequest
-  ): Result<Unit> = CertificateValidatorFactory.get(certificate).validate(certificateRequest)
+  ): Result<Unit> = certificate.validate(certificateRequest)
 }

@@ -1,7 +1,5 @@
 package app.cash.trifle
 
-import app.cash.trifle.common.Version
-
 class LibraryVersion : Version {
   private val recordedVersion: String = BuildConfig.VERSION_NAME
 

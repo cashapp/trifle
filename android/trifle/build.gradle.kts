@@ -41,8 +41,7 @@ dependencies {
   androidTestImplementation(libs.androidxEspressoCore)
   androidTestImplementation(libs.androidxJunit)
   androidTestImplementation(project(":jvm-testing"))
-
-  api(project(":jvm"))
+  api(project(":common"))
 }
 
 configure<com.vanniktech.maven.publish.MavenPublishBaseExtension> {
