@@ -15,37 +15,41 @@ import org.junit.rules.ExpectedException
 import java.time.Duration
 import java.time.Instant
 import java.util.Date
+import java.util.UUID
 
 class TrifleApiTest {
   @JvmField
   @Rule
   val thrown: ExpectedException = ExpectedException.none()
 
+  private val trifleApi = TrifleApi("app.cash.trifle.keys")
   private lateinit var keyHandle: KeyHandle
   @Before fun setUp() {
-    keyHandle = TrifleApi.generateKeyHandle("test-alias")
+    keyHandle = trifleApi.generateKeyHandle()
   }
 
   @Test fun testGenerateKeyHandle() {
     assertNotNull(keyHandle)
+    val uuid = keyHandle.tag.substringAfterLast('.')
+    assertNotNull(UUID.fromString(uuid))
   }
 
   @Test fun testIsValid_forCreatedKeyHandle_returnsTrue() {
-    assertTrue(TrifleApi.isValid(keyHandle))
+    assertTrue(trifleApi.isValid(keyHandle))
   }
 
   @Test fun testIsValid_forDeletedKeyHandle_returnsFalse() {
-    TrifleApi.delete(keyHandle)
-    assertFalse(TrifleApi.isValid(keyHandle))
+    trifleApi.delete(keyHandle)
+    assertFalse(trifleApi.isValid(keyHandle))
   }
 
   @Test fun testDeleteKeyHandle() {
-    TrifleApi.delete(keyHandle)
+    trifleApi.delete(keyHandle)
   }
 
   @Test
   fun testVerify_succeeds() {
-    val result = TrifleApi.verifyChain(
+    val result = trifleApi.verifyChain(
       certificateChain = endEntity.certChain
     )
     assertTrue(result.isSuccess)
@@ -53,7 +57,7 @@ class TrifleApiTest {
 
   @Test
   fun testVerifyCertificateValidity_succeeds() {
-    val result = TrifleApi.verifyValidity(
+    val result = trifleApi.verifyValidity(
       endEntity.certificate
     )
     assertTrue(result.isSuccess)
@@ -61,7 +65,7 @@ class TrifleApiTest {
 
   @Test
   fun testVerifyAttributes_succeeds() {
-    val result = TrifleApi.verifyCertRequestResponse(
+    val result = trifleApi.verifyCertRequestResponse(
       endEntity.certificate,
       endEntity.certRequest
     )
@@ -70,7 +74,7 @@ class TrifleApiTest {
 
   @Test
   fun testVerify_failsWithNoTrustAnchorForADifferentRootCertificate() {
-    val result = TrifleApi.verifyChain(
+    val result = trifleApi.verifyChain(
       certificateChain = listOf(endEntity.certificate) + otherEndEntity.certChain.drop(1)
     )
     assertTrue(result.isFailure)
@@ -79,7 +83,7 @@ class TrifleApiTest {
 
   @Test
   fun testVerify_failsWithExpiredCertificateForAnExpiredCertificate() {
-    val result = TrifleApi.verifyChain(
+    val result = trifleApi.verifyChain(
       certificateChain = endEntity.certChain,
       date = Date.from(Instant.now().plus(Duration.ofDays(365)))
     )
@@ -89,7 +93,7 @@ class TrifleApiTest {
 
   @Test
   fun testVerify_failsWithExpiredCertificateForAnExpiredStoredCertificate() {
-    val result = TrifleApi.verifyValidity(
+    val result = trifleApi.verifyValidity(
       endEntity.certificate,
       Date.from(Instant.now().plus(Duration.ofDays(365)))
     )
@@ -99,7 +103,7 @@ class TrifleApiTest {
 
   @Test
   fun testVerify_failsWithNotYetValidCertificateForAStoredCertificateYetToBeValid() {
-    val result = TrifleApi.verifyValidity(
+    val result = trifleApi.verifyValidity(
       endEntity.certificate,
       date = Date.from(Instant.now().minus(Duration.ofDays(1)))
     )
@@ -109,7 +113,7 @@ class TrifleApiTest {
 
   @Test
   fun testVerifyAttributes_failsWithCSRMismatch() {
-    val result = TrifleApi.verifyCertRequestResponse(
+    val result = trifleApi.verifyCertRequestResponse(
       endEntity.certificate,
       otherEndEntity.certRequest
     )
