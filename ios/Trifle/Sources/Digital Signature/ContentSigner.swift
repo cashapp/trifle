@@ -17,5 +17,5 @@ protocol ContentSigner: DigitalSignatureSigner {
      operation fails if the key is not exportable
      - returns: the signing public key along with its key type
      */
-    func exportPublicKey(_ tag: String, _ accessGroup: String?) throws -> SigningPublicKey
+    func exportPublicKey(_ tag: String) throws -> SigningPublicKey
 }

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -65,6 +65,7 @@
 		B0075494B7FD4A77B59913B3 /* Pods-Trifle_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Trifle_Example.release.xcconfig"; path = "Target Support Files/Pods-Trifle_Example/Pods-Trifle_Example.release.xcconfig"; sourceTree = "<group>"; };
 		B9892766F650E70A1D9BC557 /* Pods_Trifle_macOS_Dummy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Trifle_macOS_Dummy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C72A495F71F70549F960896D /* Pods_Trifle_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Trifle_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E1037DEF2AC642280015EAD1 /* Trifle_Example.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Trifle_Example.entitlements; sourceTree = "<group>"; };
 		E103FF9A29AD90F5004011C2 /* CertificateDecodableTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CertificateDecodableTest.swift; sourceTree = "<group>"; };
 		E10D7FCB299410D0002E6B72 /* DEREncodableTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DEREncodableTest.swift; sourceTree = "<group>"; };
 		E12D7D7E29B71649003D1FB1 /* Trifle.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = Trifle.podspec; path = ../../Trifle.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
@@ -119,6 +120,7 @@
 		607FACC71AFB9204008FA782 = {
 			isa = PBXGroup;
 			children = (
+				E1037DEF2AC642280015EAD1 /* Trifle_Example.entitlements */,
 				607FACF51AFB993E008FA782 /* Podspec Metadata */,
 				607FACD21AFB9204008FA782 /* Example for Trifle */,
 				607FACE81AFB9204008FA782 /* Tests */,
@@ -621,6 +623,7 @@
 			baseConfigurationReference = 14D99F6F8B2606DBCF35AE93 /* Pods-Trifle_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Trifle_Example.entitlements;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Trifle/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -641,6 +644,7 @@
 			baseConfigurationReference = B0075494B7FD4A77B59913B3 /* Pods-Trifle_Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Trifle_Example.entitlements;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Trifle/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;

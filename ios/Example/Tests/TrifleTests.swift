@@ -145,6 +145,23 @@ final class TrifleTests: XCTestCase {
         // of our SDK instance and the key handle
         XCTAssertNotNil(signData2, "This is TODO - once this is validated, this test should FAIL")
     }
+    
+    func testDifferentAccessGroup_fail() throws {
+        let trifle = try Trifle(reverseDomain: TestFixtures.reverseDomain, accessGroup: "group.app.cash")
+        let otherTrifle = try Trifle(reverseDomain: TestFixtures.reverseDomain, accessGroup: "group.app.not.cash")
+        
+        let deviceCertificate = try TrifleCertificate.deserialize(data: TestFixtures.deviceTrifleCertEncoded2!)
+        let rootCertificate = try TrifleCertificate.deserialize(data: TestFixtures.rootTrifleCertEncoded!)
+        
+        let keyHandle = try trifle.generateKeyHandle()
+
+        XCTAssertThrowsError(try otherTrifle.createSignedData(
+            data: TestFixtures.data,
+            keyHandle: keyHandle,
+            certificates: [deviceCertificate, rootCertificate]),
+            "unavailable keyPair"
+        )
+    }
         
     func testSignEmptyData_fail() throws {
         let trifle = try Trifle(reverseDomain: TestFixtures.reverseDomain)

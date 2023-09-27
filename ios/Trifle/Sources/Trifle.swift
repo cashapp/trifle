@@ -34,8 +34,10 @@ public class Trifle {
      If the access group is not set, Trifle keys are created in the application's default access group.
      */
     public init(reverseDomain: String, accessGroup: String? = nil) throws {
-        self.contentSigner =
-        try SecureEnclaveDigitalSignatureKeyManager(reverseDomain: reverseDomain)
+        self.contentSigner = try SecureEnclaveDigitalSignatureKeyManager(
+            reverseDomain: reverseDomain,
+            accessGroup: accessGroup
+        )
         self.accessGroup = accessGroup
     }
     
@@ -52,7 +54,7 @@ public class Trifle {
      */
     public func generateKeyHandle() throws -> KeyHandle {
         // currently we support only (Secure Enclave, EC-P256)
-        return TrifleKeyHandle(tag: try contentSigner.generateTag(accessGroup))
+        return TrifleKeyHandle(tag: try contentSigner.generateTag())
     }
         
     /**
@@ -101,7 +103,7 @@ public class Trifle {
     ) throws -> TrifleCertificateRequest {
         let csr = try PKCS10CertificationRequest.Builder()
             .addName(.commonName(entity))
-            .sign(for: keyHandle.tag, with: contentSigner, accessGroup)
+            .sign(for: keyHandle.tag, with: contentSigner)
             
         let csrData =  try ProtoEncoder().encode(MobileCertificateRequest(
             version: Self.mobileCertificateRequestVersion,
@@ -154,7 +156,7 @@ public class Trifle {
         // if key handle is invalid, an error is thrown
         let signedData = try ProtoEncoder().encode(SignedData(
                 enveloped_data: serializedData,
-                signature: try contentSigner.sign(for: keyHandle.tag, with: serializedData, accessGroup).data,
+                signature: try contentSigner.sign(for: keyHandle.tag, with: serializedData).data,
                 certificates: certificates.map({ trifleCert in return trifleCert.getCertificate() })))
 
         return try TrifleSignedData.deserialize(data: signedData)

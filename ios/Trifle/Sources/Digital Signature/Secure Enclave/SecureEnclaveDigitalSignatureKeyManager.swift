@@ -23,20 +23,22 @@ public class SecureEnclaveDigitalSignatureKeyManager
     // MARK: - Private Properties
 
     private let tagFormat: String
+    private let accessGroup: String?
 
     // MARK: - Initialization
 
-    public init(reverseDomain: String) throws {
+    public init(reverseDomain: String, accessGroup: String? = nil) throws {
         guard !reverseDomain.isEmpty else {
             // tag should not be empty
             throw TrifleError.invalidInput("Reverse domain cannot be empty")
         }
         self.tagFormat = reverseDomain + ".sign.{{uuid}}"
+        self.accessGroup = accessGroup
     }
  
     // MARK: - Public Methods (DigitalSignatureSigner)
 
-    public func generateTag(_ accessGroup: String? = nil) throws -> String {
+    public func generateTag() throws -> String {
         let tag = tagFormat.replacingOccurrences(
             of: "{{uuid}}",
             with: UUID().uuidString
@@ -45,8 +47,8 @@ public class SecureEnclaveDigitalSignatureKeyManager
         return tag
     }
     
-    public func sign(for tag: String, with data: Data, _ accessGroup: String? = nil) throws -> DigitalSignature {
-        let signature = try signingKey(tag, accessGroup).sign(with: data)
+    public func sign(for tag: String, with data: Data) throws -> DigitalSignature {
+        let signature = try signingKey(tag).sign(with: data)
         return DigitalSignature(
             signingAlgorithm: Self.keyInfo.signingAlgorithm,
             data: signature
@@ -55,24 +57,24 @@ public class SecureEnclaveDigitalSignatureKeyManager
  
     // MARK: - Public Methods (DigitalSignatureVerifier)
 
-    public func verify(for tag: String, data: Data, with signature: Data, _ accessGroup: String? = nil) throws -> Bool {
-        return try verifyingKey(tag, accessGroup).verify(data: data, with: signature)
+    public func verify(for tag: String, data: Data, with signature: Data) throws -> Bool {
+        return try verifyingKey(tag).verify(data: data, with: signature)
     }
 
     // MARK: - Internal Methods (ContentSigner)
  
-    internal func exportPublicKey(_ tag: String, _ accessGroup: String?) throws -> SigningPublicKey {
+    internal func exportPublicKey(_ tag: String) throws -> SigningPublicKey {
         return SigningPublicKey(
             keyInfo: Self.keyInfo,
-            data: try verifyingKey(tag, accessGroup).export()
+            data: try verifyingKey(tag).export()
         )
     }
 
     // MARK: - Internal Methods (DigitalSignatureKeyManager)
 
-    internal func signingKey(_ tag: String, _ accessGroup: String?) throws -> SecureEnclaveSigningKey {
+    internal func signingKey(_ tag: String) throws -> SecureEnclaveSigningKey {
         var keyRef: CFTypeRef?
-        let preparedQuery = SecureEnclaveKeychainQueries.getQuery(with: tag, returnRef: true, accessGroup)
+        let preparedQuery = SecureEnclaveKeychainQueries.getQuery(with: tag, accessGroup, returnRef: true)
         guard case let status = SecItemCopyMatching(preparedQuery, &keyRef),
                 status == errSecSuccess,
                 keyRef != nil else {
@@ -82,8 +84,8 @@ public class SecureEnclaveDigitalSignatureKeyManager
         return try SecureEnclaveSigningKey(keyRef as! SecKey, Self.keyInfo.signingAlgorithm.attrs)
     }
     
-    internal func verifyingKey(_ tag: String, _ accessGroup: String?) throws -> SecureEnclaveVerifyingKey {
-        let signingKey = try signingKey(tag, accessGroup)
+    internal func verifyingKey(_ tag: String) throws -> SecureEnclaveVerifyingKey {
+        let signingKey = try signingKey(tag)
 
         guard let publicKey = SecKeyCopyPublicKey(signingKey.privateKey) else {
             throw CryptographicKeyError.unavailablePublicKey
