@@ -36,17 +36,17 @@ public class SecureEnclaveDigitalSignatureKeyManager
  
     // MARK: - Public Methods (DigitalSignatureSigner)
 
-    public func generateTag() throws -> String {
+    public func generateTag(_ accessGroup: String? = nil) throws -> String {
         let tag = tagFormat.replacingOccurrences(
             of: "{{uuid}}",
             with: UUID().uuidString
         )
-        try Self.generateKeypair(tag)
+        try Self.generateKeypair(tag, accessGroup)
         return tag
     }
     
-    public func sign(for tag: String, with data: Data) throws -> DigitalSignature {
-        let signature = try signingKey(tag).sign(with: data)
+    public func sign(for tag: String, with data: Data, _ accessGroup: String? = nil) throws -> DigitalSignature {
+        let signature = try signingKey(tag, accessGroup).sign(with: data)
         return DigitalSignature(
             signingAlgorithm: Self.keyInfo.signingAlgorithm,
             data: signature
@@ -55,24 +55,24 @@ public class SecureEnclaveDigitalSignatureKeyManager
  
     // MARK: - Public Methods (DigitalSignatureVerifier)
 
-    public func verify(for tag: String, data: Data, with signature: Data) throws -> Bool {
-        return try verifyingKey(tag).verify(data: data, with: signature)
+    public func verify(for tag: String, data: Data, with signature: Data, _ accessGroup: String? = nil) throws -> Bool {
+        return try verifyingKey(tag, accessGroup).verify(data: data, with: signature)
     }
 
     // MARK: - Internal Methods (ContentSigner)
  
-    internal func exportPublicKey(_ tag: String) throws -> SigningPublicKey {
+    internal func exportPublicKey(_ tag: String, _ accessGroup: String?) throws -> SigningPublicKey {
         return SigningPublicKey(
             keyInfo: Self.keyInfo,
-            data: try verifyingKey(tag).export()
+            data: try verifyingKey(tag, accessGroup).export()
         )
     }
 
     // MARK: - Internal Methods (DigitalSignatureKeyManager)
 
-    internal func signingKey(_ tag: String) throws -> SecureEnclaveSigningKey {
+    internal func signingKey(_ tag: String, _ accessGroup: String?) throws -> SecureEnclaveSigningKey {
         var keyRef: CFTypeRef?
-        let preparedQuery = SecureEnclaveKeychainQueries.getQuery(with: tag, returnRef: true)
+        let preparedQuery = SecureEnclaveKeychainQueries.getQuery(with: tag, returnRef: true, accessGroup)
         guard case let status = SecItemCopyMatching(preparedQuery, &keyRef),
                 status == errSecSuccess,
                 keyRef != nil else {
@@ -82,8 +82,8 @@ public class SecureEnclaveDigitalSignatureKeyManager
         return try SecureEnclaveSigningKey(keyRef as! SecKey, Self.keyInfo.signingAlgorithm.attrs)
     }
     
-    internal func verifyingKey(_ tag: String) throws -> SecureEnclaveVerifyingKey {
-        let signingKey = try signingKey(tag)
+    internal func verifyingKey(_ tag: String, _ accessGroup: String?) throws -> SecureEnclaveVerifyingKey {
+        let signingKey = try signingKey(tag, accessGroup)
 
         guard let publicKey = SecKeyCopyPublicKey(signingKey.privateKey) else {
             throw CryptographicKeyError.unavailablePublicKey
@@ -94,12 +94,13 @@ public class SecureEnclaveDigitalSignatureKeyManager
     
     // MARK: -
     
-    private static func generateKeypair(_ tag: String) throws {
+    private static func generateKeypair(_ tag: String, _ accessGroup: String?) throws {
         let (keyType, keySize) = Self.keyInfo.curve.attrs
         let attributes = try SecureEnclaveKeychainQueries.attributes(
             with: tag,
             keyType: keyType,
-            keySize: keySize
+            keySize: keySize,
+            accessGroup: accessGroup
         )
 
         var error: Unmanaged<CFError>?
@@ -108,8 +109,8 @@ public class SecureEnclaveDigitalSignatureKeyManager
         }
     }
     
-    internal static func deleteKeypair(_ tag: String) throws -> Bool {
-        let preparedQuery = SecureEnclaveKeychainQueries.getQuery(with: tag)
+    internal static func deleteKeypair(_ tag: String, _ accessGroup: String?) throws -> Bool {
+        let preparedQuery = SecureEnclaveKeychainQueries.getQuery(with: tag, accessGroup)
 
         let status = SecItemDelete(preparedQuery)
         switch status {
@@ -120,8 +121,8 @@ public class SecureEnclaveDigitalSignatureKeyManager
         }
     }
 
-    internal static func keyExists(_ tag: String) throws -> Bool {
-        let preparedQuery = SecureEnclaveKeychainQueries.getQuery(with: tag)
+    internal static func keyExists(_ tag: String, _ accessGroup: String?) throws -> Bool {
+        let preparedQuery = SecureEnclaveKeychainQueries.getQuery(with: tag, accessGroup)
         let status = SecItemCopyMatching(preparedQuery, nil)
         switch status {
         case errSecSuccess:

@@ -15,6 +15,8 @@ public class Trifle {
     private let envelopeDataVersion = UInt32(0)
         
     private let contentSigner: ContentSigner
+    
+    private let accessGroup: String?
 
     /**
      Initialize the SDK with the key tag that is passed in.
@@ -23,10 +25,18 @@ public class Trifle {
      certificate request and to sign messages. The library (Trifle) will
      automatically try to choose the best algorithm and key type available on
      this device.
+     
+     AccessGroup specifies the access group the Trifle key belongs to. Specifying this
+     attribute will mean that all key related APIs will be limited to the specified access group
+     (of which the calling application must be a member to obtain matching results.)
+     It is recommended that this value is set.
+     
+     If the access group is not set, Trifle keys are created in the application's default access group.
      */
-    public init(reverseDomain: String) throws {
+    public init(reverseDomain: String, accessGroup: String? = nil) throws {
         self.contentSigner =
         try SecureEnclaveDigitalSignatureKeyManager(reverseDomain: reverseDomain)
+        self.accessGroup = accessGroup
     }
     
     /**
@@ -42,7 +52,7 @@ public class Trifle {
      */
     public func generateKeyHandle() throws -> KeyHandle {
         // currently we support only (Secure Enclave, EC-P256)
-        return TrifleKeyHandle(tag: try contentSigner.generateTag())
+        return TrifleKeyHandle(tag: try contentSigner.generateTag(accessGroup))
     }
         
     /**
@@ -54,7 +64,7 @@ public class Trifle {
         
         // Other types of validity check to be added later eg type of key
         // right now we only check if key exists in key chain
-        return try SecureEnclaveDigitalSignatureKeyManager.keyExists(keyHandle.tag)
+        return try SecureEnclaveDigitalSignatureKeyManager.keyExists(keyHandle.tag, accessGroup)
     }
     
     /**
@@ -71,7 +81,7 @@ public class Trifle {
         
         // Other types of validity check to be added later eg type of key
         // right now we only check if key exists in key chain
-        return try SecureEnclaveDigitalSignatureKeyManager.deleteKeypair(keyHandle.tag)
+        return try SecureEnclaveDigitalSignatureKeyManager.deleteKeypair(keyHandle.tag, accessGroup)
     }
     
     /**
@@ -91,7 +101,7 @@ public class Trifle {
     ) throws -> TrifleCertificateRequest {
         let csr = try PKCS10CertificationRequest.Builder()
             .addName(.commonName(entity))
-            .sign(for: keyHandle.tag, with: contentSigner)
+            .sign(for: keyHandle.tag, with: contentSigner, accessGroup)
             
         let csrData =  try ProtoEncoder().encode(MobileCertificateRequest(
             version: Self.mobileCertificateRequestVersion,
@@ -144,7 +154,7 @@ public class Trifle {
         // if key handle is invalid, an error is thrown
         let signedData = try ProtoEncoder().encode(SignedData(
                 enveloped_data: serializedData,
-                signature: try contentSigner.sign(for: keyHandle.tag, with: serializedData).data,
+                signature: try contentSigner.sign(for: keyHandle.tag, with: serializedData, accessGroup).data,
                 certificates: certificates.map({ trifleCert in return trifleCert.getCertificate() })))
 
         return try TrifleSignedData.deserialize(data: signedData)

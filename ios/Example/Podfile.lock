@@ -1,5 +1,5 @@
 PODS:
-  - Trifle (0.2.3):
+  - Trifle (0.2.4):
     - Wire (~> 4)
   - Wire (4.5.1)
   - WireCompiler (4.5.1)
@@ -18,7 +18,7 @@ EXTERNAL SOURCES:
     :path: "../../"
 
 SPEC CHECKSUMS:
-  Trifle: 1bc03d4dadabef03a928fc05924bbd7df1a53dd0
+  Trifle: bb8422a8904ddfa192d5b7beedfbf5505087c947
   Wire: b07a2ff1c4cd4b71f5ae26771cdd13fc7868c9df
   WireCompiler: 417c2ac583c01de328010738658758556ea92a92
 
