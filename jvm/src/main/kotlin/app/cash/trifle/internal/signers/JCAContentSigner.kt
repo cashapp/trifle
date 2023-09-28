@@ -1,13 +1,12 @@
 package app.cash.trifle.internal.signers
 
+import app.cash.trifle.internal.Buffer
 import app.cash.trifle.internal.TrifleAlgorithmIdentifier
 import app.cash.trifle.internal.TrifleAlgorithmIdentifier.ECDSASha256AlgorithmIdentifier
 import app.cash.trifle.internal.TrifleAlgorithmIdentifier.ECPublicKeyAlgorithmIdentifier
 import app.cash.trifle.internal.TrifleAlgorithmIdentifier.P256v1AlgorithmIdentifier
-import org.bouncycastle.asn1.x509.AlgorithmIdentifier
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo
 import org.bouncycastle.operator.DefaultSignatureNameFinder
-import java.io.ByteArrayOutputStream
 import java.io.OutputStream
 import java.security.KeyPair
 import java.security.PublicKey
@@ -21,7 +20,7 @@ import java.security.Signature
 internal class JCAContentSigner(
   private val keyPair: KeyPair,
 ) : TrifleContentSigner {
-  private val outputStream: ByteArrayOutputStream = ByteArrayOutputStream()
+  private val outputStream = Buffer()
 
   override fun subjectPublicKeyInfo(): SubjectPublicKeyInfo {
     return SubjectPublicKeyInfo.getInstance(
@@ -43,15 +42,17 @@ internal class JCAContentSigner(
   override fun getOutputStream(): OutputStream = outputStream
 
   override fun getSignature(): ByteArray {
-    val signature = Signature.getInstance(
-      DefaultSignatureNameFinder()
-        .getAlgorithmName(algorithmIdentifier)
-    )
-    signature.initSign(keyPair.private)
-    signature.update(outputStream.toByteArray())
+    val signedBytes = outputStream.use {
+      val signature = Signature.getInstance(
+        DefaultSignatureNameFinder()
+          .getAlgorithmName(algorithmIdentifier)
+      )
+      signature.initSign(keyPair.private)
+      signature.update(it.toByteArray())
+      signature.sign()
+    }
     outputStream.reset()
-
-    return signature.sign()
+    return signedBytes
   }
 
   internal fun getPublicKey(): PublicKey = keyPair.public
