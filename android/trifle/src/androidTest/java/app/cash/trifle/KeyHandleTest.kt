@@ -9,7 +9,7 @@ import org.junit.Test
 class KeyHandleTest {
   private lateinit var keyHandle: KeyHandle
   @Before fun setUp() {
-    keyHandle = TrifleApi.generateKeyHandle("test-alias")
+    keyHandle = TrifleApi("app.cash.trifle.keys").generateKeyHandle()
   }
 
   @Test fun serializeDeserialize() {
@@ -19,7 +19,7 @@ class KeyHandleTest {
 
   @Test fun failsDeserializationDueToDeletedKeyHandle() {
     val serializedBytes = keyHandle.serialize()
-    KeyHandle.deleteAlias(keyHandle.alias)
+    KeyHandle.deleteTag(keyHandle.tag)
     assertThrows(IllegalStateException::class.java) {
       KeyHandle.deserialize(serializedBytes)
     }

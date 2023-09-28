@@ -4,34 +4,33 @@ import app.cash.trifle.validators.CertChainValidatorFactory
 import app.cash.trifle.validators.CertificateValidatorFactory
 import java.util.Date
 
-object TrifleApi {
+class TrifleApi(private val reverseDomain: String) {
+
   /**
    * Create a new mobile Trifle keypair for which can be used to create a
    * certificate request and to sign messages. The library (Trifle) will
    * automatically try to choose the best algorithm and key type available on
    * this device.
    *
-   * @param alias - key alias used for identifying a keyhandle.
-   *
    * @return An opaque Trifle representation [KeyHandle] of the key-pair, which the client will need to store.
    */
-  fun generateKeyHandle(alias: String): KeyHandle = KeyHandle.generateKeyHandle(alias)
+  fun generateKeyHandle(): KeyHandle = KeyHandle.generateKeyHandle(reverseDomain)
 
   /**
-   * [KeyHandle] is valid iff [KeyHandle.alias] exists in the Key Store.
+   * [KeyHandle] is valid iff [KeyHandle.tag] exists in the Key Store.
    *
    * @param keyHandle - key handle that is to be validated.
    *
    * @returns - boolean value for validity
    */
-  fun isValid(keyHandle: KeyHandle): Boolean = KeyHandle.containsAlias(keyHandle.alias)
+  fun isValid(keyHandle: KeyHandle): Boolean = KeyHandle.containsTag(keyHandle.tag)
 
   /**
    * Deletes the [KeyHandle] from the Key Store.
    *
    * @param keyHandle - key handle that is to be deleted.
    */
-  fun delete(keyHandle: KeyHandle) = KeyHandle.deleteAlias(keyHandle.alias)
+  fun delete(keyHandle: KeyHandle) = KeyHandle.deleteTag(keyHandle.tag)
 
   /**
    * Generate a Trifle [CertificateRequest], signed by the provided

@@ -12,9 +12,9 @@ class MainActivity : AppCompatActivity() {
     val version = LibraryVersion()
     Log.v(TAG, "Trifle version: $version")
 
-    //Example Trifle use.  Shouldn't typically be on the main UI thread, but that's the only reason
-    // we're here so it's ok.
-    val keyHandle = TrifleApi.generateKeyHandle("alias")
+    //Example Trifle use. Shouldn't typically be on the main UI thread, but that's the only reason
+    // we're here, so it's ok.
+    val keyHandle = TrifleApi("app.cash.trifle.keys").generateKeyHandle()
 
     setContentView(R.layout.activity_main)
   }
