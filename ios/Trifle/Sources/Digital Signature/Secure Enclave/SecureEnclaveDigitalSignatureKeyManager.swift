@@ -23,15 +23,17 @@ public class SecureEnclaveDigitalSignatureKeyManager
     // MARK: - Private Properties
 
     private let tagFormat: String
+    private let accessGroup: String?
 
     // MARK: - Initialization
 
-    public init(reverseDomain: String) throws {
+    public init(reverseDomain: String, accessGroup: String? = nil) throws {
         guard !reverseDomain.isEmpty else {
             // tag should not be empty
             throw TrifleError.invalidInput("Reverse domain cannot be empty")
         }
         self.tagFormat = reverseDomain + ".sign.{{uuid}}"
+        self.accessGroup = accessGroup
     }
  
     // MARK: - Public Methods (DigitalSignatureSigner)
@@ -41,7 +43,7 @@ public class SecureEnclaveDigitalSignatureKeyManager
             of: "{{uuid}}",
             with: UUID().uuidString
         )
-        try Self.generateKeypair(tag)
+        try Self.generateKeypair(tag, accessGroup)
         return tag
     }
     
@@ -72,7 +74,7 @@ public class SecureEnclaveDigitalSignatureKeyManager
 
     internal func signingKey(_ tag: String) throws -> SecureEnclaveSigningKey {
         var keyRef: CFTypeRef?
-        let preparedQuery = SecureEnclaveKeychainQueries.getQuery(with: tag, returnRef: true)
+        let preparedQuery = SecureEnclaveKeychainQueries.getQuery(with: tag, accessGroup, returnRef: true)
         guard case let status = SecItemCopyMatching(preparedQuery, &keyRef),
                 status == errSecSuccess,
                 keyRef != nil else {
@@ -94,12 +96,13 @@ public class SecureEnclaveDigitalSignatureKeyManager
     
     // MARK: -
     
-    private static func generateKeypair(_ tag: String) throws {
+    private static func generateKeypair(_ tag: String, _ accessGroup: String?) throws {
         let (keyType, keySize) = Self.keyInfo.curve.attrs
         let attributes = try SecureEnclaveKeychainQueries.attributes(
             with: tag,
             keyType: keyType,
-            keySize: keySize
+            keySize: keySize,
+            accessGroup: accessGroup
         )
 
         var error: Unmanaged<CFError>?
@@ -108,8 +111,8 @@ public class SecureEnclaveDigitalSignatureKeyManager
         }
     }
     
-    internal static func deleteKeypair(_ tag: String) throws -> Bool {
-        let preparedQuery = SecureEnclaveKeychainQueries.getQuery(with: tag)
+    internal static func deleteKeypair(_ tag: String, _ accessGroup: String?) throws -> Bool {
+        let preparedQuery = SecureEnclaveKeychainQueries.getQuery(with: tag, accessGroup)
 
         let status = SecItemDelete(preparedQuery)
         switch status {
@@ -120,8 +123,8 @@ public class SecureEnclaveDigitalSignatureKeyManager
         }
     }
 
-    internal static func keyExists(_ tag: String) throws -> Bool {
-        let preparedQuery = SecureEnclaveKeychainQueries.getQuery(with: tag)
+    internal static func keyExists(_ tag: String, _ accessGroup: String?) throws -> Bool {
+        let preparedQuery = SecureEnclaveKeychainQueries.getQuery(with: tag, accessGroup)
         let status = SecItemCopyMatching(preparedQuery, nil)
         switch status {
         case errSecSuccess:

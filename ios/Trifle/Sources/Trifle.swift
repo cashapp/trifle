@@ -15,6 +15,8 @@ public class Trifle {
     private let envelopeDataVersion = UInt32(0)
         
     private let contentSigner: ContentSigner
+    
+    private let accessGroup: String?
 
     /**
      Initialize the SDK with the key tag that is passed in.
@@ -23,10 +25,21 @@ public class Trifle {
      certificate request and to sign messages. The library (Trifle) will
      automatically try to choose the best algorithm and key type available on
      this device.
+     
+     AccessGroup specifies the access group the Trifle key belongs to. Specifying this
+     attribute will mean that all key related APIs will be limited to the specified access group
+     (of which the calling application must be a member to obtain matching results.)
+     It is recommended that this value is set.
+    ** This value must be added to the App Group entitlement file. **
+     
+     If the access group is not set, Trifle keys are created in the application's default access group.
      */
-    public init(reverseDomain: String) throws {
-        self.contentSigner =
-        try SecureEnclaveDigitalSignatureKeyManager(reverseDomain: reverseDomain)
+    public init(reverseDomain: String, accessGroup: String? = nil) throws {
+        self.contentSigner = try SecureEnclaveDigitalSignatureKeyManager(
+            reverseDomain: reverseDomain,
+            accessGroup: accessGroup
+        )
+        self.accessGroup = accessGroup
     }
     
     /**
@@ -54,7 +67,7 @@ public class Trifle {
         
         // Other types of validity check to be added later eg type of key
         // right now we only check if key exists in key chain
-        return try SecureEnclaveDigitalSignatureKeyManager.keyExists(keyHandle.tag)
+        return try SecureEnclaveDigitalSignatureKeyManager.keyExists(keyHandle.tag, accessGroup)
     }
     
     /**
@@ -71,7 +84,7 @@ public class Trifle {
         
         // Other types of validity check to be added later eg type of key
         // right now we only check if key exists in key chain
-        return try SecureEnclaveDigitalSignatureKeyManager.deleteKeypair(keyHandle.tag)
+        return try SecureEnclaveDigitalSignatureKeyManager.deleteKeypair(keyHandle.tag, accessGroup)
     }
     
     /**

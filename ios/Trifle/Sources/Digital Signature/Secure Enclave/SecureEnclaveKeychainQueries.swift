@@ -33,7 +33,8 @@ internal struct SecureEnclaveKeychainQueries: KeychainQueries {
     internal static func attributes(
         with applicationTag: String,
         keyType: CFString,
-        keySize: Int
+        keySize: Int,
+        accessGroup: String?
     ) throws -> NSMutableDictionary {
         let attributes: NSMutableDictionary = [
             kSecAttrKeyType: keyType,
@@ -44,7 +45,11 @@ internal struct SecureEnclaveKeychainQueries: KeychainQueries {
                 kSecAttrAccessControl: try Self.access,
             ] as [CFString: Any],
         ]
-        
+        // if accessGroup is nil, the calling application's access group will be used by default
+        if let accessGroup = accessGroup {
+            attributes[kSecAttrAccessGroup] = accessGroup
+        }
+
         #if !targetEnvironment(simulator)
         attributes.setValue(kSecAttrTokenIDSecureEnclave, forKey: kSecAttrTokenID as String)
         #endif
@@ -54,13 +59,21 @@ internal struct SecureEnclaveKeychainQueries: KeychainQueries {
 
     // MARK: - KeychainQueries
     
-    internal static func getQuery(with applicationTag: String, returnRef: Bool = false) -> NSMutableDictionary {
-        return [
+    internal static func getQuery(with applicationTag: String,
+                                  _ accessGroup: String?,
+                                  returnRef: Bool = false
+    ) -> NSMutableDictionary {
+        let attributes: NSMutableDictionary =  [
             kSecClass as String: kSecClassKey,
             kSecAttrApplicationTag as String: applicationTag.data(using: .utf8)!,
             kSecAttrKeyType as String: kSecAttrKeyTypeECSECPrimeRandom,
-            kSecReturnRef as String: returnRef,
+            kSecReturnRef as String: returnRef, 
         ]
+        // if accessGroup is nil, the calling application's access group will be used by default
+        if let accessGroup = accessGroup {
+            attributes[kSecAttrAccessGroup] = accessGroup
+        }
+        return attributes
     }
 }
 

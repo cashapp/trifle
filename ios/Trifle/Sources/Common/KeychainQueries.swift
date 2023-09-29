@@ -12,9 +12,15 @@ protocol KeychainQueries {
      Constructs a query dictionary using the a given application tag
      
      - parameter applicationTag: an application tag used to distinguish the key from other keys in the keychain
+     - parameter accessGroup: the access group the security item belongs to. If no access group is set, then the
+        calling app's default access group is used.
      - parameter returnRef: whether a reference to `SecKey` should be returned
      */
-    static func getQuery(with applicationTag: String, returnRef: Bool) -> NSMutableDictionary
+    static func getQuery(
+        with applicationTag: String,
+        _ accessGroup: String?,
+        returnRef: Bool
+    ) -> NSMutableDictionary
 }
 
 // MARK: -
