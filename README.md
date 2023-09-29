@@ -20,7 +20,8 @@ Trifle SDK is implemented on client side in iOS and Android and on server side i
 
 ```swift
 // App start up
-let trifle = try Trifle(reverseDomain: abc)
+// The access group value must be added to the App Groups [entitlement file](https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_application-groups).
+let trifle = try Trifle(reverseDomain: abc, accessGroup: "group.trifle.cash.app")
 
 // Check if a key already exists.
 // If no key exists, generate a public key pair

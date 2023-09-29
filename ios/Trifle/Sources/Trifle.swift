@@ -30,6 +30,7 @@ public class Trifle {
      attribute will mean that all key related APIs will be limited to the specified access group
      (of which the calling application must be a member to obtain matching results.)
      It is recommended that this value is set.
+    ** This value must be added to the App Group entitlement file. **
      
      If the access group is not set, Trifle keys are created in the application's default access group.
      */
