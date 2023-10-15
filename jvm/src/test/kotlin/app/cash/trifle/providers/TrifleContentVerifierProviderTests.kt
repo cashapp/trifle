@@ -1,8 +1,9 @@
-package app.cash.trifle.internal.providers
+package app.cash.trifle.providers
 
 import app.cash.trifle.CertificateRequest
-import app.cash.trifle.internal.TrifleAlgorithmIdentifier.ECDSASha256AlgorithmIdentifier
-import app.cash.trifle.internal.TrifleAlgorithmIdentifier.Ed25519AlgorithmIdentifier
+import app.cash.trifle.TrifleAlgorithmIdentifier.ECDSASha256AlgorithmIdentifier
+import app.cash.trifle.TrifleAlgorithmIdentifier.Ed25519AlgorithmIdentifier
+import app.cash.trifle.providers.jca.JCAContentVerifierProvider
 import app.cash.trifle.testing.Fixtures.GENERATOR
 import app.cash.trifle.testing.TestCertificateAuthority
 import com.google.crypto.tink.signature.SignatureConfig

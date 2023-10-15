@@ -4,7 +4,7 @@ import app.cash.trifle.Certificate
 import app.cash.trifle.CertificateRequest
 import app.cash.trifle.SignedData
 import app.cash.trifle.SignedData.EnvelopedData.Companion.ENVELOPED_DATA_VERSION
-import app.cash.trifle.internal.signers.TrifleContentSigner
+import app.cash.trifle.signers.TrifleContentSigner
 import okio.ByteString.Companion.toByteString
 import org.bouncycastle.asn1.x500.X500Name
 import org.bouncycastle.asn1.x509.AuthorityKeyIdentifier

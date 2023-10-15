@@ -1,8 +1,9 @@
-package app.cash.trifle.internal.providers
+package app.cash.trifle.providers.jca
 
 import app.cash.trifle.Certificate
-import app.cash.trifle.internal.TrifleAlgorithmIdentifier.ECDSASha256AlgorithmIdentifier
-import app.cash.trifle.internal.TrifleAlgorithmIdentifier.EdDSAAlgorithmIdentifier
+import app.cash.trifle.TrifleAlgorithmIdentifier.ECDSASha256AlgorithmIdentifier
+import app.cash.trifle.TrifleAlgorithmIdentifier.EdDSAAlgorithmIdentifier
+import app.cash.trifle.providers.TrifleContentVerifierProvider
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo
 import org.bouncycastle.cert.X509CertificateHolder

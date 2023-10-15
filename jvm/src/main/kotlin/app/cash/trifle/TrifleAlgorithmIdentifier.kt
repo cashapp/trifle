@@ -1,4 +1,4 @@
-package app.cash.trifle.internal
+package app.cash.trifle
 
 import app.cash.trifle.protos.api.alpha.SignedData
 import org.bouncycastle.asn1.ASN1ObjectIdentifier

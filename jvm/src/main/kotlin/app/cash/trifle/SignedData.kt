@@ -1,8 +1,7 @@
 package app.cash.trifle
 
 import app.cash.trifle.TrifleErrors.InvalidSignature
-import app.cash.trifle.internal.TrifleAlgorithmIdentifier
-import app.cash.trifle.internal.providers.JCAContentVerifierProvider
+import app.cash.trifle.providers.jca.JCAContentVerifierProvider
 import app.cash.trifle.validators.CertChainValidatorFactory
 import okio.ByteString.Companion.toByteString
 import app.cash.trifle.protos.api.alpha.Certificate as CertificateProto

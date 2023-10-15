@@ -1,9 +1,10 @@
-package app.cash.trifle.internal.signers
+package app.cash.trifle.signers.tink
 
-import app.cash.trifle.internal.Buffer
-import app.cash.trifle.internal.TrifleAlgorithmIdentifier
-import app.cash.trifle.internal.TrifleAlgorithmIdentifier.ECDSASha256AlgorithmIdentifier
-import app.cash.trifle.internal.TrifleAlgorithmIdentifier.EdDSAAlgorithmIdentifier
+import app.cash.trifle.TrifleAlgorithmIdentifier
+import app.cash.trifle.TrifleAlgorithmIdentifier.ECDSASha256AlgorithmIdentifier
+import app.cash.trifle.TrifleAlgorithmIdentifier.EdDSAAlgorithmIdentifier
+import app.cash.trifle.signers.Buffer
+import app.cash.trifle.signers.TrifleContentSigner
 import com.google.crypto.tink.KeyTemplate
 import com.google.crypto.tink.KeysetHandle
 import com.google.crypto.tink.PublicKeySign

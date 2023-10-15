@@ -1,6 +1,6 @@
-package app.cash.trifle.internal.signers
+package app.cash.trifle.signers
 
-import app.cash.trifle.internal.TrifleAlgorithmIdentifier
+import app.cash.trifle.TrifleAlgorithmIdentifier
 import com.google.crypto.tink.signature.SignatureConfig
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll

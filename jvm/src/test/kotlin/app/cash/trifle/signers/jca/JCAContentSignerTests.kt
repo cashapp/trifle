@@ -1,6 +1,7 @@
-package app.cash.trifle.internal.signers
+package app.cash.trifle.signers.jca
 
-import app.cash.trifle.internal.TrifleAlgorithmIdentifier
+import app.cash.trifle.TrifleAlgorithmIdentifier
+import app.cash.trifle.signers.TrifleContentSignerTests
 import org.bouncycastle.operator.DefaultSignatureNameFinder
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
