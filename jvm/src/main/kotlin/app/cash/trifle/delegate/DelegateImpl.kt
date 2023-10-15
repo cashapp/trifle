@@ -4,6 +4,8 @@ import app.cash.trifle.Certificate
 import app.cash.trifle.CertificateRequest
 import app.cash.trifle.SignedData
 import app.cash.trifle.SignedData.EnvelopedData.Companion.ENVELOPED_DATA_VERSION
+import app.cash.trifle.extensions.CertificateChain
+import app.cash.trifle.extensions.CertificateExtensions.toX509CertificateHolder
 import app.cash.trifle.signers.TrifleContentSigner
 import okio.ByteString.Companion.toByteString
 import org.bouncycastle.asn1.x500.X500Name
@@ -13,7 +15,6 @@ import org.bouncycastle.asn1.x509.Extension
 import org.bouncycastle.asn1.x509.KeyUsage
 import org.bouncycastle.asn1.x509.SubjectKeyIdentifier
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo
-import org.bouncycastle.cert.X509CertificateHolder
 import org.bouncycastle.cert.X509v3CertificateBuilder
 import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils
 import org.bouncycastle.pkcs.PKCS10CertificationRequestBuilder
@@ -37,7 +38,7 @@ internal open class DelegateImpl(
   ): Certificate = when (certificateRequest) {
     is CertificateRequest.PKCS10Request -> {
       val creationTime = Instant.now()
-      val issuerCertHolder = X509CertificateHolder(issuerCertificate.certificate)
+      val issuerCertHolder = issuerCertificate.toX509CertificateHolder()
       val signedCert = X509v3CertificateBuilder(
         issuerCertHolder.subject,
         BigInteger.valueOf(creationTime.toEpochMilli()),
@@ -107,7 +108,7 @@ internal open class DelegateImpl(
 
   override fun createSignedData(
     data: ByteArray,
-    certificates: List<Certificate>
+    certificates: CertificateChain
   ): SignedData {
     check(certificates.isNotEmpty()) { "Certificates should not be empty." }
 

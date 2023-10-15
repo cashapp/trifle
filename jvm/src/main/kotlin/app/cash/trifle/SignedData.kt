@@ -1,6 +1,7 @@
 package app.cash.trifle
 
 import app.cash.trifle.TrifleErrors.InvalidSignature
+import app.cash.trifle.extensions.CertificateChain
 import app.cash.trifle.providers.jca.JCAContentVerifierProvider
 import app.cash.trifle.validators.CertChainValidatorFactory
 import okio.ByteString.Companion.toByteString
@@ -18,7 +19,7 @@ import app.cash.trifle.protos.api.alpha.SignedData.EnvelopedData as EnvelopedDat
 data class SignedData internal constructor(
   internal val envelopedData: EnvelopedData,
   internal val signature: ByteArray,
-  internal val certificates: List<Certificate>
+  internal val certificates: CertificateChain
 ) {
   /**
    * Verify that the signed data is valid by checking over the certificate chain and verifying the

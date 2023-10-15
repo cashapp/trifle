@@ -3,7 +3,7 @@ package app.cash.trifle.validators
 import app.cash.trifle.Certificate
 import app.cash.trifle.validators.CertificateValidator.X509CertificateValidator
 
-object CertificateValidatorFactory {
+internal object CertificateValidatorFactory {
   /**
    * Return a certificate validator matching the provided certificate.
    * @param certificate - The certificate to validate. Its format will determine how

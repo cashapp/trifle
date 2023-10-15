@@ -2,8 +2,9 @@ package app.cash.trifle.validators
 
 import app.cash.trifle.Certificate
 import app.cash.trifle.TrifleErrors
-import app.cash.trifle.validators.CertificateUtil.generateCertPath
-import app.cash.trifle.validators.CertificateUtil.toX509Certificate
+import app.cash.trifle.extensions.CertificateChain
+import app.cash.trifle.extensions.CertificateExtensions.generateCertPath
+import app.cash.trifle.extensions.CertificateExtensions.toX509Certificate
 import java.security.cert.CertPathValidator
 import java.security.cert.CertPathValidatorException
 import java.security.cert.PKIXParameters
@@ -12,14 +13,14 @@ import java.security.cert.TrustAnchor
 import java.security.cert.X509Certificate
 import java.util.Date
 
-sealed interface CertChainValidator {
+internal sealed interface CertChainValidator {
   /**
    * Validates the specific list of Trifle Certificates (certificate chain)
    * against the trust anchor(s).
    *
    * @param certChain the list of certificates.
    */
-  fun validate(certChain: List<Certificate>): Result<Unit>
+  fun validate(certChain: CertificateChain): Result<Unit>
 
   /**
    * X.509 specific implementation for validating certificate chains (certificate paths) with
@@ -40,7 +41,7 @@ sealed interface CertChainValidator {
       pkixParams.date = date
     }
 
-    override fun validate(certChain: List<Certificate>): Result<Unit> =
+    override fun validate(certChain: CertificateChain): Result<Unit> =
       try {
         val x509Certs = certChain.map { it.toX509Certificate() }.maybeDropRoot()
 
