@@ -26,11 +26,11 @@ import java.security.spec.ECPoint
 import java.security.spec.ECPublicKeySpec
 
 /**
- * Internal trifle class to enable bouncycastle to delegate signing to Tink primitives rather than
+ * Trifle class to enable bouncycastle to delegate signing to Tink primitives rather than
  * requiring Tink key users to extract the material. This should enable trifle Clients to supply
  * Tink keys directly without needing to reason about their internals.
  */
-internal class TinkContentSigner(
+class TinkContentSigner(
   private val privateKeysetHandle: KeysetHandle,
 ) : TrifleContentSigner {
   private val outputStream = Buffer()

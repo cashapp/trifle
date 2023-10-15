@@ -1,7 +1,9 @@
 package app.cash.trifle.testing
 
 import app.cash.trifle.Certificate
-import app.cash.trifle.Trifle
+import app.cash.trifle.delegates.CertificateAuthority
+import app.cash.trifle.delegates.EndEntity
+import app.cash.trifle.signers.tink.TinkContentSigner
 import app.cash.trifle.testing.Fixtures.EC_SPEC
 import app.cash.trifle.testing.Fixtures.GENERATOR
 import app.cash.trifle.testing.Fixtures.RAW_ECDSA_P256_KEY_TEMPLATE
@@ -18,14 +20,14 @@ data class TestCertificateAuthority(
   private val certAuthorityName: String = Random.nextInt().toString(),
   private val validityPeriod: Duration = Duration.ofDays(1)
 ) {
-  private val certificateAuthority: Trifle.CertificateAuthority
+  private val certificateAuthority: CertificateAuthority
   val rootCertificate: Certificate
 
   init {
     SignatureConfig.register()
     GENERATOR.initialize(EC_SPEC, SecureRandom())
-    certificateAuthority = Trifle.CertificateAuthority(
-      KeysetHandle.generateNew(RAW_ECDSA_P256_KEY_TEMPLATE)
+    certificateAuthority = CertificateAuthority(
+      TinkContentSigner(KeysetHandle.generateNew(RAW_ECDSA_P256_KEY_TEMPLATE))
     )
     rootCertificate = certificateAuthority.createRootSigningCertificate(
       certAuthorityName, validityPeriod
@@ -36,7 +38,7 @@ data class TestCertificateAuthority(
     entityName: String = Random.nextInt().toString(),
     validity: Duration? = null
   ): TestEndEntity {
-    val endEntity = Trifle.EndEntity(GENERATOR.genKeyPair())
+    val endEntity = EndEntity.Factory.get(GENERATOR.genKeyPair())
     val certRequest = endEntity.createCertRequest(entityName)
     val certificate: Certificate = if (validity == null) {
       certificateAuthority.signCertificate(rootCertificate, certRequest)
