@@ -3,13 +3,13 @@ package app.cash.trifle.validators
 import app.cash.trifle.Certificate
 import app.cash.trifle.CertificateRequest
 import app.cash.trifle.TrifleErrors
-import app.cash.trifle.validators.CertificateUtil.toX509Certificate
+import app.cash.trifle.extensions.CertificateExtensions.toX509Certificate
 import org.bouncycastle.cert.X509CertificateHolder
 import java.security.cert.CertificateExpiredException
 import java.security.cert.CertificateNotYetValidException
 import java.util.Date
 
-sealed interface CertificateValidator {
+internal sealed interface CertificateValidator {
   /**
    * Validates if the provided Trifle Certificate is within the validity window of the date.
    *

@@ -9,7 +9,7 @@ import java.util.Date
  * Factory class that determines a specific certificate chain validator from the certificate
  * anchor's version.
  */
-object CertChainValidatorFactory {
+internal object CertChainValidatorFactory {
 
   /**
    * Return a certificate validator matching the provided certAnchor.

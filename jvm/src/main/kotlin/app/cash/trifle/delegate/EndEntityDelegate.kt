@@ -1,8 +1,8 @@
 package app.cash.trifle.delegate
 
-import app.cash.trifle.Certificate
 import app.cash.trifle.CertificateRequest
 import app.cash.trifle.SignedData
+import app.cash.trifle.extensions.CertificateChain
 
 interface EndEntityDelegate {
   /**
@@ -22,6 +22,6 @@ interface EndEntityDelegate {
    */
   fun createSignedData(
     data: ByteArray,
-    certificates: List<Certificate>
+    certificates: CertificateChain
   ): SignedData
 }
