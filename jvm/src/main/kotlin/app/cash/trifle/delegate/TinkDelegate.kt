@@ -1,6 +1,6 @@
 package app.cash.trifle.delegate
 
-import app.cash.trifle.internal.signers.TinkContentSigner
+import app.cash.trifle.signers.tink.TinkContentSigner
 import com.google.crypto.tink.KeysetHandle
 
 /**

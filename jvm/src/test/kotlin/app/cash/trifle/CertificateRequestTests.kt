@@ -1,8 +1,7 @@
 package app.cash.trifle
 
-import app.cash.trifle.internal.TrifleAlgorithmIdentifier
-import app.cash.trifle.internal.providers.JCAContentVerifierProvider
-import app.cash.trifle.internal.signers.TrifleContentSigner
+import app.cash.trifle.providers.jca.JCAContentVerifierProvider
+import app.cash.trifle.signers.TrifleContentSigner
 import app.cash.trifle.testing.Fixtures.GENERATOR
 import app.cash.trifle.testing.TestCertificateAuthority
 import okio.ByteString.Companion.toByteString

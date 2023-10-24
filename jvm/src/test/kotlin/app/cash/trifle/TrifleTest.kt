@@ -2,8 +2,8 @@ package app.cash.trifle
 
 import app.cash.trifle.TrifleErrors.InvalidSignature
 import app.cash.trifle.TrifleErrors.NoTrustAnchor
-import app.cash.trifle.internal.providers.JCAContentVerifierProvider
 import app.cash.trifle.protos.api.alpha.MobileCertificateRequest
+import app.cash.trifle.providers.jca.JCAContentVerifierProvider
 import app.cash.trifle.testing.TestCertificateAuthority
 import okio.ByteString.Companion.encodeUtf8
 import org.bouncycastle.asn1.x500.X500Name

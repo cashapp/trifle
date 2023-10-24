@@ -1,10 +1,11 @@
-package app.cash.trifle.internal.signers
+package app.cash.trifle.signers.jca
 
-import app.cash.trifle.internal.Buffer
-import app.cash.trifle.internal.TrifleAlgorithmIdentifier
-import app.cash.trifle.internal.TrifleAlgorithmIdentifier.ECDSASha256AlgorithmIdentifier
-import app.cash.trifle.internal.TrifleAlgorithmIdentifier.ECPublicKeyAlgorithmIdentifier
-import app.cash.trifle.internal.TrifleAlgorithmIdentifier.P256v1AlgorithmIdentifier
+import app.cash.trifle.TrifleAlgorithmIdentifier
+import app.cash.trifle.TrifleAlgorithmIdentifier.ECDSASha256AlgorithmIdentifier
+import app.cash.trifle.TrifleAlgorithmIdentifier.ECPublicKeyAlgorithmIdentifier
+import app.cash.trifle.TrifleAlgorithmIdentifier.P256v1AlgorithmIdentifier
+import app.cash.trifle.signers.Buffer
+import app.cash.trifle.signers.TrifleContentSigner
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo
 import org.bouncycastle.operator.DefaultSignatureNameFinder
 import java.io.OutputStream

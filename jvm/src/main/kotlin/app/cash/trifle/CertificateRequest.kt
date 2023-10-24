@@ -1,7 +1,7 @@
 package app.cash.trifle
 
-import app.cash.trifle.internal.providers.JCAContentVerifierProvider
 import app.cash.trifle.protos.api.alpha.MobileCertificateRequest
+import app.cash.trifle.providers.jca.JCAContentVerifierProvider
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
 import org.bouncycastle.pkcs.PKCS10CertificationRequest

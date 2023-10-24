@@ -1,6 +1,6 @@
 package app.cash.trifle.delegate
 
-import app.cash.trifle.internal.signers.JCAContentSigner
+import app.cash.trifle.signers.jca.JCAContentSigner
 import java.security.KeyPair
 
 /**
