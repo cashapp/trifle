@@ -1,5 +1,6 @@
 package app.cash.trifle
 
+import app.cash.trifle.delegates.EndEntity
 import app.cash.trifle.extensions.CertificateChain
 import app.cash.trifle.extensions.CertificateExtensions.validate
 import java.util.Date
@@ -46,7 +47,7 @@ class TrifleApi(private val reverseDomain: String) {
   fun generateMobileCertificateRequest(
     entity: String,
     keyHandle: KeyHandle
-  ): CertificateRequest = Trifle.EndEntity(keyHandle.keyPair).createCertRequest(entity)
+  ): CertificateRequest = EndEntity.Factory.get(keyHandle.keyPair).createCertRequest(entity)
 
   /**
    * Sign the provided data with the provided key, including appropriate Trifle
@@ -63,7 +64,7 @@ class TrifleApi(private val reverseDomain: String) {
     data: ByteArray,
     keyHandle: KeyHandle,
     certificates: CertificateChain
-  ): SignedData = Trifle.EndEntity(keyHandle.keyPair).createSignedData(data, certificates)
+  ): SignedData = EndEntity.Factory.get(keyHandle.keyPair).createSignedData(data, certificates)
 
   /**
    * Verify that the provided Trifle Certificate Chain is valid.
