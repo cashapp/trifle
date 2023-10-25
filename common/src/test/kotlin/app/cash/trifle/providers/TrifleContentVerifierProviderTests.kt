@@ -6,7 +6,6 @@ import app.cash.trifle.TrifleAlgorithmIdentifier.Ed25519AlgorithmIdentifier
 import app.cash.trifle.providers.jca.JCAContentVerifierProvider
 import app.cash.trifle.testing.Fixtures.GENERATOR
 import app.cash.trifle.testing.TestCertificateAuthority
-import com.google.crypto.tink.signature.SignatureConfig
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNull
@@ -114,7 +113,6 @@ internal class TrifleContentVerifierProviderTests {
     @JvmStatic
     @BeforeAll
     fun setUp() {
-      SignatureConfig.register()
       keyPair = GENERATOR.genKeyPair()
 
       contentVerifierProvider = JCAContentVerifierProvider(
