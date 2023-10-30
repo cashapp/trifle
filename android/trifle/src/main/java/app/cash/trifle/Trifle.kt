@@ -5,7 +5,7 @@ import app.cash.trifle.extensions.CertificateChain
 import app.cash.trifle.extensions.CertificateExtensions.validate
 import java.util.Date
 
-class TrifleApi(private val reverseDomain: String) {
+class Trifle(private val reverseDomain: String) {
 
   /**
    * Create a new mobile Trifle keypair for which can be used to create a

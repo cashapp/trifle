@@ -9,7 +9,7 @@ import org.junit.Test
 class KeyHandleTest {
   private lateinit var keyHandle: KeyHandle
   @Before fun setUp() {
-    keyHandle = TrifleApi("app.cash.trifle.keys").generateKeyHandle()
+    keyHandle = Trifle("app.cash.trifle.keys").generateKeyHandle()
   }
 
   @Test fun serializeDeserialize() {
