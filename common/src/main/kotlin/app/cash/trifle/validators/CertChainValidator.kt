@@ -54,18 +54,15 @@ internal sealed interface CertChainValidator {
       } catch (e: CertPathValidatorException) {
         // https://docs.oracle.com/javase/8/docs/api/java/security/cert/PKIXReason.html
         // https://docs.oracle.com/javase/8/docs/api/java/security/cert/CertPathValidatorException.BasicReason.html
-        when (e.reason) {
-          CertPathValidatorException.BasicReason.EXPIRED -> Result.failure(
-            TrifleErrors.ExpiredCertificate
-          )
-          CertPathValidatorException.BasicReason.INVALID_SIGNATURE -> Result.failure(
-            TrifleErrors.InvalidSignature
-          )
-          PKIXReason.NO_TRUST_ANCHOR -> Result.failure(TrifleErrors.NoTrustAnchor)
-          else -> Result.failure(
-            TrifleErrors.UnspecifiedFailure("Unspecified Trifle verification failure", e)
-          )
-        }
+        Result.failure(
+          when (e.reason) {
+            CertPathValidatorException.BasicReason.EXPIRED -> TrifleErrors.ExpiredCertificate
+            CertPathValidatorException.BasicReason.NOT_YET_VALID -> TrifleErrors.NotValidYetCertificate
+            CertPathValidatorException.BasicReason.INVALID_SIGNATURE -> TrifleErrors.InvalidSignature
+            PKIXReason.NO_TRUST_ANCHOR -> TrifleErrors.NoTrustAnchor
+            else -> TrifleErrors.UnspecifiedFailure("Unspecified Trifle verification failure", e)
+          }
+        )
       } catch (e: Exception) {
         Result.failure(
           TrifleErrors.UnspecifiedFailure(
