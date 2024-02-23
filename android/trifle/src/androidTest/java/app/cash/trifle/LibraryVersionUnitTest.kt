@@ -9,7 +9,7 @@ internal class LibraryVersionUnitTest {
     val libraryVersion = LibraryVersion()
     val versionString = libraryVersion.complete()
 
-    assertEquals(versionString, "0.2.9")
+    assertEquals(versionString, "0.2.10")
   }
 
   @Test
