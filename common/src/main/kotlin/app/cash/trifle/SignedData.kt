@@ -79,6 +79,11 @@ data class SignedData internal constructor(
     }
   ).encode()
 
+  fun toPlaintextString(): String =
+    "SignedData(enveloped_data=${envelopedData.toPlaintextString()}, " +
+    "signature=$signature, " +
+    "certificates=$certificates)"
+
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (javaClass != other?.javaClass) return false
@@ -131,6 +136,9 @@ data class SignedData internal constructor(
       data_ = data.toByteString()
     ).encode()
 
+    fun toPlaintextString(): String =
+      "EnvelopedData(version=$version, signingAlgorithm=$signingAlgorithm, data=$data)"
+
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
       if (javaClass != other?.javaClass) return false
@@ -150,6 +158,9 @@ data class SignedData internal constructor(
       result = 31 * result + data.contentHashCode()
       return result
     }
+
+    override fun toString(): String =
+      "EnvelopedData(version=$version, signingAlgorithm=$signingAlgorithm, data=[REDACTED])"
 
     internal companion object {
       internal const val ENVELOPED_DATA_VERSION: Int = 0
