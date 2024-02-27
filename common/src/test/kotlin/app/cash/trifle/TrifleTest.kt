@@ -16,6 +16,8 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.time.Duration
+import kotlin.test.assertContains
+import kotlin.test.assertContentEquals
 
 internal class TrifleTest {
   @Nested
@@ -173,6 +175,28 @@ internal class TrifleTest {
     @Test
     fun `test createSignedData succeeds`() {
       assertEquals(endEntity.createSignedData(rawData).envelopedData.data, rawData)
+    }
+
+    @Test
+    fun `test createSignedData succeeds with SignedData#toString properly redacted`() {
+      val signedData = endEntity.createSignedData(rawData)
+
+      assertTrue(signedData.toString().contains("[REDACTED]"))
+      assertTrue(signedData.envelopedData.toString().contains("[REDACTED]"))
+
+      assertFalse(signedData.toString().contains(rawData.toString()))
+      assertFalse(signedData.envelopedData.toString().contains(rawData.toString()))
+    }
+
+    @Test
+    fun `test createSignedData succeeds with SignedData#toPlaintextString not redacted`() {
+      val signedData = endEntity.createSignedData(rawData)
+
+      assertTrue(signedData.toPlaintextString().contains(rawData.toString()))
+      assertTrue(signedData.envelopedData.toPlaintextString().contains(rawData.toString()))
+
+      assertFalse(signedData.toPlaintextString().contains("[REDACTED]"))
+      assertFalse(signedData.envelopedData.toPlaintextString().contains("[REDACTED]"))
     }
 
     @Test
