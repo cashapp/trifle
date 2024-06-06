@@ -1,0 +1,2 @@
+## Bouncycastle
+-dontwarn javax.naming.**
