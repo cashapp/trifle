@@ -1,7 +1,7 @@
 PODS:
-  - Trifle (0.2.4):
-    - Wire (~> 4)
-  - Wire (4.5.1)
+  - Trifle (0.2.5):
+    - Wire (~> 4.7)
+  - Wire (4.7.2)
   - WireCompiler (4.5.1)
 
 DEPENDENCIES:
@@ -18,10 +18,10 @@ EXTERNAL SOURCES:
     :path: "../../"
 
 SPEC CHECKSUMS:
-  Trifle: bb8422a8904ddfa192d5b7beedfbf5505087c947
-  Wire: b07a2ff1c4cd4b71f5ae26771cdd13fc7868c9df
+  Trifle: 640389000f04f073a54b82d237b2ac5afb081a80
+  Wire: 193a6a025213e0c2d13875fdef225df34d10b775
   WireCompiler: 417c2ac583c01de328010738658758556ea92a92
 
 PODFILE CHECKSUM: 4b8d6c2fc4c9668821977302cb1ff5c5891d9920
 
-COCOAPODS: 1.12.0
+COCOAPODS: 1.15.0
