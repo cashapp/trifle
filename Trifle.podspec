@@ -16,7 +16,7 @@ Security functionality for interoperability/interaction with core services.
 
   s.source_files = 'ios/Trifle/Sources/**/*.swift'
 
-  s.dependency 'Wire', '~> 4'
+  s.dependency 'Wire', '~> 4.7'
 
-  s.swift_versions = '5.0.1'
+  s.swift_versions = '5.8'
 end
