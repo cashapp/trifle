@@ -8,7 +8,7 @@ import Wire
 
 public class Trifle {
     
-    public static let version = "0.2.5"
+    public static let version = "0.2.6"
     
     private static let mobileCertificateRequestVersion = UInt32(0)
     
