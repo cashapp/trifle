@@ -1,12 +1,12 @@
 PODS:
-  - Trifle (0.2.5):
-    - Wire (~> 4.7)
-  - Wire (4.7.2)
-  - WireCompiler (4.5.1)
+  - Trifle (0.2.6):
+    - Wire (= 4.9.3)
+  - Wire (4.9.3)
+  - WireCompiler (4.9.3)
 
 DEPENDENCIES:
   - Trifle (from `../../`)
-  - WireCompiler (= 4.5.1)
+  - WireCompiler (= 4.9.3)
 
 SPEC REPOS:
   trunk:
@@ -18,10 +18,10 @@ EXTERNAL SOURCES:
     :path: "../../"
 
 SPEC CHECKSUMS:
-  Trifle: 640389000f04f073a54b82d237b2ac5afb081a80
-  Wire: 193a6a025213e0c2d13875fdef225df34d10b775
-  WireCompiler: 417c2ac583c01de328010738658758556ea92a92
+  Trifle: 312c21467e3d5e77099d92467aa582c7cfd92edf
+  Wire: 292dc634a9f4517dd9761004ebb11e8725aa5436
+  WireCompiler: dedff6f7d972d766a6adbe5a0c8753127a4fbadd
 
-PODFILE CHECKSUM: 4b8d6c2fc4c9668821977302cb1ff5c5891d9920
+PODFILE CHECKSUM: 7d1505a0ab359616e344524c637456fbb16ed735
 
 COCOAPODS: 1.15.0
