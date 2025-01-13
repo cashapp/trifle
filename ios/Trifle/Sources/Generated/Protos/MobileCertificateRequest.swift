@@ -24,26 +24,13 @@ public struct MobileCertificateRequest {
      */
     @ProtoDefaulted
     public var pkcs10_request: Foundation.Data?
-    public var unknownFields: Foundation.Data = .init()
+    public var unknownFields: UnknownFields = .init()
 
     public init(configure: (inout Self) -> Swift.Void = { _ in }) {
         configure(&self)
     }
 
 }
-
-#if WIRE_INCLUDE_MEMBERWISE_INITIALIZER
-extension MobileCertificateRequest {
-
-    @_disfavoredOverload
-    @available(*, deprecated)
-    public init(version: Swift.UInt32? = nil, pkcs10_request: Foundation.Data? = nil) {
-        self._version.wrappedValue = version
-        self._pkcs10_request.wrappedValue = pkcs10_request
-    }
-
-}
-#endif
 
 #if !WIRE_REMOVE_EQUATABLE
 extension MobileCertificateRequest : Equatable {
@@ -55,21 +42,19 @@ extension MobileCertificateRequest : Hashable {
 }
 #endif
 
-#if swift(>=5.5)
 extension MobileCertificateRequest : Sendable {
 }
-#endif
 
 extension MobileCertificateRequest : ProtoDefaultedValue {
 
-    public static var defaultedValue: MobileCertificateRequest {
-        MobileCertificateRequest()
+    public static var defaultedValue: Self {
+        .init()
     }
 }
 
 extension MobileCertificateRequest : ProtoMessage {
 
-    public static func protoMessageTypeURL() -> Swift.String {
+    public static func protoMessageTypeURL() -> String {
         return "type.googleapis.com/app.cash.trifle.api.alpha.MobileCertificateRequest"
     }
 
@@ -77,14 +62,14 @@ extension MobileCertificateRequest : ProtoMessage {
 
 extension MobileCertificateRequest : Proto2Codable {
 
-    public init(from protoReader: Wire.ProtoReader) throws {
-        var version: Swift.UInt32? = nil
+    public init(from protoReader: ProtoReader) throws {
+        var version: UInt32? = nil
         var pkcs10_request: Foundation.Data? = nil
 
         let token = try protoReader.beginMessage()
         while let tag = try protoReader.nextTag(token: token) {
             switch tag {
-            case 1: version = try protoReader.decode(Swift.UInt32.self)
+            case 1: version = try protoReader.decode(UInt32.self, encoding: .variable)
             case 2: pkcs10_request = try protoReader.decode(Foundation.Data.self)
             default: try protoReader.readUnknownField(tag: tag)
             }
@@ -95,8 +80,8 @@ extension MobileCertificateRequest : Proto2Codable {
         self._pkcs10_request.wrappedValue = pkcs10_request
     }
 
-    public func encode(to protoWriter: Wire.ProtoWriter) throws {
-        try protoWriter.encode(tag: 1, value: self.version)
+    public func encode(to protoWriter: ProtoWriter) throws {
+        try protoWriter.encode(tag: 1, value: self.version, encoding: .variable)
         try protoWriter.encode(tag: 2, value: self.pkcs10_request)
         try protoWriter.writeUnknownFields(unknownFields)
     }
@@ -106,14 +91,14 @@ extension MobileCertificateRequest : Proto2Codable {
 #if !WIRE_REMOVE_CODABLE
 extension MobileCertificateRequest : Codable {
 
-    public init(from decoder: Swift.Decoder) throws {
-        let container = try decoder.container(keyedBy: Wire.StringLiteralCodingKeys.self)
-        self._version.wrappedValue = try container.decodeIfPresent(Swift.UInt32.self, forKey: "version")
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: StringLiteralCodingKeys.self)
+        self._version.wrappedValue = try container.decodeIfPresent(UInt32.self, forKey: "version")
         self._pkcs10_request.wrappedValue = try container.decodeIfPresent(stringEncoded: Foundation.Data.self, firstOfKeys: "pkcs10Request", "pkcs10_request")
     }
 
-    public func encode(to encoder: Swift.Encoder) throws {
-        var container = encoder.container(keyedBy: Wire.StringLiteralCodingKeys.self)
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: StringLiteralCodingKeys.self)
         let preferCamelCase = encoder.protoKeyNameEncodingStrategy == .camelCase
 
         try container.encodeIfPresent(self.version, forKey: "version")

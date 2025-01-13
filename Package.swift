@@ -17,7 +17,7 @@ let package = Package(
 	dependencies: [
 		.package(
 			url: "https://github.com/square/wire",
-			exact: "4.9.3"
+			exact: "5.2.1"
 		),
 	],
 	targets: [
