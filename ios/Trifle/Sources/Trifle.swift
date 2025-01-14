@@ -106,10 +106,10 @@ public class Trifle {
             .addName(.commonName(entity))
             .sign(for: keyHandle.tag, with: contentSigner)
             
-        let csrData =  try ProtoEncoder().encode(MobileCertificateRequest(
-            version: Self.mobileCertificateRequestVersion,
-            pkcs10_request: Data(csr.octets)
-        ))
+        let csrData =  try ProtoEncoder().encode(MobileCertificateRequest(configure: { request in
+            request.version = Self.mobileCertificateRequestVersion
+            request.pkcs10_request = Data(csr.octets)
+        }))
         return try TrifleCertificateRequest.deserialize(data: csrData)
     }
     
@@ -146,19 +146,23 @@ public class Trifle {
         
         // create serialized data
         let serializedData = try ProtoEncoder().encode(
-            SignedData.EnvelopedData(
-                version: envelopeDataVersion,
-                signing_algorithm: signingDataAlgorithm,
-                data: data
-            )
+            SignedData.EnvelopedData(configure: { envelope in
+                envelope.version = envelopeDataVersion
+                envelope.signing_algorithm = signingDataAlgorithm
+                envelope.data = data
+            })
         )
         
         // sign data
         // if key handle is invalid, an error is thrown
-        let signedData = try ProtoEncoder().encode(SignedData(
-                enveloped_data: serializedData,
-                signature: try contentSigner.sign(for: keyHandle.tag, with: serializedData).data,
-                certificates: certificates.map({ trifleCert in return trifleCert.getCertificate() })))
+        let signature = try contentSigner.sign(for: keyHandle.tag, with: serializedData).data
+        let signedData = try ProtoEncoder().encode(
+            SignedData(configure: { data in
+                data.enveloped_data = serializedData
+                data.signature = signature
+                data.certificates = certificates.map({ trifleCert in return trifleCert.getCertificate() })
+            })
+        )
 
         return try TrifleSignedData.deserialize(data: signedData)
     }
