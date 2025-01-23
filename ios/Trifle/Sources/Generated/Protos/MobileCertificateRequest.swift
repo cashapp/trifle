@@ -16,20 +16,34 @@ public struct MobileCertificateRequest {
      * Version describing the current format of the MobileCertificateRequest.
      * Required.
      */
+    @ProtoDefaulted
     public var version: UInt32?
     /**
      * Bytes representing a Certificate Request as specified in the PKCS10 RFC, see
      * https://datatracker.ietf.org/doc/html/rfc5967 for details.
      */
-    public var pkcs10_request: Data?
-    public var unknownFields: Data = .init()
+    @ProtoDefaulted
+    public var pkcs10_request: Foundation.Data?
+    public var unknownFields: Foundation.Data = .init()
 
-    public init(version: UInt32? = nil, pkcs10_request: Data? = nil) {
-        self.version = version
-        self.pkcs10_request = pkcs10_request
+    public init(configure: (inout Self) -> Swift.Void = { _ in }) {
+        configure(&self)
     }
 
 }
+
+#if WIRE_INCLUDE_MEMBERWISE_INITIALIZER
+extension MobileCertificateRequest {
+
+    @_disfavoredOverload
+    @available(*, deprecated)
+    public init(version: Swift.UInt32? = nil, pkcs10_request: Foundation.Data? = nil) {
+        self._version.wrappedValue = version
+        self._pkcs10_request.wrappedValue = pkcs10_request
+    }
+
+}
+#endif
 
 #if !WIRE_REMOVE_EQUATABLE
 extension MobileCertificateRequest : Equatable {
@@ -46,52 +60,65 @@ extension MobileCertificateRequest : Sendable {
 }
 #endif
 
-extension MobileCertificateRequest : ProtoMessage {
-    public static func protoMessageTypeURL() -> String {
-        return "type.googleapis.com/app.cash.trifle.api.alpha.MobileCertificateRequest"
+extension MobileCertificateRequest : ProtoDefaultedValue {
+
+    public static var defaultedValue: MobileCertificateRequest {
+        MobileCertificateRequest()
     }
 }
 
-extension MobileCertificateRequest : Proto2Codable {
-    public init(from reader: ProtoReader) throws {
-        var version: UInt32? = nil
-        var pkcs10_request: Data? = nil
+extension MobileCertificateRequest : ProtoMessage {
 
-        let token = try reader.beginMessage()
-        while let tag = try reader.nextTag(token: token) {
+    public static func protoMessageTypeURL() -> Swift.String {
+        return "type.googleapis.com/app.cash.trifle.api.alpha.MobileCertificateRequest"
+    }
+
+}
+
+extension MobileCertificateRequest : Proto2Codable {
+
+    public init(from protoReader: Wire.ProtoReader) throws {
+        var version: Swift.UInt32? = nil
+        var pkcs10_request: Foundation.Data? = nil
+
+        let token = try protoReader.beginMessage()
+        while let tag = try protoReader.nextTag(token: token) {
             switch tag {
-            case 1: version = try reader.decode(UInt32.self)
-            case 2: pkcs10_request = try reader.decode(Data.self)
-            default: try reader.readUnknownField(tag: tag)
+            case 1: version = try protoReader.decode(Swift.UInt32.self)
+            case 2: pkcs10_request = try protoReader.decode(Foundation.Data.self)
+            default: try protoReader.readUnknownField(tag: tag)
             }
         }
-        self.unknownFields = try reader.endMessage(token: token)
+        self.unknownFields = try protoReader.endMessage(token: token)
 
-        self.version = version
-        self.pkcs10_request = pkcs10_request
+        self._version.wrappedValue = version
+        self._pkcs10_request.wrappedValue = pkcs10_request
     }
 
-    public func encode(to writer: ProtoWriter) throws {
-        try writer.encode(tag: 1, value: self.version)
-        try writer.encode(tag: 2, value: self.pkcs10_request)
-        try writer.writeUnknownFields(unknownFields)
+    public func encode(to protoWriter: Wire.ProtoWriter) throws {
+        try protoWriter.encode(tag: 1, value: self.version)
+        try protoWriter.encode(tag: 2, value: self.pkcs10_request)
+        try protoWriter.writeUnknownFields(unknownFields)
     }
+
 }
 
 #if !WIRE_REMOVE_CODABLE
 extension MobileCertificateRequest : Codable {
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: StringLiteralCodingKeys.self)
-        self.version = try container.decodeIfPresent(UInt32.self, forKey: "version")
-        self.pkcs10_request = try container.decodeIfPresent(stringEncoded: Data.self, firstOfKeys: "pkcs10Request", "pkcs10_request")
+
+    public init(from decoder: Swift.Decoder) throws {
+        let container = try decoder.container(keyedBy: Wire.StringLiteralCodingKeys.self)
+        self._version.wrappedValue = try container.decodeIfPresent(Swift.UInt32.self, forKey: "version")
+        self._pkcs10_request.wrappedValue = try container.decodeIfPresent(stringEncoded: Foundation.Data.self, firstOfKeys: "pkcs10Request", "pkcs10_request")
     }
 
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: StringLiteralCodingKeys.self)
+    public func encode(to encoder: Swift.Encoder) throws {
+        var container = encoder.container(keyedBy: Wire.StringLiteralCodingKeys.self)
         let preferCamelCase = encoder.protoKeyNameEncodingStrategy == .camelCase
 
         try container.encodeIfPresent(self.version, forKey: "version")
         try container.encodeIfPresent(stringEncoded: self.pkcs10_request, forKey: preferCamelCase ? "pkcs10Request" : "pkcs10_request")
     }
+
 }
 #endif

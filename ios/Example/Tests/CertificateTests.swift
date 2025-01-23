@@ -44,8 +44,14 @@ final class CertificateTests: XCTestCase {
     
     func testExpiredCertificate() throws {
                 
-        let validCertificate = Certificate(version: 0, certificate: TestFixtures.validCertEncoded)
-        let expiredCertificate = Certificate(version: 0, certificate: TestFixtures.expiredCertEncoded)
+        let validCertificate = Certificate(configure: { cert in
+            cert.version = 0
+            cert.certificate = TestFixtures.validCertEncoded
+        })
+        let expiredCertificate = Certificate(configure: { cert in
+            cert.version = 0
+            cert.certificate = TestFixtures.expiredCertEncoded
+        })
 
         XCTAssertTrue(try validCertificate.verify(intermediateChain: Array<Certificate>()))
     

@@ -5,14 +5,26 @@ import Wire
 
 public struct MobileCertificateResponse {
 
-    public var certificates: [Data]
-    public var unknownFields: Data = .init()
+    public var certificates: [Foundation.Data] = []
+    public var unknownFields: Foundation.Data = .init()
 
-    public init(certificates: [Data] = []) {
+    public init(configure: (inout Self) -> Swift.Void = { _ in }) {
+        configure(&self)
+    }
+
+}
+
+#if WIRE_INCLUDE_MEMBERWISE_INITIALIZER
+extension MobileCertificateResponse {
+
+    @_disfavoredOverload
+    @available(*, deprecated)
+    public init(certificates: [Foundation.Data] = []) {
         self.certificates = certificates
     }
 
 }
+#endif
 
 #if !WIRE_REMOVE_EQUATABLE
 extension MobileCertificateResponse : Equatable {
@@ -29,48 +41,61 @@ extension MobileCertificateResponse : Sendable {
 }
 #endif
 
-extension MobileCertificateResponse : ProtoMessage {
-    public static func protoMessageTypeURL() -> String {
-        return "type.googleapis.com/app.cash.trifle.api.alpha.MobileCertificateResponse"
+extension MobileCertificateResponse : ProtoDefaultedValue {
+
+    public static var defaultedValue: MobileCertificateResponse {
+        MobileCertificateResponse()
     }
 }
 
-extension MobileCertificateResponse : Proto2Codable {
-    public init(from reader: ProtoReader) throws {
-        var certificates: [Data] = []
+extension MobileCertificateResponse : ProtoMessage {
 
-        let token = try reader.beginMessage()
-        while let tag = try reader.nextTag(token: token) {
+    public static func protoMessageTypeURL() -> Swift.String {
+        return "type.googleapis.com/app.cash.trifle.api.alpha.MobileCertificateResponse"
+    }
+
+}
+
+extension MobileCertificateResponse : Proto2Codable {
+
+    public init(from protoReader: Wire.ProtoReader) throws {
+        var certificates: [Foundation.Data] = []
+
+        let token = try protoReader.beginMessage()
+        while let tag = try protoReader.nextTag(token: token) {
             switch tag {
-            case 1: try reader.decode(into: &certificates)
-            default: try reader.readUnknownField(tag: tag)
+            case 1: try protoReader.decode(into: &certificates)
+            default: try protoReader.readUnknownField(tag: tag)
             }
         }
-        self.unknownFields = try reader.endMessage(token: token)
+        self.unknownFields = try protoReader.endMessage(token: token)
 
         self.certificates = certificates
     }
 
-    public func encode(to writer: ProtoWriter) throws {
-        try writer.encode(tag: 1, value: self.certificates)
-        try writer.writeUnknownFields(unknownFields)
+    public func encode(to protoWriter: Wire.ProtoWriter) throws {
+        try protoWriter.encode(tag: 1, value: self.certificates)
+        try protoWriter.writeUnknownFields(unknownFields)
     }
+
 }
 
 #if !WIRE_REMOVE_CODABLE
 extension MobileCertificateResponse : Codable {
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: StringLiteralCodingKeys.self)
-        self.certificates = try container.decodeProtoArray(Data.self, forKey: "certificates")
+
+    public init(from decoder: Swift.Decoder) throws {
+        let container = try decoder.container(keyedBy: Wire.StringLiteralCodingKeys.self)
+        self.certificates = try container.decodeProtoArray(Foundation.Data.self, forKey: "certificates")
     }
 
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: StringLiteralCodingKeys.self)
+    public func encode(to encoder: Swift.Encoder) throws {
+        var container = encoder.container(keyedBy: Wire.StringLiteralCodingKeys.self)
         let includeDefaults = encoder.protoDefaultValuesEncodingStrategy == .include
 
         if includeDefaults || !self.certificates.isEmpty {
             try container.encodeProtoArray(self.certificates, forKey: "certificates")
         }
     }
+
 }
 #endif

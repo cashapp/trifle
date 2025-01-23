@@ -6,7 +6,7 @@ let package = Package(
 	name: "Trifle",
 	platforms: [
 		.iOS(.v14),
-        .macOS(.v10_15),
+		.macOS(.v10_15),
 	],
 	products: [
 		.library(
@@ -16,16 +16,16 @@ let package = Package(
 	],
 	dependencies: [
 		.package(
-            url: "https://github.com/square/wire",
-            .upToNextMinor(from: "4.7.0")
-        ),
+			url: "https://github.com/square/wire",
+			exact: "4.9.3"
+		),
 	],
 	targets: [
 		.target(
 			name: "Trifle",
 			dependencies: [
-                .product(name: "Wire", package: "wire"),
-            ],
+				.product(name: "Wire", package: "wire"),
+			],
 			path: "ios/Trifle/Sources"
 		),
 	]
