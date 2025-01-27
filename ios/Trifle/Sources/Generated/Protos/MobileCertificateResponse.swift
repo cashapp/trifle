@@ -6,25 +6,13 @@ import Wire
 public struct MobileCertificateResponse {
 
     public var certificates: [Foundation.Data] = []
-    public var unknownFields: Foundation.Data = .init()
+    public var unknownFields: UnknownFields = .init()
 
     public init(configure: (inout Self) -> Swift.Void = { _ in }) {
         configure(&self)
     }
 
 }
-
-#if WIRE_INCLUDE_MEMBERWISE_INITIALIZER
-extension MobileCertificateResponse {
-
-    @_disfavoredOverload
-    @available(*, deprecated)
-    public init(certificates: [Foundation.Data] = []) {
-        self.certificates = certificates
-    }
-
-}
-#endif
 
 #if !WIRE_REMOVE_EQUATABLE
 extension MobileCertificateResponse : Equatable {
@@ -36,21 +24,19 @@ extension MobileCertificateResponse : Hashable {
 }
 #endif
 
-#if swift(>=5.5)
 extension MobileCertificateResponse : Sendable {
 }
-#endif
 
 extension MobileCertificateResponse : ProtoDefaultedValue {
 
-    public static var defaultedValue: MobileCertificateResponse {
-        MobileCertificateResponse()
+    public static var defaultedValue: Self {
+        .init()
     }
 }
 
 extension MobileCertificateResponse : ProtoMessage {
 
-    public static func protoMessageTypeURL() -> Swift.String {
+    public static func protoMessageTypeURL() -> String {
         return "type.googleapis.com/app.cash.trifle.api.alpha.MobileCertificateResponse"
     }
 
@@ -58,7 +44,7 @@ extension MobileCertificateResponse : ProtoMessage {
 
 extension MobileCertificateResponse : Proto2Codable {
 
-    public init(from protoReader: Wire.ProtoReader) throws {
+    public init(from protoReader: ProtoReader) throws {
         var certificates: [Foundation.Data] = []
 
         let token = try protoReader.beginMessage()
@@ -73,7 +59,7 @@ extension MobileCertificateResponse : Proto2Codable {
         self.certificates = certificates
     }
 
-    public func encode(to protoWriter: Wire.ProtoWriter) throws {
+    public func encode(to protoWriter: ProtoWriter) throws {
         try protoWriter.encode(tag: 1, value: self.certificates)
         try protoWriter.writeUnknownFields(unknownFields)
     }
@@ -83,13 +69,13 @@ extension MobileCertificateResponse : Proto2Codable {
 #if !WIRE_REMOVE_CODABLE
 extension MobileCertificateResponse : Codable {
 
-    public init(from decoder: Swift.Decoder) throws {
-        let container = try decoder.container(keyedBy: Wire.StringLiteralCodingKeys.self)
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: StringLiteralCodingKeys.self)
         self.certificates = try container.decodeProtoArray(Foundation.Data.self, forKey: "certificates")
     }
 
-    public func encode(to encoder: Swift.Encoder) throws {
-        var container = encoder.container(keyedBy: Wire.StringLiteralCodingKeys.self)
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: StringLiteralCodingKeys.self)
         let includeDefaults = encoder.protoDefaultValuesEncodingStrategy == .include
 
         if includeDefaults || !self.certificates.isEmpty {

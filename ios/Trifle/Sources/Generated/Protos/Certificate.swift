@@ -24,26 +24,13 @@ public struct Certificate {
      */
     @ProtoDefaulted
     public var certificate: Foundation.Data?
-    public var unknownFields: Foundation.Data = .init()
+    public var unknownFields: UnknownFields = .init()
 
     public init(configure: (inout Self) -> Swift.Void = { _ in }) {
         configure(&self)
     }
 
 }
-
-#if WIRE_INCLUDE_MEMBERWISE_INITIALIZER
-extension Certificate {
-
-    @_disfavoredOverload
-    @available(*, deprecated)
-    public init(version: Swift.UInt32? = nil, certificate: Foundation.Data? = nil) {
-        self._version.wrappedValue = version
-        self._certificate.wrappedValue = certificate
-    }
-
-}
-#endif
 
 #if !WIRE_REMOVE_EQUATABLE
 extension Certificate : Equatable {
@@ -55,21 +42,19 @@ extension Certificate : Hashable {
 }
 #endif
 
-#if swift(>=5.5)
 extension Certificate : Sendable {
 }
-#endif
 
 extension Certificate : ProtoDefaultedValue {
 
-    public static var defaultedValue: Certificate {
-        Certificate()
+    public static var defaultedValue: Self {
+        .init()
     }
 }
 
 extension Certificate : ProtoMessage {
 
-    public static func protoMessageTypeURL() -> Swift.String {
+    public static func protoMessageTypeURL() -> String {
         return "type.googleapis.com/app.cash.trifle.api.alpha.Certificate"
     }
 
@@ -77,14 +62,14 @@ extension Certificate : ProtoMessage {
 
 extension Certificate : Proto2Codable {
 
-    public init(from protoReader: Wire.ProtoReader) throws {
-        var version: Swift.UInt32? = nil
+    public init(from protoReader: ProtoReader) throws {
+        var version: UInt32? = nil
         var certificate: Foundation.Data? = nil
 
         let token = try protoReader.beginMessage()
         while let tag = try protoReader.nextTag(token: token) {
             switch tag {
-            case 1: version = try protoReader.decode(Swift.UInt32.self)
+            case 1: version = try protoReader.decode(UInt32.self, encoding: .variable)
             case 2: certificate = try protoReader.decode(Foundation.Data.self)
             default: try protoReader.readUnknownField(tag: tag)
             }
@@ -95,8 +80,8 @@ extension Certificate : Proto2Codable {
         self._certificate.wrappedValue = certificate
     }
 
-    public func encode(to protoWriter: Wire.ProtoWriter) throws {
-        try protoWriter.encode(tag: 1, value: self.version)
+    public func encode(to protoWriter: ProtoWriter) throws {
+        try protoWriter.encode(tag: 1, value: self.version, encoding: .variable)
         try protoWriter.encode(tag: 2, value: self.certificate)
         try protoWriter.writeUnknownFields(unknownFields)
     }
@@ -106,14 +91,14 @@ extension Certificate : Proto2Codable {
 #if !WIRE_REMOVE_CODABLE
 extension Certificate : Codable {
 
-    public init(from decoder: Swift.Decoder) throws {
-        let container = try decoder.container(keyedBy: Wire.StringLiteralCodingKeys.self)
-        self._version.wrappedValue = try container.decodeIfPresent(Swift.UInt32.self, forKey: "version")
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: StringLiteralCodingKeys.self)
+        self._version.wrappedValue = try container.decodeIfPresent(UInt32.self, forKey: "version")
         self._certificate.wrappedValue = try container.decodeIfPresent(stringEncoded: Foundation.Data.self, forKey: "certificate")
     }
 
-    public func encode(to encoder: Swift.Encoder) throws {
-        var container = encoder.container(keyedBy: Wire.StringLiteralCodingKeys.self)
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: StringLiteralCodingKeys.self)
 
         try container.encodeIfPresent(self.version, forKey: "version")
         try container.encodeIfPresent(stringEncoded: self.certificate, forKey: "certificate")
